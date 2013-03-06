@@ -3,7 +3,7 @@ module ActiveAdminImport
   module Import
     def self.import resource, file, options={}
       validate = options.delete(:validate) || true
-      data = ::CSV.parse file.read, {:headers => true, :col_sep => col_sep }
+      data = ::CSV.parse file.read, {:headers => true, :col_sep => options[:col_sep] || ',' }
       headers = data.first.headers
       headers =  Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })]
       result = []
