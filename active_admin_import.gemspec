@@ -16,4 +16,5 @@ Gem::Specification.new do |gem|
   gem.version       = ActiveAdminImport::VERSION
 
   gem.add_dependency('chronic')
+  gem.add_dependency('activerecord-import','0.3.0')
 end
