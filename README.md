@@ -1,4 +1,7 @@
-active_admin_import
-===================
+# ActiveAdminImport
+CSV imports for Active Admin based on activerecord-import gem
 
-active_admin_import is based on activerecord-import gem
+
+
+
+

@@ -1,0 +1,7 @@
+<%= form_for :import, :url => {:action => :do_import}, :html => {:multipart => true} do |f| %>
+  <%= label_tag  "import_file", "File for import:" %><br>
+  <%= f.file_field :file %>
+  <hr />
+  <%= submit_tag 'Import' %>
+<% end %>
+
