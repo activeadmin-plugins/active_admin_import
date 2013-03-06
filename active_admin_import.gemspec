@@ -15,6 +15,6 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = ActiveAdminImport::VERSION
 
-  gem.add_dependency('chronic')
-  gem.add_dependency('activerecord-import','0.3.0')
+  gem.add_runtime_dependency('chronic')
+  gem.add_runtime_dependency('activerecord-import','0.3.0')
 end
