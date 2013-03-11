@@ -11,7 +11,7 @@ module ActiveAdminImport
         options[:after_batch_import].call(data) if options[:after__batch_import].is_a?(Proc)
         result
       end
-      {:imported => result.num_inserts, :failed => result.failed_instances}
+      {:imported => data.count -  result.failed_instances.count , :failed => result.failed_instances}
     end
 
     def prepare_headers(headers)
