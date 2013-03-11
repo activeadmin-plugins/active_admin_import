@@ -24,15 +24,15 @@ module ActiveAdminImport
           flash[:alert] = "You can import file only with extension csv"
           return redirect_to :action => options[:back]
         end
-        begin
-          result = Import.import active_admin_config.resource_class, params[:import][:file], options
-          flash[:notice] = "#{view_context.pluralize(result[:num_inserts].to_i,active_admin_config.resource_name)} was imported"
-          unless result[:failed_instances].count == 0
-            flash[:error] =  "#{view_context.pluralize(result[:failed_instances].count,active_admin_config.resource_name)} was failed to imported"
+        importer = Importer.new( active_admin_config.resource_class, params[:import][:file], options)
+
+
+          result = importer.import
+          flash[:notice] = "#{view_context.pluralize(result[:imported].to_i,active_admin_config.resource_name)} was imported"
+          unless result[:failed].count == 0
+            flash[:error] =  "#{view_context.pluralize(result[:failed].count,active_admin_config.resource_name)} was failed to imported"
           end
-        rescue StandardError=>e
-          flash[:error] = e.message
-        end
+
         redirect_to :action => options[:back]
       end
 
