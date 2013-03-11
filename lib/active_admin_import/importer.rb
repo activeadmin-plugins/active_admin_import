@@ -7,7 +7,12 @@ module ActiveAdminImport
     def store data, headers
       result = @resource.transaction do
         options[:before_batch_import].call(data, headers) if options[:before_batch_import].is_a?(Proc)
-        result = resource.import headers, data, :validate => options[:validate]
+        result = resource.import headers, data, {
+            :validate => options[:validate],
+            :on_duplicate_key_update => options[:on_duplicate_key_update],
+            :ignore => options[:ignore],
+            :timestamps => options[:timestamps]
+        }
         options[:after_batch_import].call(data, headers) if options[:after_batch_import].is_a?(Proc)
         result
       end
@@ -17,7 +22,6 @@ module ActiveAdminImport
     def prepare_headers(headers)
       Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })]
     end
-
 
     def initialize resource, file, options
       @resource = resource
@@ -39,12 +43,9 @@ module ActiveAdminImport
        @result.merge!(self.store(lines, @headers.values)){|key,val1,val2| val1+val2}
     end
 
-
     def import
-
       options[:before_import].call(@resource, @file, @options) if options[:before_import].is_a?(Proc)
       lines = []
-
       batch_size = @options[:batch_size].to_i
       IO.foreach(file.path) do |line|
         if @headers.empty?
