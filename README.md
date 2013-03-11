@@ -21,7 +21,7 @@ https://github.com/zdennis/activerecord-import
     # +after_batch_import+:: proc for after each batch action, called with imported data and headers arguments
     # +on_duplicate_key_update+:: an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE ability.
     # +timestamps+::  true|false, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
-    # +ignore+::  true|false, tells activerecord-import toto use MySQL's INSERT IGNORE ability
+    # +ignore+::  true|false, tells activerecord-import to use MySQL's INSERT IGNORE ability
 
 
 #Example
