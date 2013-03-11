@@ -7,7 +7,7 @@ module ActiveAdminImport
     # Options
     # +back+:: resource action to redirect after processing
     # +col_sep+:: column separator used for CSV parsing
-    # +validate+:: rue|false, means perfoem validations or not
+    # +validate+:: true|false, means perfoem validations or not
     # +batch_size+:: integer value of max  record count inserted by 1 query/transaction
     # +before_import+:: proc for before import action, called with resource, file, options arguments
     # +before_batch_import+:: proc for before each batch action, called with imported data and headers arguments
