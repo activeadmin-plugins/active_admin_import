@@ -6,9 +6,9 @@ module ActiveAdminImport
 
     def store data, headers
       result = @resource.transaction do
-        options[:before_batch_import].call(data) if options[:before_batch_import].is_a?(Proc)
+        options[:before_batch_import].call(data, headers) if options[:before_batch_import].is_a?(Proc)
         result = resource.import headers, data, :validate => options[:validate]
-        options[:after_batch_import].call(data) if options[:after__batch_import].is_a?(Proc)
+        options[:after_batch_import].call(data, headers) if options[:after_batch_import].is_a?(Proc)
         result
       end
       {:imported => data.count -  result.failed_instances.count , :failed => result.failed_instances}
