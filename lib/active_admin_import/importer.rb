@@ -6,9 +6,6 @@ module ActiveAdminImport
     :cycle_data, :headers , :csv_lines
 
     def store
-          p headers.values
-        p csv_lines
-          p @resource
       result = @resource.transaction do
         options[:before_batch_import].call(self) if options[:before_batch_import].is_a?(Proc)
 
@@ -26,18 +23,13 @@ module ActiveAdminImport
     end
 
     def prepare_headers(headers)
-
       @headers =  Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })]
-      p @headers
-      p options
       @headers.merge!(options[:headers_rewrites])
-      p @headers
       @headers
     end
 
     def initialize resource, file, options , extra_options = nil
       @resource = resource
-      p @resource, "<<<<"
       @file = file
       @options = {
           :col_sep => ',',

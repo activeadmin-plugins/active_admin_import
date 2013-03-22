@@ -7,11 +7,12 @@ module ActiveAdminImport
     # Options
     # +back+:: resource action to redirect after processing
     # +col_sep+:: column separator used for CSV parsing
-    # +validate+:: true|false, means perform validations or not
+    # +validate+:: true|false, means perfoem validations or not
     # +batch_size+:: integer value of max  record count inserted by 1 query/transaction
-    # +before_import+:: proc for before import action, called with resource, file, options arguments
-    # +before_batch_import+:: proc for before each batch action, called with imported data and headers arguments
-    # +after_batch_import+:: proc for after each batch action, called with imported data and headers arguments
+    # +before_import+:: proc for before import action, hook called with  importer object
+    # +after_import+:: proc for after import action, hook called with  importer object
+    # +before_batch_import+:: proc for before each batch action, called with  importer object
+    # +after_batch_import+:: proc for after each batch action, called with  importer object
     # +on_duplicate_key_update+:: an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE ability.
     # +timestamps+::  true|false, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
     # +ignore+::  true|false, tells activerecord-import toto use MySQL's INSERT IGNORE ability
