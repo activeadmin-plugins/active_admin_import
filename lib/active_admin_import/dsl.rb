@@ -16,7 +16,7 @@ module ActiveAdminImport
     # +on_duplicate_key_update+:: an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE ability.
     # +timestamps+::  true|false, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
     # +ignore+::  true|false, tells activerecord-import toto use MySQL's INSERT IGNORE ability
-    # +params_keys+:: params values available in callbacks
+    # +fetch_extra_options_from_params+:: params values available in callbacks in importer.extra_options hash
     # +template+:: custom template rendering
     # +locals+:: local variables for template
     # +resource_class+:: resource class name
@@ -27,41 +27,41 @@ module ActiveAdminImport
           :back => :import,
           :col_sep => ',',
           :template => "admin/import",
-          :params_keys => [],
+          :template_object => ActiveAdminImport::Model.new,
+          :fetch_extra_options_from_params => [],
           :resource_class => nil,
           :resource_label => nil,
-          :locals => {},
           :headers_rewrites => {}
-
+      
 
       }
       options = default_options.merge(options)
-
+      params_key = ActiveModel::Naming.param_key(options[:template_object])
 
       action_item :only => :index do
         link_to "Import #{(options[:resource_label] || active_admin_config.resource_name).pluralize}", :action => 'import'
       end
 
       collection_action :import, :method => :get do
-        render :template => options[:template], :locals => options[:locals]
+        @active_admin_import_model = options[:template_object] 
+        render :template => options[:template]
       end
 
       collection_action :do_import, :method => :post do
-        if params[:import].blank?
+        if params[params_key].blank?
           flash[:alert] = "Please, select file to import"
-          return redirect_to :action => options[:back]
+          return redirect_to :back
         end
-        unless params[:import]['file'].try(:content_type) && params[:import]['file'].content_type.in?(["text/csv"])
+        unless params[params_key]['file'].try(:content_type) && params[params_key]['file'].content_type.in?(["text/csv"])
           flash[:alert] = "You can import file only with extension csv"
-          return redirect_to :action => options[:back]
+          return redirect_to :back
         end
 
         importer = Importer.new((options[:resource_class] || active_admin_config.resource_class),
-                                params[:import][:file],
+                                params[params_key][:file],
                                 options,
-                                params[:import].to_hash.slice(options[:params_keys])
+                                params[params_key].to_hash.slice(*options[:fetch_extra_options_from_params])
         )
-
 
         result = importer.import
         flash[:notice] = "#{view_context.pluralize(result[:imported].to_i, (options[:resource_label] || active_admin_config.resource_name))} was imported"
