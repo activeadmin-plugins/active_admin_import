@@ -32,7 +32,7 @@ module ActiveAdminImport
           :resource_class => nil,
           :resource_label => nil,
           :headers_rewrites => {}
-      
+
 
       }
       options = default_options.merge(options)
@@ -43,7 +43,7 @@ module ActiveAdminImport
       end
 
       collection_action :import, :method => :get do
-        @active_admin_import_model = options[:template_object] 
+        @active_admin_import_model = options[:template_object]
         render :template => options[:template]
       end
 
@@ -52,7 +52,15 @@ module ActiveAdminImport
           flash[:alert] = "Please, select file to import"
           return redirect_to :back
         end
-        unless params[params_key]['file'].try(:content_type) && params[params_key]['file'].content_type.in?(["text/csv"])
+        content_types_allow = [
+            'text/csv',
+            'text/x-csv',
+            'text/comma-separated-values',
+            'application/csv',
+            'application/vnd.ms-excel',
+            'application/vnd.msexcel'
+        ]
+        unless params[params_key]['file'].try(:content_type) && params[params_key]['file'].content_type.in?(content_types_allow)
           flash[:alert] = "You can import file only with extension csv"
           return redirect_to :back
         end
