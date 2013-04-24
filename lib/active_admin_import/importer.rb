@@ -42,10 +42,11 @@ module ActiveAdminImport
         :imported => 0
       }
       @extra_options = extra_options
+      @csv_options = @options.slice(:col_sep, :row_sep)
     end
 
     def cycle(lines)
-       @csv_lines = CSV.parse(lines.join)
+       @csv_lines = CSV.parse(lines.join, @csv_options)
        @result.merge!(self.store){|key,val1,val2| val1+val2}
     end
 
@@ -55,7 +56,7 @@ module ActiveAdminImport
       batch_size = options[:batch_size].to_i
       IO.foreach(file.path) do |line|
         if headers.empty?
-          prepare_headers(CSV.parse(line).first)
+          prepare_headers(CSV.parse(line, @csv_options).first)
         else
           lines << line
           if lines.size >= batch_size
