@@ -17,17 +17,11 @@ module ActiveAdminImport
                 define_method("#{key}=") { |new_value|  @attributes[key] = new_value } unless method_defined? "#{key}="
               end
         end
-
     end
-
-    
 
     def persisted?
       false
     end
-    
 
-    
-    
   end
 end

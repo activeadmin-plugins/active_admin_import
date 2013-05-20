@@ -6,6 +6,6 @@
     <%= f.input :file, :as=>:file %>
     <% end %>
      <%= f.actions do %>
-    <%= f.action :submit , :label =>"Import" ,:button_html => { :disable_with => "Wait..." }%>
+    <%= f.action :submit , :label =>t("active_admin_import.import_btn") ,:button_html => { :disable_with => t("active_admin_import.import_btn_disabled") }%>
         <% end %>
 <% end %>

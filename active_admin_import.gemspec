@@ -4,7 +4,7 @@ require File.expand_path('../lib/active_admin_import/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Igor Fedoronchuk"]
   gem.email         = ["fedoronchuk@gmail.com"]
-  gem.description   = "CSV import for Active Admin"
+  gem.description   = "The most efficient way to import for Active Admin"
   gem.summary       = "ActiveAdmin import based on activerecord-import gem."
   gem.homepage      = "http://github.com/Fivell/active_admin_import"
 

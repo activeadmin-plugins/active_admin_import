@@ -1,0 +1,15 @@
+en:
+  active_admin:
+    import: "Import"
+  active_admin_import:
+    file_format_error: "You can import only valid csv file"
+    no_file_error: "Please, select file to import"
+    imported:
+      one: "Successfully imported 1 %{model}"
+      other: "Successfully imported %{count} %{plural_model}"
+    failed:
+      one:   "Failed to import 1 %{model}"
+      other: "Failed to import %{count} %{plural_model}"
+    import_model: "Import %{model}"
+    import_btn: "Import"
+    import_btn_disabled: "Wait..."

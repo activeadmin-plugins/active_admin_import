@@ -38,18 +38,23 @@ module ActiveAdminImport
       options = default_options.merge(options)
       params_key = ActiveModel::Naming.param_key(options[:template_object])
 
-      action_item :only => :index do
-        link_to "Import #{(options[:resource_label] || active_admin_config.resource_name).pluralize}", :action => 'import'
-      end
 
       collection_action :import, :method => :get do
         @active_admin_import_model = options[:template_object]
         render :template => options[:template]
       end
 
+
+      action_item :only => :index do
+        link_to(I18n.t('active_admin_import.import_model',
+                :model => (options[:resource_label] || active_admin_config.resource_name)),
+                        :action => 'import')
+      end
+
+
       collection_action :do_import, :method => :post do
         if params[params_key].blank?
-          flash[:alert] = "Please, select file to import"
+          flash[:alert] =  I18n.t('active_admin_import.no_file_error')
           return redirect_to :back
         end
         content_types_allow = [
@@ -61,7 +66,7 @@ module ActiveAdminImport
             'application/vnd.msexcel'
         ]
         unless params[params_key]['file'].try(:content_type) && params[params_key]['file'].content_type.in?(content_types_allow)
-          flash[:alert] = "You can import file only with extension csv"
+          flash[:alert] = I18n.t('active_admin_import.file_format_error')
           return redirect_to :back
         end
 
@@ -70,12 +75,21 @@ module ActiveAdminImport
                                 options,
                                 params[params_key].to_hash.slice(*options[:fetch_extra_options_from_params])
         )
-
         result = importer.import
-        flash[:notice] = "#{view_context.pluralize(result[:imported].to_i, (options[:resource_label] || active_admin_config.resource_name))} was imported"
-        unless result[:failed].count == 0
-          flash[:error] = "#{view_context.pluralize(result[:failed].count, (options[:resource_label] || active_admin_config.resource_name))} was failed to imported"
-        end
+
+        flash[:notice] =  I18n.t('active_admin_import.imported',
+                                    :count=> result[:imported].to_i,
+                                    :model => (options[:resource_label] || active_admin_config.resource_label).downcase,
+                                    :plural_model =>  (options[:resource_label].present? ? options[:resource_label].to_s.pluralize : active_admin_config.plural_resource_label).downcase
+
+                                ) if  result[:imported].to_i > 0
+
+        flash[:error] =  I18n.t('active_admin_import.failed',
+                                    :count=> result[:failed].count,
+                                    :model => (options[:resource_label] || active_admin_config.resource_label).downcase,
+                                     :plural_model =>  (options[:resource_label].present? ? options[:resource_label].to_s.pluralize : active_admin_config.plural_resource_label).downcase
+
+                                ) if  result[:failed].count > 0
 
         redirect_to :action => options[:back]
       end
