@@ -18,7 +18,7 @@ module ActiveAdminImport
     # +ignore+::  true|false, tells activerecord-import toto use MySQL's INSERT IGNORE ability
     # +fetch_extra_options_from_params+:: params values available in callbacks in importer.extra_options hash
     # +template+:: custom template rendering
-    # +locals+:: local variables for template
+    # +template_object+:: object passing to view
     # +resource_class+:: resource class name
     # +resource_label+:: resource label value
     #
