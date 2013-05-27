@@ -19,15 +19,30 @@ https://github.com/zdennis/activerecord-import
     # +after_import+:: proc for after import action, hook called with  importer object
     # +before_batch_import+:: proc for before each batch action, called with  importer object
     # +after_batch_import+:: proc for after each batch action, called with  importer object
+    # +fetch_extra_options_from_params+:: params  available in callbacks ( importer.extra_options proprty hash ) 
     # +on_duplicate_key_update+:: an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE ability.
     # +timestamps+::  true|false, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
     # +ignore+::  true|false, tells activerecord-import toto use MySQL's INSERT IGNORE ability
     # +params_keys+:: params values available in callbacks
     # +template+:: custom template rendering
+    # +template_object+:: object passing to view
     # +locals+:: local variables for template
     # +resource_class+:: resource class name
     # +resource_label+:: resource label value
+    # +headers_rewrites+:: hash with key (csv header) - value (db column name) rows mapping
 
+
+
+Default options values
+
+    :back => :import,
+    :col_sep => ',',
+    :template => "admin/import",
+    :template_object => ActiveAdminImport::Model.new,
+    :fetch_extra_options_from_params => [],
+    :resource_class => nil,
+    :resource_label => nil,
+    
 
 #Example
   
