@@ -9,7 +9,6 @@ https://github.com/gregbell/active_admin
 https://github.com/zdennis/activerecord-import
 
 
-
 #Options
 
     # +back+:: resource action to redirect after processing
@@ -43,4 +42,7 @@ https://github.com/zdennis/activerecord-import
     end
 
 
+
+#Source Doc
+http://rubydoc.info/gems/active_admin_import/2.0.0/
 
