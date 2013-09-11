@@ -55,6 +55,7 @@ module ActiveAdminImport
       lines = []
       batch_size = options[:batch_size].to_i
       IO.foreach(file.path) do |line|
+        next if line.blank?
         if headers.empty?
           prepare_headers(CSV.parse(line, @csv_options).first)
         else
