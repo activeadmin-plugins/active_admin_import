@@ -50,7 +50,7 @@ Default options values
        active_admin_import :validate => false,
                             :col_sep => ',',
                             :back => :index ,
-                            :before_import => proc{|importer|  resource.delete_all},
+                            :before_import => proc{|importer|  Model.delete_all},
                             :batch_size => 1000
     
     
