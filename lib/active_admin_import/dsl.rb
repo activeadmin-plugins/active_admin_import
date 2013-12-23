@@ -24,14 +24,14 @@ module ActiveAdminImport
     #
     def active_admin_import options = {}
       default_options = {
-          :back => :import,
-          :col_sep => ',',
-          :template => "admin/import",
-          :template_object => ActiveAdminImport::Model.new,
-          :fetch_extra_options_from_params => [],
-          :resource_class => nil,
-          :resource_label => nil,
-          :headers_rewrites => {}
+          back: {action: :import},
+          col_sep: ',',
+          template: "admin/import",
+          template_object: ActiveAdminImport::Model.new(file: nil),
+          fetch_extra_options_from_params: [],
+          resource_class: nil,
+          resource_label: nil,
+          headers_rewrites: {}
 
 
       }
@@ -53,21 +53,12 @@ module ActiveAdminImport
 
 
       collection_action :do_import, :method => :post do
-        if params[params_key].blank?
-          flash[:alert] =  I18n.t('active_admin_import.no_file_error')
-          return redirect_to :back
-        end
-        content_types_allow = [
-            'text/csv',
-            'text/x-csv',
-            'text/comma-separated-values',
-            'application/csv',
-            'application/vnd.ms-excel',
-            'application/vnd.msexcel'
-        ]
-        unless params[params_key]['file'].try(:content_type) && params[params_key]['file'].content_type.in?(content_types_allow)
-          flash[:alert] = I18n.t('active_admin_import.file_format_error')
-          return redirect_to :back
+
+        @active_admin_import_model =  options[:template_object]
+        @active_admin_import_model.assign_attributes(params[params_key].try(:deep_symbolize_keys))
+
+        unless   @active_admin_import_model.valid?
+          return render :template => options[:template]
         end
 
         importer = Importer.new((options[:resource_class] || active_admin_config.resource_class),
@@ -91,7 +82,7 @@ module ActiveAdminImport
 
                                 ) if  result[:failed].count > 0
 
-        redirect_to :action => options[:back]
+        redirect_to options[:back]
       end
 
     end
