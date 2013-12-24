@@ -62,7 +62,7 @@ module ActiveAdminImport
         end
 
         importer = Importer.new((options[:resource_class] || active_admin_config.resource_class),
-                                params[params_key][:file],
+                                @active_admin_import_model.file,
                                 options,
                                 params[params_key].to_hash.slice(*options[:fetch_extra_options_from_params])
         )
