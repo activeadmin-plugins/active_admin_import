@@ -10,8 +10,8 @@ module ActiveAdminImport
 
     attr_reader :attributes
 
-    def initialize(attributes={})
-      assign_attributes default_attributes.merge(attributes)
+    def initialize(args={})
+      assign_attributes default_attributes.merge(args)
     end
 
     def assign_attributes(attributes = {})
