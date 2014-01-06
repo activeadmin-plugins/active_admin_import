@@ -1,7 +1,5 @@
 module ActiveAdminImport
   module DSL
-
-
     # Declares import functionality
     #
     # Options
@@ -38,48 +36,42 @@ module ActiveAdminImport
       options = default_options.merge(options)
       params_key = ActiveModel::Naming.param_key(options[:template_object])
 
-
-      collection_action :import, :method => :get do
+      collection_action :import, method: :get do
         @active_admin_import_model = options[:template_object]
-        render :template => options[:template]
+        render template: options[:template]
       end
 
-
-      action_item :only => :index do
+      action_item only: :index do
         link_to(I18n.t('active_admin_import.import_model',
-                :model => (options[:resource_label] || active_admin_config.resource_name)),
-                        :action => 'import')
+                model: (options[:resource_label] || active_admin_config.resource_name)),
+                action: 'import')
       end
 
-
-      collection_action :do_import, :method => :post do
+      collection_action :do_import, method: :post do
 
         @active_admin_import_model =  options[:template_object]
         @active_admin_import_model.assign_attributes(params[params_key].try(:deep_symbolize_keys))
-
-        unless   @active_admin_import_model.valid?
-          return render :template => options[:template]
-        end
-
+        #go back to form
+        return render template: options[:template] unless   @active_admin_import_model.valid?
+        
         importer = Importer.new((options[:resource_class] || active_admin_config.resource_class),
                                 @active_admin_import_model.file,
                                 options,
                                 params[params_key].to_hash.slice(*options[:fetch_extra_options_from_params])
         )
         result = importer.import
-
+        model_name =  (options[:resource_label] || active_admin_config.resource_label).downcase
+        plural_model_name = (options[:resource_label].present? ? options[:resource_label].to_s.pluralize : active_admin_config.plural_resource_label).downcase
         flash[:notice] =  I18n.t('active_admin_import.imported',
-                                    :count=> result[:imported].to_i,
-                                    :model => (options[:resource_label] || active_admin_config.resource_label).downcase,
-                                    :plural_model =>  (options[:resource_label].present? ? options[:resource_label].to_s.pluralize : active_admin_config.plural_resource_label).downcase
-
-                                ) if  result[:imported].to_i > 0
+                                    count: result[:imported].to_i,
+                                    model: model_name,
+                                    plural_model: plural_model_name
+                                ) if result[:imported].to_i > 0
 
         flash[:error] =  I18n.t('active_admin_import.failed',
-                                    :count=> result[:failed].count,
-                                    :model => (options[:resource_label] || active_admin_config.resource_label).downcase,
-                                     :plural_model =>  (options[:resource_label].present? ? options[:resource_label].to_s.pluralize : active_admin_config.plural_resource_label).downcase
-
+                                    count: result[:failed].count,
+                                    model: model_name,
+                                    plural_model: plural_model_name
                                 ) if  result[:failed].count > 0
 
         redirect_to options[:back]

@@ -4,8 +4,9 @@ module ActiveAdminImport
     include ActiveModel::Conversion
     include ActiveModel::Validations
 
-    validates :file, :presence => {:message => Proc.new { I18n.t('active_admin_import.no_file_error') }} ,
-              :if => proc{|me| me.assigned?}
+    validates :file, presence: {message: Proc.new { I18n.t('active_admin_import.no_file_error') }},
+              if: proc { |me| me.assigned? }
+
     validate :correct_content_type
 
     attr_reader :attributes
@@ -28,22 +29,19 @@ module ActiveAdminImport
     end
 
     def read_attribute_for_validation(key)
-       @attributes[key.to_sym]
-     end
-
-    def default_attributes
-      {
-         hint: '',
-         file: nil
-      }
+      @attributes[key.to_sym]
     end
 
-    def  assigned?
+    def default_attributes
+      {hint: '', file: nil}
+    end
+
+    def assigned?
       @assigned
     end
 
     def to_hash
-       @attributes
+      @attributes
     end
 
     def allowed_types
