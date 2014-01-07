@@ -11,15 +11,15 @@ module ActiveAdminImport
 
 
         result = resource.import headers.values, csv_lines, {
-            :validate => options[:validate],
-            :on_duplicate_key_update => options[:on_duplicate_key_update],
-            :ignore => options[:ignore],
-            :timestamps => options[:timestamps]
+            validate: options[:validate],
+            on_duplicate_key_update: options[:on_duplicate_key_update],
+            ignore: options[:ignore],
+            timestamps: options[:timestamps]
         }
         options[:after_batch_import].call(self) if options[:after_batch_import].is_a?(Proc)
         result
       end
-      {:imported => csv_lines.count -  result.failed_instances.count , :failed => result.failed_instances}
+      {imported: csv_lines.count -  result.failed_instances.count , failed: result.failed_instances}
     end
 
     def prepare_headers(headers)
@@ -31,16 +31,9 @@ module ActiveAdminImport
     def initialize resource, file, options , extra_options = nil
       @resource = resource
       @file = file
-      @options = {
-          :col_sep => ',',
-          :batch_size => 1000,
-          :validate => true
-      }.merge(options)
+      @options = { col_sep: ',', batch_size: 1000, validate: true }.merge(options)
       @headers = []
-      @result= {
-        :failed => [],
-        :imported => 0
-      }
+      @result= {failed: [], imported: 0}
       @extra_options = extra_options
       @csv_options = @options.slice(:col_sep, :row_sep)
     end
