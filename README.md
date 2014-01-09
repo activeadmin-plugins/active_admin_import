@@ -33,30 +33,50 @@ https://github.com/zdennis/activerecord-import
 
 
 
-Default options values
-
-    :back => :import,
-    :col_sep => ',',
-    :template => "admin/import",
-    :template_object => ActiveAdminImport::Model.new,
-    :fetch_extra_options_from_params => [],
-    :resource_class => nil,
-    :resource_label => nil,
+#Default options values
+    
+    back: {action: :import},
+    csv_options: {},
+    template: "admin/import",
+    fetch_extra_options_from_params: [],
+    resource_class: config.resource_class,
+    resource_label:  config.resource_label,
+    plural_resource_label: config.plural_resource_label,
     
 
-#Example
+#Simple Example using mediate class
   
     ActiveAdmin.register Post  do
        active_admin_import :validate => false,
-                            :col_sep => ',',
-                            :back => :index ,
-                            :before_import => proc{|importer|  Model.delete_all},
+                            :csv_options => {:col_sep => ";" },
+                            :before_import => proc{ Post.delete_all},
                             :batch_size => 1000
     
     
     end
 
 
+
+#Example of importing to mediate table with insert select operation after import completion
+
+This config allows to replace data without downtime
+
+    ActiveAdmin.register Post  do
+        active_admin_import :validate => false,
+            :template_object => ActiveAdminImport::Model.new(
+                :csv_headers => ["body","title","author"]  # we can force headers if there are no ones in file
+            ),
+            :csv_options => {:col_sep => ";" },
+            :resource_class => ImportedPost ,  # we import data into another resource
+            :before_import => proc{ ImportedPost.delete_all },
+            :after_import => proc{
+                Post.transaction do
+                    Post.delete_all
+                    Post.connection.execute("INSERT INTO posts (SELECT * FROM import_posts)")
+                end
+            },
+            :back => proc { config.namespace.resource_for(Post).route_collection_path } # redirect to post index
+    end
 
 #Source Doc
 http://rubydoc.info/gems/active_admin_import/2.0.0/
