@@ -10,27 +10,28 @@ module ActiveAdminImport
 
     validate :correct_content_type
 
-    before_validation :unarchive_file, if: proc { |me| me.archive? }
+    before_validation :unarchive_file, if: proc { |me| me.archive? && me.allow_archive?  }
+    before_validation :encode_file, unless: proc { |me| me.archive? }, if: proc { |me| me.force_encoding? && me.file.present? }
 
     attr_reader :attributes
 
     def initialize(args={})
       @new_record = true
       @attributes = {}
-      assign_attributes(default_attributes.merge(args) , true)
+      assign_attributes(default_attributes.merge(args), true)
     end
 
     def assign_attributes(args = {}, new_record = false)
       @attributes.merge!(args)
       @new_record = new_record
-      args.each do |key, value|
+      args.keys.each do |key|
         key = key.to_sym
         #generate methods for instance object by attributes
         singleton_class.class_eval do
           define_method(key) { self.attributes[key] } unless method_defined? key
           define_method("#{key}=") { |new_value| @attributes[key] = new_value } unless method_defined? "#{key}="
         end
-      end
+      end if args.is_a?(Hash)
     end
 
     def read_attribute_for_validation(key)
@@ -38,11 +39,19 @@ module ActiveAdminImport
     end
 
     def default_attributes
-      {hint: '', file: nil, csv_headers: []}
+      {hint: '', file: nil, csv_headers: [], allow_archive: true, force_encoding: 'UTF-8'}
+    end
+
+    def allow_archive?
+      !!@allow_archive
     end
 
     def new_record?
       !!@new_record
+    end
+
+    def force_encoding?
+      !!@force_encoding
     end
 
     def to_hash
@@ -59,11 +68,20 @@ module ActiveAdminImport
 
     protected
 
+    def encode_file
+      data = File.read(file.tempfile.path).encode(@force_encoding, invalid: :replace, undef: :replace)
+      File.open(file.tempfile.path, 'w') do |f|
+          f.write(data)
+      end
+    end
+
     def unarchive_file
       Zip::ZipFile.open(self.file.tempfile.path) do |zip_file|
-         self.file = Tempfile.new("active-admin-import-unzipped")
-         self.file << zip_file.entries.select{|f| f.file? }.first.get_input_stream.read.encode( 'UTF-8', invalid: :replace, undef: :replace )
-         self.file.close
+        self.file = Tempfile.new("active-admin-import-unzipped")
+        data = zip_file.entries.select { |f| f.file? }.first.get_input_stream.read
+        data = data.encode(@force_encoding, invalid: :replace, undef: :replace) if self.force_encoding?
+        self.file << data
+        self.file.close
       end
     end
 

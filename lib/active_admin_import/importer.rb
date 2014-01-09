@@ -2,7 +2,7 @@ require 'csv'
 module ActiveAdminImport
   class Importer
 
-    attr_reader :resource, :file, :options, :extra_options, :result, :cycle_data, :headers, :csv_lines
+    attr_reader :resource,  :options, :result, :headers, :csv_lines, :model
 
     def store
       result = @resource.transaction do
@@ -27,19 +27,25 @@ module ActiveAdminImport
       @headers
     end
 
-    def initialize(resource, model, options, extra_options = nil)
+    def initialize(resource, model, options)
       @resource = resource
-      @file = model.file
+      @model = model
       @options = {batch_size: 1000, validate: true}.merge(options)
       @headers = model.respond_to?(:csv_headers) ? model.csv_headers : []
       @result= {failed: [], imported: 0}
-      @extra_options = extra_options
       if @options.has_key?(:col_sep) || @options.has_key?(:row_sep)
         ActiveSupport::Deprecation.warn "row_sep and col_sep options are deprecated, use csv_options to override default CSV options"
         @csv_options = @options.slice(:col_sep, :row_sep)
       else
         @csv_options = @options[:csv_options] || {}
       end
+      #override csv options from model if it respond_to csv_options
+      @csv_options =  model.csv_options if model.respond_to?(:csv_options)
+
+    end
+
+    def file
+      @model.file
     end
 
     def cycle(lines)

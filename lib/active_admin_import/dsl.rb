@@ -15,8 +15,7 @@ module ActiveAdminImport
     # +after_batch_import+:: proc for after each batch action, called with  importer object
     # +on_duplicate_key_update+:: an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE ability.
     # +timestamps+::  true|false, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
-    # +ignore+::  true|false, tells activerecord-import toto use MySQL's INSERT IGNORE ability
-    # +fetch_extra_options_from_params+:: params values available in callbacks in importer.extra_options hash
+    # +ignore+::  true|false, tells activerecord-import to use MySQL's INSERT IGNORE ability
     # +template+:: custom template rendering
     # +template_object+:: object passing to view
     # +resource_class+:: resource class name, override to import to another table (default config.resource_class)
@@ -56,8 +55,7 @@ module ActiveAdminImport
         
         importer = Importer.new(options[:resource_class],
                                 @active_admin_import_model,
-                                options,
-                                (params[params_key] || {}).to_hash.slice(*options[:fetch_extra_options_from_params])
+                                options
         )
         result = importer.import
         model_name =  options[:resource_label].downcase
