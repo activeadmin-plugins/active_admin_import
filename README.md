@@ -1,6 +1,9 @@
-# ActiveAdminImport
+# ActiveAdminImport 
 The most fastest and efficient CSV import for Active Admin (based on activerecord-import gem) 
 with support of validations and bulk inserts 
+
+
+Current master works with AA 0-6-stable branch
 
 #Why yet another import for ActiveAdmin ? Now with activerecord-import ....
 
