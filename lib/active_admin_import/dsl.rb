@@ -4,7 +4,9 @@ module ActiveAdminImport
     #
     # Options
     # +back+:: resource action to redirect after processing
-    # +col_sep+:: column separator used for CSV parsing
+    # +col_sep+:: column separator used for CSV parsing (deprecated)
+    # +row_sep+:: column separator used for CSV parsing  (deprecated)
+    # +csv_options+:: hash to override default CSV options
     # +validate+:: true|false, means perfoem validations or not
     # +batch_size+:: integer value of max  record count inserted by 1 query/transaction
     # +before_import+:: proc for before import action, hook called with  importer object
@@ -13,27 +15,26 @@ module ActiveAdminImport
     # +after_batch_import+:: proc for after each batch action, called with  importer object
     # +on_duplicate_key_update+:: an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE ability.
     # +timestamps+::  true|false, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
-    # +ignore+::  true|false, tells activerecord-import toto use MySQL's INSERT IGNORE ability
-    # +fetch_extra_options_from_params+:: params values available in callbacks in importer.extra_options hash
+    # +ignore+::  true|false, tells activerecord-import to use MySQL's INSERT IGNORE ability
     # +template+:: custom template rendering
     # +template_object+:: object passing to view
-    # +resource_class+:: resource class name
-    # +resource_label+:: resource label value
+    # +resource_class+:: resource class name, override to import to another table (default config.resource_class)
+    # +resource_label+:: resource label value (default config.resource_label)
+    # +plural_resource_label+:: plaralized resource label value (default config.plural_resource_label)
     #
     def active_admin_import options = {}
       default_options = {
           back: {action: :import},
-          col_sep: ',',
+          csv_options: {},
           template: "admin/import",
-          template_object: ActiveAdminImport::Model.new(file: nil),
           fetch_extra_options_from_params: [],
-          resource_class: nil,
-          resource_label: nil,
+          resource_class: config.resource_class,
+          resource_label:  config.resource_label,
+          plural_resource_label: config.plural_resource_label,
           headers_rewrites: {}
-
-
       }
-      options = default_options.merge(options)
+      options = default_options.deep_merge(options)
+      options[:template_object] =  ActiveAdminImport::Model.new if options[:template_object].blank?
       params_key = ActiveModel::Naming.param_key(options[:template_object])
 
       collection_action :import, method: :get do
@@ -42,26 +43,23 @@ module ActiveAdminImport
       end
 
       action_item only: :index do
-        link_to(I18n.t('active_admin_import.import_model',
-                model: (options[:resource_label] || active_admin_config.resource_name)),
-                action: 'import')
+        link_to(I18n.t('active_admin_import.import_model', model: options[:resource_label]), action: 'import')
       end
 
       collection_action :do_import, method: :post do
 
         @active_admin_import_model =  options[:template_object]
-        @active_admin_import_model.assign_attributes(params[params_key].try(:deep_symbolize_keys))
+        @active_admin_import_model.assign_attributes(params[params_key].try(:deep_symbolize_keys) || {})
         #go back to form
-        return render template: options[:template] unless   @active_admin_import_model.valid?
+        return render template: options[:template] unless @active_admin_import_model.valid?
         
-        importer = Importer.new((options[:resource_class] || active_admin_config.resource_class),
-                                @active_admin_import_model.file,
-                                options,
-                                params[params_key].to_hash.slice(*options[:fetch_extra_options_from_params])
+        importer = Importer.new(options[:resource_class],
+                                @active_admin_import_model,
+                                options
         )
         result = importer.import
-        model_name =  (options[:resource_label] || active_admin_config.resource_label).downcase
-        plural_model_name = (options[:resource_label].present? ? options[:resource_label].to_s.pluralize : active_admin_config.plural_resource_label).downcase
+        model_name =  options[:resource_label].downcase
+        plural_model_name = options[:resource_label].downcase
         flash[:notice] =  I18n.t('active_admin_import.imported',
                                     count: result[:imported].to_i,
                                     model: model_name,

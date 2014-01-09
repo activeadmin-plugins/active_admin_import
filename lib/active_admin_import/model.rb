@@ -3,29 +3,35 @@ module ActiveAdminImport
     extend ActiveModel::Naming
     include ActiveModel::Conversion
     include ActiveModel::Validations
+    include ActiveModel::Validations::Callbacks
 
     validates :file, presence: {message: Proc.new { I18n.t('active_admin_import.no_file_error') }},
-              if: proc { |me| me.assigned? }
+              unless: proc { |me| me.new_record? }
 
     validate :correct_content_type
+
+    before_validation :uncompress_file, if: proc { |me| me.archive? && me.allow_archive?  }
+    before_validation :encode_file,  if: proc { |me| me.force_encoding? && me.file.present? }
 
     attr_reader :attributes
 
     def initialize(args={})
-      assign_attributes default_attributes.merge(args)
+      @new_record = true
+      @attributes = {}
+      assign_attributes(default_attributes.merge(args), true)
     end
 
-    def assign_attributes(attributes = {})
-      @assigned = true
-      @attributes = (@attributes || {}).merge(attributes)
-      attributes.each do |key, value|
+    def assign_attributes(args = {}, new_record = false)
+      @attributes.merge!(args)
+      @new_record = new_record
+      args.keys.each do |key|
         key = key.to_sym
         #generate methods for instance object by attributes
         singleton_class.class_eval do
           define_method(key) { self.attributes[key] } unless method_defined? key
           define_method("#{key}=") { |new_value| @attributes[key] = new_value } unless method_defined? "#{key}="
         end
-      end
+      end if args.is_a?(Hash)
     end
 
     def read_attribute_for_validation(key)
@@ -33,18 +39,62 @@ module ActiveAdminImport
     end
 
     def default_attributes
-      {hint: '', file: nil}
+      {hint: '', file: nil, csv_headers: [], allow_archive: true, force_encoding: 'UTF-8'}
     end
 
-    def assigned?
-      @assigned
+    def allow_archive?
+      !!@attributes[:allow_archive]
+    end
+
+    def new_record?
+      !!@new_record
+    end
+
+    def force_encoding?
+      !!@attributes[:force_encoding]
     end
 
     def to_hash
       @attributes
     end
 
-    def allowed_types
+    def persisted?
+      false
+    end
+
+    def archive?
+      file_type == 'application/zip'
+    end
+
+    protected
+
+    def file_path
+      if file.is_a? ActionDispatch::Http::UploadedFile
+        file.tempfile.path
+      else
+        file.path
+      end
+    end
+
+    def encode_file
+      data = File.read(file_path).encode(force_encoding, invalid: :replace, undef: :replace)
+      File.open(file_path, 'w') do |f|
+          f.write(data)
+      end
+    end
+
+    def uncompress_file
+      Zip::ZipFile.open(file_path) do |zip_file|
+        self.file = Tempfile.new("active-admin-import-unzipped")
+        data = zip_file.entries.select { |f| f.file? }.first.get_input_stream.read
+        data = data.encode(force_encoding, invalid: :replace, undef: :replace) if self.force_encoding?
+        self.file << data
+        self.file.close
+      end
+    end
+
+
+    def csv_allowed_types
       [
           'text/csv',
           'text/x-csv',
@@ -55,15 +105,17 @@ module ActiveAdminImport
       ]
     end
 
+
     def correct_content_type
-      if @attributes[:file].present?
-        errors.add(:file, I18n.t('active_admin_import.file_format_error')) unless allowed_types.include? file.try(:content_type).try(:chomp)
+      unless file.blank? || file.is_a?(Tempfile)
+        errors.add(:file, I18n.t('active_admin_import.file_format_error')) unless csv_allowed_types.include? file_type
       end
     end
 
-    def persisted?
-      false
+    def file_type
+      file.try(:content_type).try(:chomp)
     end
-
   end
 end
+
+

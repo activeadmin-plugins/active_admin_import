@@ -15,11 +15,9 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version = ActiveAdminImport::VERSION
 
-  gem.add_runtime_dependency 'activerecord-import', '~> 0.3.1'
-
+  gem.add_runtime_dependency 'activerecord-import', '~> 0.4.1'
   gem.add_runtime_dependency 'activeadmin', '~> 0.6.0'
-#  gem.add_development_dependency "rspec" ,'~> 2.14'
-#  gem.add_development_dependency "sass-rails"
-#  gem.add_development_dependency 'rspec-rails'
+  gem.add_runtime_dependency 'zip', '>= 1.0.0'
+
 
 end
