@@ -8,15 +8,24 @@ https://github.com/gregbell/active_admin
 
 https://github.com/zdennis/activerecord-import
 
+#Why yet another import for ActiveAdmin ? Now with activerecord-import ....
 
-#Features
+    "Because plain-vanilla, out-of-the-box ActiveRecord doesn’t provide support for inserting large amounts of data efficiently"
+
+cool features of activerecord-import
+
+    activerecord-import can perform validations (fast)
+    activerecord-import can perform on duplicate key updates (requires mysql)
+
+
+#So active_admin_import features
 
     Force file encoding to UTF-8 by default  
     Support importing with ZIP file
     Two step importing (see example2)
     CSV options
     Ability to prepend CSV headers automatically
-    Batch import (activerecord-import)
+    Bulk import (activerecord-import)
     Ability to customize template 
     Callbacks support
     and more ....
