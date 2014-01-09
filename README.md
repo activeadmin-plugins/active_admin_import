@@ -2,12 +2,6 @@
 The most fastest and efficient CSV import for Active Admin (based on activerecord-import gem) 
 with support of validations and bulk inserts 
 
-
-#Links
-https://github.com/gregbell/active_admin
-
-https://github.com/zdennis/activerecord-import
-
 #Why yet another import for ActiveAdmin ? Now with activerecord-import ....
 
     "Because plain-vanilla, out-of-the-box ActiveRecord doesn’t provide support for inserting large amounts of data efficiently"
@@ -20,7 +14,7 @@ cool features of activerecord-import
 
 #So active_admin_import features
 
-    Force file encoding to UTF-8 by default  
+    Encoding handling
     Support importing with ZIP file
     Two step importing (see example2)
     CSV options
@@ -78,15 +72,12 @@ cool features of activerecord-import
 
 
 
-#Example2 of importing to mediate table with insert select operation after import completion
+#Example2 Importing to mediate table with insert select operation after import completion
 
 This config allows to replace data without downtime
 
     ActiveAdmin.register Post  do
         active_admin_import :validate => false,
-            :template_object => ActiveAdminImport::Model.new(
-                :csv_headers => ["body","title","author"]  # we can force headers if there are no ones in file
-            ),
             :csv_options => {:col_sep => ";" },
             :resource_class => ImportedPost ,  # we import data into another resource
             :before_import => proc{ ImportedPost.delete_all },
@@ -99,6 +90,36 @@ This config allows to replace data without downtime
             :back => proc { config.namespace.resource_for(Post).route_collection_path } # redirect to post index
     end
 
+
+
+#Example3 Importing file without headers, but we always know file format, so we can predefine it
+
+    ActiveAdmin.register Post  do
+        active_admin_import :validate => true,
+            :template_object => ActiveAdminImport::Model.new(
+                :hint => "file will be imported with such header format: 'body','title','author'",
+                :csv_headers => ["body","title","author"] 
+            )
+    end
+
+ 
+#Example4 Importing without forcing to UTF-8 and disallow archives
+
+    ActiveAdmin.register Post  do
+        active_admin_import :validate => true,
+            :template_object => ActiveAdminImport::Model.new(
+                :hint => "file will be encoded to ISO-8859-1",
+                :force_encoding => "ISO-8859-1",
+                :allow_archive => false  
+            )
+    end
+
+
+#Links
+https://github.com/gregbell/active_admin
+
+https://github.com/zdennis/activerecord-import
+
 #Source Doc
-http://rubydoc.info/gems/active_admin_import/2.0.0/
+http://rubydoc.info/gems/active_admin_import/2.1.0/
 
