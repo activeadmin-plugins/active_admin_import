@@ -3,22 +3,27 @@ module ActiveAdminImport
     extend ActiveModel::Naming
     include ActiveModel::Conversion
     include ActiveModel::Validations
+    include ActiveModel::Validations::Callbacks
 
     validates :file, presence: {message: Proc.new { I18n.t('active_admin_import.no_file_error') }},
-              if: proc { |me| me.assigned? }
+              unless: proc { |me| me.new_record? }
 
     validate :correct_content_type
+
+    before_validation :unarchive_file, if: proc { |me| me.archive? }
 
     attr_reader :attributes
 
     def initialize(args={})
-      assign_attributes default_attributes.merge(args)
+      @new_record = true
+      @attributes = {}
+      assign_attributes(default_attributes.merge(args) , true)
     end
 
-    def assign_attributes(attributes = {})
-      @assigned = true
-      @attributes = (@attributes || {}).merge(attributes)
-      attributes.each do |key, value|
+    def assign_attributes(args = {}, new_record = false)
+      @attributes.merge!(args)
+      @new_record = new_record
+      args.each do |key, value|
         key = key.to_sym
         #generate methods for instance object by attributes
         singleton_class.class_eval do
@@ -33,18 +38,37 @@ module ActiveAdminImport
     end
 
     def default_attributes
-      {hint: '', file: nil}
+      {hint: '', file: nil, csv_headers: []}
     end
 
-    def assigned?
-      @assigned
+    def new_record?
+      !!@new_record
     end
 
     def to_hash
       @attributes
     end
 
-    def allowed_types
+    def persisted?
+      false
+    end
+
+    def archive?
+      file_type == 'application/zip'
+    end
+
+    protected
+
+    def unarchive_file
+      Zip::ZipFile.open(self.file.tempfile.path) do |zip_file|
+         self.file = Tempfile.new("active-admin-import-unzipped")
+         self.file << zip_file.entries.select{|f| f.file? }.first.get_input_stream.read.encode( 'UTF-8', invalid: :replace, undef: :replace )
+         self.file.close
+      end
+    end
+
+
+    def csv_allowed_types
       [
           'text/csv',
           'text/x-csv',
@@ -55,15 +79,17 @@ module ActiveAdminImport
       ]
     end
 
+
     def correct_content_type
-      if @attributes[:file].present?
-        errors.add(:file, I18n.t('active_admin_import.file_format_error')) unless allowed_types.include? file.try(:content_type).try(:chomp)
+      unless file.blank? || file.is_a?(Tempfile)
+        errors.add(:file, I18n.t('active_admin_import.file_format_error')) unless csv_allowed_types.include? file_type
       end
     end
 
-    def persisted?
-      false
+    def file_type
+      file.try(:content_type).try(:chomp)
     end
-
   end
 end
+
+
