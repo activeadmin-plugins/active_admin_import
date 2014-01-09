@@ -5,6 +5,19 @@ with support of validations and bulk inserts
 
 Current master works with AA 0-6-stable branch
 
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+	gem "active_admin_import" , '2.1.0.rc2'
+	
+And then execute:
+
+    $ bundle
+
+
+
 #Why yet another import for ActiveAdmin ? Now with activerecord-import ....
 
     "Because plain-vanilla, out-of-the-box ActiveRecord doesn’t provide support for inserting large amounts of data efficiently"
