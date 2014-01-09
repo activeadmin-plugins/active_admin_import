@@ -10,8 +10,8 @@ module ActiveAdminImport
 
     validate :correct_content_type
 
-    before_validation :unarchive_file, if: proc { |me| me.archive? && me.allow_archive?  }
-    before_validation :encode_file, unless: proc { |me| me.archive? }, if: proc { |me| me.force_encoding? && me.file.present? }
+    before_validation :uncompress_file, if: proc { |me| me.archive? && me.allow_archive?  }
+    before_validation :encode_file,  if: proc { |me| me.force_encoding? && me.file.present? }
 
     attr_reader :attributes
 
@@ -43,7 +43,7 @@ module ActiveAdminImport
     end
 
     def allow_archive?
-      !!@allow_archive
+      !!@attributes[:allow_archive]
     end
 
     def new_record?
@@ -51,7 +51,7 @@ module ActiveAdminImport
     end
 
     def force_encoding?
-      !!@force_encoding
+      !!@attributes[:force_encoding]
     end
 
     def to_hash
@@ -68,18 +68,26 @@ module ActiveAdminImport
 
     protected
 
+    def file_path
+      if file.is_a? ActionDispatch::Http::UploadedFile
+        file.tempfile.path
+      else
+        file.path
+      end
+    end
+
     def encode_file
-      data = File.read(file.tempfile.path).encode(@force_encoding, invalid: :replace, undef: :replace)
-      File.open(file.tempfile.path, 'w') do |f|
+      data = File.read(file_path).encode(force_encoding, invalid: :replace, undef: :replace)
+      File.open(file_path, 'w') do |f|
           f.write(data)
       end
     end
 
-    def unarchive_file
-      Zip::ZipFile.open(self.file.tempfile.path) do |zip_file|
+    def uncompress_file
+      Zip::ZipFile.open(file_path) do |zip_file|
         self.file = Tempfile.new("active-admin-import-unzipped")
         data = zip_file.entries.select { |f| f.file? }.first.get_input_stream.read
-        data = data.encode(@force_encoding, invalid: :replace, undef: :replace) if self.force_encoding?
+        data = data.encode(force_encoding, invalid: :replace, undef: :replace) if self.force_encoding?
         self.file << data
         self.file.close
       end
