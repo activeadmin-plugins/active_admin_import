@@ -134,11 +134,43 @@ This config allows to replace data without downtime
     end
     
     
-#Example6 dynamic CSV options
+#Example6 dynamic CSV options, template overriding
+
+1) put overrided template to app/views/import.html.erb
+
+
+    <p>
+      <small> <%= raw(@active_admin_import_model.hint) %> </small>
+    </p>
+    <%= semantic_form_for @active_admin_import_model, url: {action: :do_import}, html: {multipart: true} do |f| %>
+        <%= f.inputs do %>
+            <%= f.input :file, as: :file %>
+        <% end %>
+        <%= f.inputs "CSV options", :for => [:csv_options, OpenStruct.new(@active_admin_import_model.csv_options)] do |csv| %>
+            <% csv.with_options :input_html => {:style => 'width:40px;'} do |opts| %>
+                <%= opts.input :col_sep %>
+                <%= opts.input :row_sep %>
+                <%= opts.input :quote_char %>
+            <% end %>
+        <% end %>
     
-    #soon
+        <%= f.actions do %>
+            <%= f.action :submit, label: t("active_admin_import.import_btn"), button_html: {disable_with: t("active_admin_import.import_btn_disabled")} %>
+        <% end %>
+    <% end %>
+    
 
 
+2) call method with following parameters
+
+    ActiveAdmin.register Post  do
+        active_admin_import :validate => false,
+                          :template => 'import' ,
+                          :template_object => ActiveAdminImport::Model.new(
+                              :hint => "specify CSV options"
+                              :csv_options => {:col_sep => ";", :row_sep => nil, :quote_char => nil} 
+                          )
+    end                      
 
 
 #Links
