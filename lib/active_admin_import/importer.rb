@@ -41,6 +41,7 @@ module ActiveAdminImport
       end
       #override csv options from model if it respond_to csv_options
       @csv_options =  model.csv_options if model.respond_to?(:csv_options)
+      @csv_options.reject! {| key, value | value.blank? }
 
     end
 
