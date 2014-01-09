@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'activerecord-import',  '~> 0.4', '>= 0.4.1'
   gem.add_runtime_dependency 'activeadmin', '~> 0.6', '>= 0.6.0'
-  gem.add_runtime_dependency 'zip', '~> 1.0', '>= 1.0.0'
+  gem.add_runtime_dependency 'rubyzip', '~> 1.0', '>= 1.0.0'
 
 
 end
