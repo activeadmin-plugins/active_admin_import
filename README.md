@@ -9,6 +9,18 @@ https://github.com/gregbell/active_admin
 https://github.com/zdennis/activerecord-import
 
 
+#Features
+
+    Force file encoding to UTF-8 by default  
+    Support importing with ZIP file
+    Two step importing (see example2)
+    CSV options
+    Ability to prepend CSV headers automatically
+    Batch import (activerecord-import)
+    Ability to customize template 
+    Callbacks support
+    and more ....
+
 #Options
 
     # +back+:: resource action to redirect after processing
@@ -44,7 +56,7 @@ https://github.com/zdennis/activerecord-import
     plural_resource_label: config.plural_resource_label,
     
 
-#Simple Example using mediate class
+#Example1 
   
     ActiveAdmin.register Post  do
        active_admin_import :validate => false,
@@ -57,7 +69,7 @@ https://github.com/zdennis/activerecord-import
 
 
 
-#Example of importing to mediate table with insert select operation after import completion
+#Example2 of importing to mediate table with insert select operation after import completion
 
 This config allows to replace data without downtime
 
