@@ -84,7 +84,7 @@ module ActiveAdminImport
     end
 
     def uncompress_file
-      Zip::ZipFile.open(file_path) do |zip_file|
+      Zip::File.open(file_path) do |zip_file|
         self.file = Tempfile.new("active-admin-import-unzipped")
         data = zip_file.entries.select { |f| f.file? }.first.get_input_stream.read
         data = data.encode(force_encoding, invalid: :replace, undef: :replace) if self.force_encoding?

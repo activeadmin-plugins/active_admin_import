@@ -1,8 +1,26 @@
-# ActiveAdminImport
+# ActiveAdminImport 
 The most fastest and efficient CSV import for Active Admin (based on activerecord-import gem) 
 with support of validations and bulk inserts 
 
-#Why yet another import for ActiveAdmin ? Now with activerecord-import ....
+
+Important! Current master works and tested with with AA 0-6-stable branch
+
+
+#Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem "active_admin_import" , '2.1.0.rc3'
+```
+	
+And then execute:
+
+    $ bundle
+
+
+
+Why yet another import for ActiveAdmin ? Now with activerecord-import ....
 
     "Because plain-vanilla, out-of-the-box ActiveRecord doesn’t provide support for inserting large amounts of data efficiently"
 
@@ -12,7 +30,7 @@ cool features of activerecord-import
     activerecord-import can perform on duplicate key updates (requires mysql)
 
 
-#So active_admin_import features
+So active_admin_import features
 
     Encoding handling
     Support importing with ZIP file
@@ -24,7 +42,7 @@ cool features of activerecord-import
     Callbacks support
     and more ....
 
-#Options
+Options
 
     # +back+:: resource action to redirect after processing
     # +csv_options+:: hash with column separator, row separator, etc 
@@ -47,8 +65,9 @@ cool features of activerecord-import
 
 
 
-#Default options values
-    
+Default options values
+
+```ruby    
     back: {action: :import},
     csv_options: {},
     template: "admin/import",
@@ -56,10 +75,11 @@ cool features of activerecord-import
     resource_class: config.resource_class,
     resource_label:  config.resource_label,
     plural_resource_label: config.plural_resource_label,
-    
+```    
 
-#Example1 
-  
+Example1 
+
+```ruby  
     ActiveAdmin.register Post  do
        active_admin_import :validate => false,
                             :csv_options => {:col_sep => ";" },
@@ -68,13 +88,14 @@ cool features of activerecord-import
     
     
     end
+```
 
 
-
-#Example2 Importing to mediate table with insert select operation after import completion
+Example2 Importing to mediate table with insert select operation after import completion
 
 This config allows to replace data without downtime
 
+```ruby
     ActiveAdmin.register Post  do
         active_admin_import :validate => false,
             :csv_options => {:col_sep => ";" },
@@ -88,11 +109,12 @@ This config allows to replace data without downtime
             },
             :back => proc { config.namespace.resource_for(Post).route_collection_path } # redirect to post index
     end
+```
 
 
+Example3 Importing file without headers, but we always know file format, so we can predefine it
 
-#Example3 Importing file without headers, but we always know file format, so we can predefine it
-
+```ruby
     ActiveAdmin.register Post  do
         active_admin_import :validate => true,
             :template_object => ActiveAdminImport::Model.new(
@@ -100,10 +122,12 @@ This config allows to replace data without downtime
                 :csv_headers => ["body","title","author"] 
             )
     end
-
+```
  
-#Example4 Importing without forcing to UTF-8 and disallow archives
+Example4 Importing without forcing to UTF-8 and disallow archives
 
+
+```ruby
     ActiveAdmin.register Post  do
         active_admin_import :validate => true,
             :template_object => ActiveAdminImport::Model.new(
@@ -112,11 +136,13 @@ This config allows to replace data without downtime
                 :allow_archive => false  
             )
     end
+```
 
 
+Example5 Callbacks for each bulk insert iteration
 
-#Example5 Callbacks for each bulk insert iteration
 
+```ruby
     ActiveAdmin.register Post  do
         active_admin_import :validate => true,
         :before_batch_import => proc { |import|
@@ -129,15 +155,16 @@ This config allows to replace data without downtime
            import.model #template_object instance
         },
         :before_batch_import => proc{ |import|
-        
+           #the same
         }
     end
+```    
     
-    
-#Example6 dynamic CSV options, template overriding
+Example6 dynamic CSV options, template overriding
 
 1) put overrided template to app/views/import.html.erb
 
+```erb
 
     <p>
       <small> <%= raw(@active_admin_import_model.hint) %> </small>
@@ -159,10 +186,11 @@ This config allows to replace data without downtime
         <% end %>
     <% end %>
     
-
+```
 
 2) call method with following parameters
 
+```ruby
     ActiveAdmin.register Post  do
         active_admin_import :validate => false,
                           :template => 'import' ,
@@ -171,7 +199,7 @@ This config allows to replace data without downtime
                               :csv_options => {:col_sep => ";", :row_sep => nil, :quote_char => nil} 
                           )
     end                      
-
+```
 
 #Links
 https://github.com/gregbell/active_admin
