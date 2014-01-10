@@ -10,7 +10,7 @@ Current master works with AA 0-6-stable branch
 
 Add this line to your application's Gemfile:
 
-	gem "active_admin_import" , '2.1.0.rc2'
+	gem "active_admin_import" , '2.1.0.rc3'
 	
 And then execute:
 
