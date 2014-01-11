@@ -168,7 +168,7 @@ Example6 dynamic CSV options, template overriding
 ```erb
 
     <p>
-      <small> <%= raw(@active_admin_import_model.hint) %> </small>
+       <%= raw(@active_admin_import_model.hint) %> 
     </p>
     <%= semantic_form_for @active_admin_import_model, url: {action: :do_import}, html: {multipart: true} do |f| %>
         <%= f.inputs do %>
