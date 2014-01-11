@@ -40,6 +40,7 @@ So active_admin_import features
     Bulk import (activerecord-import)
     Ability to customize template 
     Callbacks support
+    Zip files import
     and more ....
 
 Options
