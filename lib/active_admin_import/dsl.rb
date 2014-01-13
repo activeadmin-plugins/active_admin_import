@@ -27,14 +27,13 @@ module ActiveAdminImport
           back: {action: :import},
           csv_options: {},
           template: "admin/import",
-          fetch_extra_options_from_params: [],
           resource_class: config.resource_class,
-          resource_label:  config.resource_label,
+          resource_label: config.resource_label,
           plural_resource_label: config.plural_resource_label,
           headers_rewrites: {}
       }
       options = default_options.deep_merge(options)
-      options[:template_object] =  ActiveAdminImport::Model.new if options[:template_object].blank?
+      options[:template_object] = ActiveAdminImport::Model.new if options[:template_object].blank?
       params_key = ActiveModel::Naming.param_key(options[:template_object])
 
       collection_action :import, method: :get do
@@ -48,29 +47,34 @@ module ActiveAdminImport
 
       collection_action :do_import, method: :post do
 
-        @active_admin_import_model =  options[:template_object]
+        @active_admin_import_model = options[:template_object]
         @active_admin_import_model.assign_attributes(params[params_key].try(:deep_symbolize_keys) || {})
         #go back to form
         return render template: options[:template] unless @active_admin_import_model.valid?
-        
+
         importer = Importer.new(options[:resource_class],
                                 @active_admin_import_model,
                                 options
         )
-        result = importer.import
-        model_name =  options[:resource_label].downcase
-        plural_model_name = options[:resource_label].downcase
-        flash[:notice] =  I18n.t('active_admin_import.imported',
-                                    count: result[:imported].to_i,
-                                    model: model_name,
-                                    plural_model: plural_model_name
-                                ) if result[:imported].to_i > 0
+        begin
+          result = importer.import
+          model_name = options[:resource_label].downcase
+          plural_model_name = options[:resource_label].downcase
+          flash[:notice] = I18n.t('active_admin_import.imported',
+                                  count: result[:imported].to_i,
+                                  model: model_name,
+                                  plural_model: plural_model_name
+          ) if result[:imported].to_i > 0
 
-        flash[:error] =  I18n.t('active_admin_import.failed',
-                                    count: result[:failed].count,
-                                    model: model_name,
-                                    plural_model: plural_model_name
-                                ) if  result[:failed].count > 0
+          flash[:error] = I18n.t('active_admin_import.failed',
+                                 count: result[:failed].count,
+                                 model: model_name,
+                                 plural_model: plural_model_name
+          ) if  result[:failed].count > 0
+        rescue ActiveRecord::Import::MissingColumnError => e
+           flash[:error] = e.message
+        end
+
 
         redirect_to options[:back]
       end

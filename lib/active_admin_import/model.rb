@@ -9,6 +9,8 @@ module ActiveAdminImport
               unless: proc { |me| me.new_record? }
 
     validate :correct_content_type
+    validate :file_contents_present
+
 
     before_validation :uncompress_file, if: proc { |me| me.archive? && me.allow_archive?  }
     before_validation :encode_file,  if: proc { |me| me.force_encoding? && me.file.present? }
@@ -112,8 +114,16 @@ module ActiveAdminImport
       end
     end
 
+    def file_contents_present
+      errors.add(:file, I18n.t('active_admin_import.file_empty_error')) if File.zero?(file_path)
+    end
+
     def file_type
-      file.try(:content_type).try(:chomp)
+      if file.is_a? ActionDispatch::Http::UploadedFile
+        file.content_type.chomp
+      else
+        ''
+      end
     end
   end
 end
