@@ -111,9 +111,13 @@ module ActiveAdminImport
         errors.add(:file, I18n.t('active_admin_import.file_format_error')) unless csv_allowed_types.include? file_type
       end
     end
-
+    
     def file_type
-      file.try(:content_type).try(:chomp)
+      if file.is_a? ActionDispatch::Http::UploadedFile
+        file.content_type.chomp
+      else
+        ''
+      end
     end
   end
 end
