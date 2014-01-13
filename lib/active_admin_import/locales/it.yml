@@ -4,6 +4,7 @@ it:
   active_admin_import:
     file_format_error: "Puoi importare solo CSV conformi"
     no_file_error: "Per favore, seleziona un file da importare"
+    file_empty_error: "Non è possibile importare file vuoto"
     imported:
       one: "Importato 1 %{model} con successo"
       other: "Importati %{count} %{plural_model} con successo"
