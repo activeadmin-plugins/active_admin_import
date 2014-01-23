@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.test_files = gem.files.grep(%r{^(test|spec|features)/})
   gem.name = "active_admin_import"
   gem.require_paths = ["lib"]
-  gem.version = ActiveAdminImport::VERSION << '.rc4'
+  gem.version = ActiveAdminImport::VERSION << '.rc5'
 
   gem.add_runtime_dependency 'activerecord-import',  '~> 0.4', '>= 0.4.1'
   gem.add_runtime_dependency 'activeadmin', '>= 0.6.0'

@@ -3,7 +3,7 @@ The most fastest and efficient CSV import for Active Admin (based on activerecor
 with support of validations and bulk inserts 
 
 
-Important! Current master works and tested with with AA 0-6-stable branch
+Should work with both AA 0.6 and 1.0.0
 
 
 #Installation
@@ -11,7 +11,7 @@ Important! Current master works and tested with with AA 0-6-stable branch
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "active_admin_import" , '2.1.0.rc4'
+gem "active_admin_import" , '2.1.0.rc5'
 ```
 	
 And then execute:
