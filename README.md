@@ -33,7 +33,6 @@ cool features of activerecord-import
 So active_admin_import features
 
     Encoding handling
-    Support importing with ZIP file
     Two step importing (see example2)
     CSV options
     Ability to prepend CSV headers automatically
