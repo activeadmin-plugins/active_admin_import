@@ -8,8 +8,8 @@ module ActiveAdminImport
     validates :file, presence: {message: Proc.new { I18n.t('active_admin_import.no_file_error') }},
               unless: proc { |me| me.new_record? }
 
-    validate :correct_content_type
-    validate :file_contents_present
+    validate :correct_content_type, if: proc { |me| me.file.present? }
+    validate :file_contents_present, if: proc { |me| me.file.present? }
 
 
     before_validation :uncompress_file, if: proc { |me| me.archive? && me.allow_archive?  }
