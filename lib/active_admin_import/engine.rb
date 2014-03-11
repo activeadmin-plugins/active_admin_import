@@ -1,7 +1,7 @@
 require 'rails'
 
 module ActiveAdminImport
-  class Engine < Rails::Engine
+  class Engine < ::Rails::Engine
 
     config.mount_at = '/'
 
