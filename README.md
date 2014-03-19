@@ -209,3 +209,7 @@ https://github.com/zdennis/activerecord-import
 #Source Doc
 http://rubydoc.info/gems/active_admin_import/2.1.0/
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Fivell/active_admin_import/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
