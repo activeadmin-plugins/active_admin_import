@@ -11,7 +11,7 @@ Should work with both AA 0.6 and 1.0.0
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "active_admin_import" , '2.1.0'
+gem "active_admin_import" , '2.1.1'
 ```
 	
 And then execute:
@@ -207,9 +207,8 @@ https://github.com/gregbell/active_admin
 https://github.com/zdennis/activerecord-import
 
 #Source Doc
-http://rubydoc.info/gems/active_admin_import/2.1.0/
+http://rubydoc.info/gems/active_admin_import/2.1.1/
 
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Fivell/active_admin_import/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
