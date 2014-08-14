@@ -37,15 +37,20 @@ module ActiveAdminImport
       params_key = ActiveModel::Naming.param_key(options[:template_object])
 
       collection_action :import, method: :get do
+        authorize!(ActiveAdmin::Auth::CREATE, active_admin_config.resource_class)
+
         @active_admin_import_model = options[:template_object]
         render template: options[:template]
       end
 
       action_item only: :index do
-        link_to(I18n.t('active_admin_import.import_model', model: options[:resource_label]), action: 'import')
+        if authorized?(ActiveAdmin::Auth::CREATE, active_admin_config.resource_class)
+          link_to(I18n.t('active_admin_import.import_model', model: options[:resource_label]), action: 'import')
+        end
       end
 
       collection_action :do_import, method: :post do
+        authorize!(ActiveAdmin::Auth::CREATE, active_admin_config.resource_class)
 
         @active_admin_import_model = options[:template_object]
         @active_admin_import_model.assign_attributes(params[params_key].try(:deep_symbolize_keys) || {})
