@@ -154,7 +154,7 @@ Example5 Callbacks for each bulk insert iteration
            import.csv_lines #lines to import
            import.model #template_object instance
         },
-        :before_batch_import => proc{ |import|
+        :after_batch_import => proc{ |import|
            #the same
         }
     end
