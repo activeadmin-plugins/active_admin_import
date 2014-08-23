@@ -5,5 +5,6 @@ require 'active_admin_import/engine'
 require 'active_admin_import/dsl'
 require 'active_admin_import/importer'
 require 'active_admin_import/model'
+require 'active_admin_import/authorization'
 ::ActiveAdmin::DSL.send(:include, ActiveAdminImport::DSL)
 
