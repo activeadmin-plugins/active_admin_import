@@ -44,7 +44,6 @@ module ActiveAdminImport
       end
 
       action_item only: :index do
-          link_to(I18n.t('active_admin_import.import_model', model: options[:resource_label]), action: 'import')
         if authorized?(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
           link_to(I18n.t('active_admin_import.import_model', model: options[:resource_label]), action: 'import')
         end
