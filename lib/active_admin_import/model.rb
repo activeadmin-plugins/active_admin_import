@@ -23,6 +23,7 @@ module ActiveAdminImport
       assign_attributes(default_attributes.merge(args), true)
     end
 
+
     def assign_attributes(args = {}, new_record = false)
       @attributes.merge!(args)
       @new_record = new_record

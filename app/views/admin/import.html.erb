@@ -1,5 +1,5 @@
-<p>
-  <small> <%= raw(@active_admin_import_model.hint) %> </small>
+<p class="active_admin_import_hint">
+   <%= raw(@active_admin_import_model.hint) %> 
 </p>
 <%= semantic_form_for @active_admin_import_model, url: {action: :do_import}, html: {multipart: true} do |f| %>
     <%= f.inputs do %>
