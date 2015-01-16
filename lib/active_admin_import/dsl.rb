@@ -62,7 +62,7 @@ module ActiveAdminImport
             instance_eval &block
           else
             model_name = options[:resource_label].downcase
-            plural_model_name = options[:resource_label].downcase
+            plural_model_name = options[:plural_resource_label].downcase
             if @importer.result[:imported].to_i > 0
               flash[:notice] = I18n.t('active_admin_import.imported', count: @importer.result[:imported].to_i, model: model_name, plural_model: plural_model_name)
             end
