@@ -7,12 +7,12 @@ module ActiveAdminImport
     # Options
     # +back+:: resource action to redirect after processing
     # +csv_options+:: hash to override default CSV options
-    # +validate+:: true|false, means perfoem validations or not
     # +batch_size+:: integer value of max  record count inserted by 1 query/transaction
     # +before_import+:: proc for before import action, hook called with  importer object
     # +after_import+:: proc for after import action, hook called with  importer object
     # +before_batch_import+:: proc for before each batch action, called with  importer object
     # +after_batch_import+:: proc for after each batch action, called with  importer object
+    # +validate+:: true|false, means perform validations or not
     # +on_duplicate_key_update+:: an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE ability.
     # +timestamps+::  true|false, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
     # +ignore+::  true|false, tells activerecord-import to use MySQL's INSERT IGNORE ability
@@ -20,7 +20,7 @@ module ActiveAdminImport
     # +template_object+:: object passing to view
     # +resource_class+:: resource class name, override to import to another table (default config.resource_class)
     # +resource_label+:: resource label value (default config.resource_label)
-    # +plural_resource_label+:: plaralized resource label value (default config.plural_resource_label)
+    # +plural_resource_label+:: pluralized resource label value (default config.plural_resource_label)
     #
 
     def active_admin_import(options = {}, &block)
