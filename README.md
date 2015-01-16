@@ -16,7 +16,7 @@ with support of validations and bulk inserts
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "active_admin_import" , '2.1.1'
+gem "active_admin_import" , '~> 3.0.0'
 ```
 	
 And then execute:
@@ -51,7 +51,7 @@ Options
 
     # +back+:: resource action to redirect after processing
     # +csv_options+:: hash with column separator, row separator, etc 
-    # +validate+:: true|false, means perfoem validations or not
+    # +validate+:: true|false, means perform validations or not
     # +batch_size+:: integer value of max  record count inserted by 1 query/transaction
     # +before_import+:: proc for before import action, hook called with  importer object
     # +after_import+:: proc for after import action, hook called with  importer object
@@ -66,6 +66,7 @@ Options
     # +locals+:: local variables for template
     # +resource_class+:: resource class name
     # +resource_label+:: resource label value
+    # +plural_resource_label+:: pluralized resource label value (default config.plural_resource_label)
     # +headers_rewrites+:: hash with key (csv header) - value (db column name) rows mapping
 
 
@@ -86,10 +87,10 @@ Example1
 
 ```ruby  
     ActiveAdmin.register Post  do
-       active_admin_import :validate => false,
-                            :csv_options => {:col_sep => ";" },
-                            :before_import => proc{ Post.delete_all},
-                            :batch_size => 1000
+       active_admin_import  validate: false,
+                            csv_options: {col_sep: ";" },
+                            before_import: proc{ Post.delete_all},
+                            batch_size: 1000
     
     
     end
@@ -102,17 +103,17 @@ This config allows to replace data without downtime
 
 ```ruby
     ActiveAdmin.register Post  do
-        active_admin_import :validate => false,
-            :csv_options => {:col_sep => ";" },
-            :resource_class => ImportedPost ,  # we import data into another resource
-            :before_import => proc{ ImportedPost.delete_all },
-            :after_import => proc{
+        active_admin_import validate: false,
+            csv_options: {col_sep: ";" },
+            resource_class: ImportedPost ,  # we import data into another resource
+            before_import: proc{ ImportedPost.delete_all },
+            after_import: proc{
                 Post.transaction do
                     Post.delete_all
                     Post.connection.execute("INSERT INTO posts (SELECT * FROM import_posts)")
                 end
             },
-            :back => proc { config.namespace.resource_for(Post).route_collection_path } # redirect to post index
+            back: proc { config.namespace.resource_for(Post).route_collection_path } # redirect to post index
     end
 ```
 
@@ -121,10 +122,10 @@ Example3 Importing file without headers, but we always know file format, so we c
 
 ```ruby
     ActiveAdmin.register Post  do
-        active_admin_import :validate => true,
-            :template_object => ActiveAdminImport::Model.new(
-                :hint => "file will be imported with such header format: 'body','title','author'",
-                :csv_headers => ["body","title","author"] 
+        active_admin_import validate: true,
+            template_object: ActiveAdminImport::Model.new(
+                hint: "file will be imported with such header format: 'body','title','author'",
+                csv_headers: ["body","title","author"]
             )
     end
 ```
@@ -134,11 +135,11 @@ Example4 Importing without forcing to UTF-8 and disallow archives
 
 ```ruby
     ActiveAdmin.register Post  do
-        active_admin_import :validate => true,
-            :template_object => ActiveAdminImport::Model.new(
-                :hint => "file will be encoded to ISO-8859-1",
-                :force_encoding => "ISO-8859-1",
-                :allow_archive => false  
+        active_admin_import validate: true,
+            template_object: ActiveAdminImport::Model.new(
+                hint: "file will be encoded to ISO-8859-1",
+                force_encoding: "ISO-8859-1",
+                allow_archive: false
             )
     end
 ```
@@ -149,8 +150,8 @@ Example5 Callbacks for each bulk insert iteration
 
 ```ruby
     ActiveAdmin.register Post  do
-        active_admin_import :validate => true,
-        :before_batch_import => proc { |import|
+        active_admin_import validate: true,
+        before_batch_import: proc { |import|
            import.file #current file used
            import.resource #ActiveRecord class to import to
            import.options # options
@@ -159,7 +160,7 @@ Example5 Callbacks for each bulk insert iteration
            import.csv_lines #lines to import
            import.model #template_object instance
         },
-        :after_batch_import => proc{ |import|
+        after_batch_import: proc{ |import|
            #the same
         }
     end
@@ -178,8 +179,8 @@ Example6 dynamic CSV options, template overriding
         <%= f.inputs do %>
             <%= f.input :file, as: :file %>
         <% end %>
-        <%= f.inputs "CSV options", :for => [:csv_options, OpenStruct.new(@active_admin_import_model.csv_options)] do |csv| %>
-            <% csv.with_options :input_html => {:style => 'width:40px;'} do |opts| %>
+        <%= f.inputs "CSV options", for: [:csv_options, OpenStruct.new(@active_admin_import_model.csv_options)] do |csv| %>
+            <% csv.with_options input_html: {style: 'width:40px;'} do |opts| %>
                 <%= opts.input :col_sep %>
                 <%= opts.input :row_sep %>
                 <%= opts.input :quote_char %>
@@ -197,11 +198,11 @@ Example6 dynamic CSV options, template overriding
 
 ```ruby
     ActiveAdmin.register Post  do
-        active_admin_import :validate => false,
-                          :template => 'import' ,
-                          :template_object => ActiveAdminImport::Model.new(
-                              :hint => "specify CSV options"
-                              :csv_options => {:col_sep => ";", :row_sep => nil, :quote_char => nil} 
+        active_admin_import validate: false,
+                          template: 'import' ,
+                          template_object: ActiveAdminImport::Model.new(
+                              hint: "specify CSV options"
+                              csv_options: {col_sep: ";", row_sep: nil, :quote_char: nil}
                           )
     end                      
 ```

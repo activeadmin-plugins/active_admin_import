@@ -21,7 +21,7 @@ module ActiveAdminImport
     # +resource_class+:: resource class name, override to import to another table (default config.resource_class)
     # +resource_label+:: resource label value (default config.resource_label)
     # +plural_resource_label+:: pluralized resource label value (default config.plural_resource_label)
-    #
+    # +headers_rewrites+:: hash with key (csv header) - value (db column name) rows mapping
 
     def active_admin_import(options = {}, &block)
       options.assert_valid_keys(*VALID_OPTIONS)
