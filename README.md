@@ -11,7 +11,7 @@ Should work with both AA 0.6 and 1.0.0
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "active_admin_import" , '2.1.1'
+gem "active_admin_import" , '2.1.2'
 ```
 	
 And then execute:
