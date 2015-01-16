@@ -1,3 +1,6 @@
+require 'coveralls'
+Coveralls.wear!
+
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH << File.expand_path('../support', __FILE__)
 

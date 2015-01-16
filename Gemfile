@@ -7,7 +7,7 @@ group :test do
   gem 'rspec-rails'
   gem 'activeadmin', github: 'activeadmin'  , ref: '54bede0558a99ab759f98f9b24e1b0144063a81e'
 
-
+  gem 'coveralls', require: false # Test coverage website. Go to https://coveralls.io
 
   gem 'devise'
   gem 'sass-rails'

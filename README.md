@@ -6,6 +6,7 @@ with support of validations and bulk inserts
 
 [![Build Status](http://img.shields.io/travis/Fivell/active_admin_import.svg)](https://travis-ci.org/Fivell/active_admin_import)
 [![Dependency Status](http://img.shields.io/gemnasium/Fivell/active_admin_import.svg)](https://gemnasium.com/Fivell/active_admin_import)
+[![Coverage Status](http://img.shields.io/coveralls/Fivell/active_admin_import.svg)](https://coveralls.io/r/Fivell/active_admin_import)
 
  branch for AA 1.0.0 and Rails >= 4.1
 
