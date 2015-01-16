@@ -1,7 +1,7 @@
 module ActiveAdminImport
   module DSL
-  
-    
+
+
     # Declares import functionality
     #
     # Options
@@ -24,8 +24,8 @@ module ActiveAdminImport
     #
 
     def active_admin_import(options = {}, &block)
-      options.assert_valid_keys(*VALID_OPTIONS) 
-      
+      options.assert_valid_keys(*VALID_OPTIONS)
+
       default_options = {
           back: {action: :import},
           csv_options: {},
@@ -52,7 +52,6 @@ module ActiveAdminImport
           link_to(I18n.t('active_admin_import.import_model', model: options[:resource_label]), action: :import)
         end
 
-
         @active_admin_import_model = options[:template_object]
         render template: options[:template]
       end
@@ -60,8 +59,6 @@ module ActiveAdminImport
       action_item :import, only: :index do
         link_to(I18n.t('active_admin_import.import_model', model: options[:resource_label]), action: :import)
       end
-
-
 
       collection_action :do_import, method: :post do
         authorize!(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
@@ -76,21 +73,24 @@ module ActiveAdminImport
           if block_given?
             instance_eval &block
           else
-           
+
             model_name = options[:resource_label].downcase
             plural_model_name = options[:plural_resource_label].downcase
-            
-            
-            
-            if result.has_imported?
-              flash[:notice] = I18n.t('active_admin_import.imported', count: result.imported_qty, model: model_name, plural_model: plural_model_name)
-            end
-            if  result.has_failed?
-              flash[:error] = I18n.t('active_admin_import.failed', count: result.failed.count, model: model_name, plural_model: plural_model_name)
+
+
+            if result.empty?
+              flash[:warning] = I18n.t('active_admin_import.file_empty_error')
+            else
+              if result.has_imported?
+                flash[:notice] = I18n.t('active_admin_import.imported', count: result.imported_qty, model: model_name, plural_model: plural_model_name)
+              end
+              if result.has_failed?
+                flash[:error] = I18n.t('active_admin_import.failed', count: result.failed.count, model: model_name, plural_model: plural_model_name)
+              end
             end
           end
         rescue ActiveRecord::Import::MissingColumnError, NoMethodError => e
-          flash[:error] = e.message
+          flash[:error] = I18n.t('active_admin_import.file_error', message: e.message)
         end
         redirect_to options[:back]
       end

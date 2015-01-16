@@ -24,5 +24,9 @@ module ActiveAdminImport
       @failed.any?
     end
 
+    def empty?
+      total == 0
+    end
+
   end
 end

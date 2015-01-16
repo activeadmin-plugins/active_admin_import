@@ -2,6 +2,7 @@ en:
   active_admin:
     import: "Import"
   active_admin_import:
+    file_error: "Error: %{message}"
     file_format_error: "You can import only valid csv file"
     file_empty_error: "You can't import empty file"
     no_file_error: "Please, select file to import"
