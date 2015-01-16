@@ -1,7 +1,7 @@
 module ActiveAdminImport
   class Model
-    extend ActiveModel::Naming
-    include ActiveModel::Conversion
+
+    include ActiveModel::Model
     include ActiveModel::Validations
     include ActiveModel::Validations::Callbacks
 
