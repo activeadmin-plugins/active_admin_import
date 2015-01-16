@@ -42,8 +42,8 @@ describe 'import', type: :feature do
   end
 
   context "with hint defined" do
-    let(:options){
-      {template_object: ActiveAdminImport::Model.new( hint: "hint") }
+    let(:options) {
+      {template_object: ActiveAdminImport::Model.new(hint: "hint")}
     }
     it "renders hint at upload page" do
       expect(page).to have_content options[:template_object].hint
@@ -123,6 +123,17 @@ describe 'import', type: :feature do
       end
     end
 
+
+    context "with semicolons separator" do
+      let(:options) {
+        {template_object: ActiveAdminImport::Model.new(csv_options: {col_sep: ";"})}
+      }
+      it "should import file" do
+        upload_file!(:authors_with_semicolons)
+        expect(page).to have_content "Successfully imported 2 authors"
+        expect(Author.count).to eq(2)
+      end
+    end
 
   end
 
