@@ -28,8 +28,8 @@ describe 'import', type: :feature do
     find_button('Import').click
   end
 
-  it "has valid form" do
 
+  it "has valid form" do
     form = find('#new_active_admin_import_model')
     expect(form['action']).to eq("/admin/authors/do_import")
     expect(form['enctype']).to eq("multipart/form-data")
@@ -39,6 +39,16 @@ describe 'import', type: :feature do
     submit_input = form.find("#active_admin_import_model_submit_action input")
     expect(submit_input[:value]).to eq("Import")
     expect(submit_input[:type]).to eq("submit")
+  end
+
+  context "with hint defined" do
+    let(:options){
+      {template_object: ActiveAdminImport::Model.new( hint: "hint") }
+    }
+    it "renders hint at upload page" do
+      expect(page).to have_content options[:template_object].hint
+    end
+
   end
 
 
