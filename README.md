@@ -53,16 +53,9 @@ Features of activerecord-import
 </ol>
 
    
-    Two step importing (see example2)
-    CSV options
-   
-    
-    Ability to customize template 
-    Callbacks support
-    Zip files import
-    and more ....
 
-Options
+
+#### Options
 
    <table>
 <tr><td>name</td><td>description</td></tr>
