@@ -56,7 +56,6 @@ describe 'import', type: :feature do
     end
 
 
-
   end
 
   context "with valid options" do
@@ -149,9 +148,39 @@ describe 'import', type: :feature do
             expect(Author.count).to eq(0)
           end
         end
-
       end
 
+      context "with invalid data insert" do
+        it "should render error" do
+          upload_file!(:authors_invalid_db)
+          expect(page).to have_content "Error:"
+          expect(Author.count).to eq(0)
+        end
+      end
+
+      context "with invalid records" do
+
+        context "with validation" do
+          it "should render error" do
+            upload_file!(:author_invalid)
+            expect(page).to have_content "Failed to import 1 author"
+            expect(Author.count).to eq(0)
+          end
+        end
+
+
+        context "without validation" do
+          let(:options) { {validate: false} }
+          it "should render error" do
+            upload_file!(:author_invalid)
+            expect(page).to have_content "Successfully imported 1 author"
+            expect(Author.count).to eq(1)
+          end
+
+        end
+
+
+      end
 
       context "when zipped" do
         context "when allowed" do

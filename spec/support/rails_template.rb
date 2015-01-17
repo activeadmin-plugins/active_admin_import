@@ -1,8 +1,9 @@
 # Rails template to build the sample app for specs
 
-generate :model, 'author name:string last_name:string birthday:date'
+generate :model, 'author name:string{10}:uniq last_name:string birthday:date'
 
-
+#Add validation
+inject_into_file "app/models/author.rb", "  validates_presence_of :name\n", after: "Base\n"
 
 # Configure default_url_options in test environment
 inject_into_file "config/environments/test.rb", "  config.action_mailer.default_url_options = { :host => 'example.com' }\n", after: "config.cache_classes = true\n"
