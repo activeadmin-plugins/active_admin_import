@@ -6,7 +6,7 @@ with support of validations and bulk inserts
 
 [![Build Status](http://img.shields.io/travis/Fivell/active_admin_import.svg)](https://travis-ci.org/Fivell/active_admin_import)
 [![Dependency Status](http://img.shields.io/gemnasium/Fivell/active_admin_import.svg)](https://gemnasium.com/Fivell/active_admin_import)
-[![Coverage Status](http://img.shields.io/coveralls/Fivell/active_admin_import.svg)](https://coveralls.io/r/Fivell/active_admin_import)
+[![Coverage Status](https://coveralls.io/repos/Fivell/active_admin_import/badge.svg?branch=3.0.0)](https://coveralls.io/r/Fivell/active_admin_import?branch=3.0.0)
 
  branch for AA 1.0.0 and Rails >= 4.1
 
@@ -202,7 +202,7 @@ Example6 dynamic CSV options, template overriding
                           template: 'import' ,
                           template_object: ActiveAdminImport::Model.new(
                               hint: "specify CSV options"
-                              csv_options: {col_sep: ";", row_sep: nil, :quote_char: nil}
+                              csv_options: {col_sep: ";", row_sep nil, :quote_char => nil}
                           )
     end                      
 ```
