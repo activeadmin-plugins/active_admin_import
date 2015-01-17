@@ -2,47 +2,34 @@ require 'csv'
 module ActiveAdminImport
   class Importer
 
-    attr_reader :resource,  :options, :result, :headers, :csv_lines, :model
 
-    def store
-      result = @resource.transaction do
-        options[:before_batch_import].call(self) if options[:before_batch_import].is_a?(Proc)
+    attr_reader :resource, :options, :result, :headers, :csv_lines, :model
 
-        result = resource.import headers.values, csv_lines, {
-            validate: options[:validate],
-            on_duplicate_key_update: options[:on_duplicate_key_update],
-            ignore: options[:ignore],
-            timestamps: options[:timestamps]
-        }
-        options[:after_batch_import].call(self) if options[:after_batch_import].is_a?(Proc)
-        result
-      end
-      {imported: csv_lines.count - result.failed_instances.count, failed: result.failed_instances}
-    end
 
-    #
-    def prepare_headers(headers)
-      @headers = Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })]
-      @headers.merge!(options[:headers_rewrites])
-      @headers
-    end
+    OPTIONS = [
+        :validate,
+        :on_duplicate_key_update,
+        :ignore,
+        :timestamps,
+        :before_import,
+        :after_import,
+        :before_batch_import,
+        :after_batch_import,
+        :headers_rewrites,
+        :batch_size,
+        :csv_options
+    ].freeze
+
 
     def initialize(resource, model, options)
       @resource = resource
       @model = model
-      @options = {batch_size: 1000, validate: true}.merge(options)
       @headers = model.respond_to?(:csv_headers) ? model.csv_headers : []
-      @result= {failed: [], imported: 0}
-      if @options.has_key?(:col_sep) || @options.has_key?(:row_sep)
-        ActiveSupport::Deprecation.warn "row_sep and col_sep options are deprecated, use csv_options to override default CSV options"
-        @csv_options = @options.slice(:col_sep, :row_sep)
-      else
-        @csv_options = @options[:csv_options] || {}
-      end
-      #override csv options from model if it respond_to csv_options
-      @csv_options =  model.csv_options if model.respond_to?(:csv_options)
-      @csv_options.reject! {| key, value | value.blank? }
+      assign_options(options)
+    end
 
+    def import_result
+      @import_result ||= ImportResult.new
     end
 
     def file
@@ -51,11 +38,11 @@ module ActiveAdminImport
 
     def cycle(lines)
       @csv_lines = CSV.parse(lines.join, @csv_options)
-      @result.merge!(self.store) { |key, val1, val2| val1+val2 }
+      import_result.add(batch_import, lines.count)
     end
 
     def import
-      options[:before_import].call(self) if options[:before_import].is_a?(Proc)
+      run_callback(:before_import)
       lines = []
       batch_size = options[:batch_size].to_i
       File.open(file.path) do |f|
@@ -65,14 +52,56 @@ module ActiveAdminImport
           next if line.blank?
           lines << line
           if lines.size == batch_size || f.eof?
-            cycle lines
+            cycle(lines)
             lines = []
           end
         end
       end
       cycle(lines) unless lines.blank?
-      options[:after_import].call(self) if options[:after_import].is_a?(Proc)
-      result
+      run_callback(:after_import)
+      import_result
     end
+
+    def import_options
+      @import_options ||= options.slice(:validate, :on_duplicate_key_update, :ignore, :timestamps)
+    end
+
+    protected
+
+    def prepare_headers(headers)
+      @headers = Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })].with_indifferent_access
+      @headers.merge!(options[:headers_rewrites])
+      @headers
+    end
+
+    def run_callback(name)
+      options[name].call(self) if options[name].is_a?(Proc)
+    end
+
+    def batch_import
+      @resource.transaction do
+        run_callback(:before_batch_import)
+        batch_result = resource.import(headers.values, csv_lines, import_options)
+        run_callback(:after_batch_import)
+        batch_result
+      end
+    end
+
+
+    private
+
+    def assign_options(options)
+      @options = {batch_size: 1000, validate: true}.merge(options.slice(*OPTIONS))
+      detect_csv_options
+    end
+
+    def detect_csv_options
+      @csv_options = if model.respond_to?(:csv_options)
+                       model.csv_options
+                     else
+                       options[:csv_options] || {}
+                     end.reject { |_, value| value.blank? }
+    end
+
   end
 end

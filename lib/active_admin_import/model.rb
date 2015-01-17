@@ -1,7 +1,7 @@
 module ActiveAdminImport
   class Model
-    extend ActiveModel::Naming
-    include ActiveModel::Conversion
+
+    include ActiveModel::Model
     include ActiveModel::Validations
     include ActiveModel::Validations::Callbacks
 
@@ -22,6 +22,7 @@ module ActiveAdminImport
       @attributes = {}
       assign_attributes(default_attributes.merge(args), true)
     end
+
 
     def assign_attributes(args = {}, new_record = false)
       @attributes.merge!(args)
