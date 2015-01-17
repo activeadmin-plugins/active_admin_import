@@ -12,6 +12,6 @@ it:
     failed:
       one:   "Importazione di 1 %{model} fallita"
       other: "Importazione di %{count} %{plural_model} fallita"
-    import_model: "Importa %{model}"
+    import_model: "Importa %{plural_model}"
     import_btn: "Importa"
     import_btn_disabled: "In attesa..."

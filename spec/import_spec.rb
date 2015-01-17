@@ -22,6 +22,22 @@ describe 'import', type: :feature do
     find_button('Import').click
   end
 
+  context "authors index" do
+    before do
+      add_author_resource
+
+    end
+
+    it "should navigate to import page" do
+      #todo: removing this causes  undefined method `ransack' for #<ActiveRecord::Relation []>
+      allow_any_instance_of(Admin::AuthorsController).to receive(:find_collection).and_return(Author.all)
+      visit '/admin/authors'
+      find_link('Import Authors').click
+      expect(current_path).to eq("/admin/authors/import")
+    end
+
+
+  end
 
   context "with custom block" do
 

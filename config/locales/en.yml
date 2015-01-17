@@ -12,6 +12,6 @@ en:
     failed:
       one:   "Failed to import 1 %{model}"
       other: "Failed to import %{count} %{plural_model}"
-    import_model: "Import %{model}"
+    import_model: "Import %{plural_model}"
     import_btn: "Import"
     import_btn_disabled: "Wait..."
