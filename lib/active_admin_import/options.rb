@@ -16,7 +16,8 @@ module ActiveAdminImport
         :template_object,
         :resource_class,
         :resource_label,
-        :plural_resource_label
+        :plural_resource_label ,
+        :headers_rewrites
       ].freeze
 
 

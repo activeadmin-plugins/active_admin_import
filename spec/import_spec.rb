@@ -145,6 +145,20 @@ describe 'import', type: :feature do
         end
       end
 
+      context "with different header attribute names" do
+
+        let(:options) {
+                  {
+                      headers_rewrites:  { :'Second name' =>  :last_name }
+                  }
+        }
+
+        it "should import file" do
+          upload_file!(:author_broken_header)
+          expect(page).to have_content "Successfully imported 1 author"
+          expect(Author.count).to eq(1)
+        end
+      end
 
       context "with semicolons separator" do
         let(:options) {

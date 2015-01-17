@@ -80,7 +80,7 @@ module ActiveAdminImport
     protected
 
     def prepare_headers(headers)
-      @headers = Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })]
+      @headers = Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })].with_indifferent_access
       @headers.merge!(options[:headers_rewrites])
       @headers
     end
