@@ -8,6 +8,10 @@ with support of validations and bulk inserts
 [![Dependency Status](http://img.shields.io/gemnasium/Fivell/active_admin_import.svg)](https://gemnasium.com/Fivell/active_admin_import)
 [![Coverage Status](https://coveralls.io/repos/Fivell/active_admin_import/badge.svg?branch=3.0.0)](https://coveralls.io/r/Fivell/active_admin_import?branch=3.0.0)
 
+[![Code Climate](http://img.shields.io/codeclimate/github/Fivell/active_admin_import.svg)](https://codeclimate.com/github/Fivell/active_admin_import)
+[![Gem Version](http://img.shields.io/gem/v/active_admin_import.svg)](https://rubygems.org/gems/active_admin_import)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://Fivell.mit-license.org)
+
 master can be used with AA 1.0.0 and Rails >= 4.1
 
 
