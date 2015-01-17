@@ -161,6 +161,14 @@ describe 'import', type: :feature do
 
   end
 
+  context "with invalid options" do
+      let(:options) { {invalid_option: :invalid_value} }
+
+      it "should raise TypeError" do
+        expect { add_author_resource(options) }.to raise_error(ArgumentError)
+      end
+
+  end
 
 
 end
