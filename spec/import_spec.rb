@@ -23,6 +23,26 @@ describe 'import', type: :feature do
   end
 
 
+  context "with custom block" do
+
+
+    before do
+      add_author_resource({}) do
+        flash[:notice] = 'some custom message'
+      end
+      visit '/admin/authors/import'
+
+    end
+
+    it "should display notice from custom block" do
+      upload_file!(:author)
+      expect(page).to have_content "some custom message"
+    end
+
+
+
+  end
+
   context "with valid options" do
 
     let(:options) { {} }
@@ -148,9 +168,9 @@ describe 'import', type: :feature do
       context "with different header attribute names" do
 
         let(:options) {
-                  {
-                      headers_rewrites:  { :'Second name' =>  :last_name }
-                  }
+          {
+              headers_rewrites: {:'Second name' => :last_name}
+          }
         }
 
         it "should import file" do
@@ -176,10 +196,10 @@ describe 'import', type: :feature do
 
     context "with callback procs options" do
       let(:options) { {
-          before_import: proc {|_|},
-          after_import: proc {|_|},
-          before_batch_import: proc {|_|},
-          after_batch_import: proc {|_|}
+          before_import: proc { |_|},
+          after_import: proc { |_|},
+          before_batch_import: proc { |_|},
+          after_batch_import: proc { |_|}
       } }
 
 
