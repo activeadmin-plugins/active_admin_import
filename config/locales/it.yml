@@ -6,6 +6,7 @@ it:
     file_format_error: "Puoi importare solo CSV conformi"
     no_file_error: "Per favore, seleziona un file da importare"
     file_empty_error: "Non è possibile importare file vuoto"
+    details: "Per favore, seleziona un file da importare"
     imported:
       one: "Importato 1 %{model} con successo"
       other: "Importati %{count} %{plural_model} con successo"
