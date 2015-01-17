@@ -23,6 +23,24 @@ module ActiveAdminImport
     # +plural_resource_label+:: pluralized resource label value (default config.plural_resource_label)
     #
 
+
+    DEFAULT_RESULT_PROC = proc do |result, options|
+
+      model_name = options[:resource_label].downcase
+      plural_model_name = options[:plural_resource_label].downcase
+      if result.empty?
+        flash[:warning] = I18n.t('active_admin_import.file_empty_error')
+      else
+        if result.has_imported?
+          flash[:notice] = I18n.t('active_admin_import.imported', count: result.imported_qty, model: model_name, plural_model: plural_model_name)
+        end
+        if result.has_failed?
+          flash[:error] = I18n.t('active_admin_import.failed', count: result.failed.count, model: model_name, plural_model: plural_model_name)
+        end
+      end
+    end
+
+
     def active_admin_import(options = {}, &block)
       options.assert_valid_keys(*VALID_OPTIONS)
 
@@ -53,7 +71,6 @@ module ActiveAdminImport
         end
       end
 
-  
 
       collection_action :do_import, method: :post do
         authorize!(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
@@ -65,24 +82,11 @@ module ActiveAdminImport
         @importer = Importer.new(options[:resource_class], @active_admin_import_model, options)
         begin
           result = @importer.import
+
           if block_given?
             instance_eval &block
           else
-
-            model_name = options[:resource_label].downcase
-            plural_model_name = options[:plural_resource_label].downcase
-
-
-            if result.empty?
-              flash[:warning] = I18n.t('active_admin_import.file_empty_error')
-            else
-              if result.has_imported?
-                flash[:notice] = I18n.t('active_admin_import.imported', count: result.imported_qty, model: model_name, plural_model: plural_model_name)
-              end
-              if result.has_failed?
-                flash[:error] = I18n.t('active_admin_import.failed', count: result.failed.count, model: model_name, plural_model: plural_model_name)
-              end
-            end
+            instance_exec result, options, &DEFAULT_RESULT_PROC
           end
         rescue ActiveRecord::Import::MissingColumnError, NoMethodError => e
           flash[:error] = I18n.t('active_admin_import.file_error', message: e.message)
