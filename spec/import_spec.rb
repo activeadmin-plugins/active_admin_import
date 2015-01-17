@@ -159,14 +159,34 @@ describe 'import', type: :feature do
 
     end
 
+
+    context "with callback procs options" do
+      let(:options) { {
+          before_import: proc {|_|},
+          after_import: proc {|_|},
+          before_batch_import: proc {|_|},
+          after_batch_import: proc {|_|}
+      } }
+
+
+      it "should call each callback" do
+        expect(options[:before_import]).to receive(:call).with(kind_of(ActiveAdminImport::Importer))
+        expect(options[:after_import]).to receive(:call).with(kind_of(ActiveAdminImport::Importer))
+        expect(options[:before_batch_import]).to receive(:call).with(kind_of(ActiveAdminImport::Importer))
+        expect(options[:after_batch_import]).to receive(:call).with(kind_of(ActiveAdminImport::Importer))
+        upload_file!(:authors)
+        expect(Author.count).to eq(2)
+      end
+    end
+
   end
 
   context "with invalid options" do
-      let(:options) { {invalid_option: :invalid_value} }
+    let(:options) { {invalid_option: :invalid_value} }
 
-      it "should raise TypeError" do
-        expect { add_author_resource(options) }.to raise_error(ArgumentError)
-      end
+    it "should raise TypeError" do
+      expect { add_author_resource(options) }.to raise_error(ArgumentError)
+    end
 
   end
 
