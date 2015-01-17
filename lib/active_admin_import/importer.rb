@@ -21,17 +21,6 @@ module ActiveAdminImport
     ].freeze
 
 
-    def store
-      result = @resource.transaction do
-        run_callback(:before_batch_import)
-        result = resource.import(headers.values, csv_lines, options.slice(:validate, :on_duplicate_key_update, :ignore, :timestamps))
-        run_callback(:after_batch_import)
-        result
-      end
-      {imported: csv_lines.count - result.failed_instances.count, failed: result.failed_instances}
-    end
-
-
     def initialize(resource, model, options)
       @resource = resource
       @model = model
