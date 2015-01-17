@@ -12,8 +12,8 @@ module ActiveAdminImport
     validate :file_contents_present, if: proc { |me| me.file.present? }
 
 
-    before_validation :uncompress_file, if: proc { |me| me.archive? && me.allow_archive?  }
-    before_validation :encode_file,  if: proc { |me| me.force_encoding? && me.file.present? }
+    before_validation :uncompress_file, if: proc { |me| me.archive? && me.allow_archive? }
+    before_validation :encode_file, if: proc { |me| me.force_encoding? && me.file.present? }
 
     attr_reader :attributes
 
@@ -28,12 +28,7 @@ module ActiveAdminImport
       @attributes.merge!(args)
       @new_record = new_record
       args.keys.each do |key|
-        key = key.to_sym
-        #generate methods for instance object by attributes
-        singleton_class.class_eval do
-          define_method(key) { self.attributes[key] } unless method_defined? key
-          define_method("#{key}=") { |new_value| @attributes[key] = new_value } unless method_defined? "#{key}="
-        end
+        define_methods_for(key.to_sym)
       end if args.is_a?(Hash)
     end
 
@@ -82,7 +77,7 @@ module ActiveAdminImport
     def encode_file
       data = File.read(file_path).encode(force_encoding, invalid: :replace, undef: :replace)
       File.open(file_path, 'w') do |f|
-          f.write(data)
+        f.write(data)
       end
     end
 
@@ -126,6 +121,28 @@ module ActiveAdminImport
         ''
       end
     end
+
+    protected
+
+    def define_methods_for(attr_name)
+      #generate methods for instance object by attributes
+      singleton_class.class_eval do
+        define_set_method(attr_name)
+        define_get_method(attr_name)
+      end
+    end
+
+
+    class <<self
+      def define_set_method(attr_name)
+        define_method(attr_name) { self.attributes[attr_name] } unless method_defined? attr_name
+      end
+
+      def define_get_method(attr_name)
+        define_method("#{attr_name}=") { |new_value| @attributes[attr_name] = new_value } unless method_defined? "#{attr_name}="
+      end
+    end
+
   end
 end
 

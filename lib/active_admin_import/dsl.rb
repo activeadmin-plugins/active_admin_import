@@ -42,18 +42,9 @@ module ActiveAdminImport
 
 
     def active_admin_import(options = {}, &block)
-      options.assert_valid_keys(*VALID_OPTIONS)
+      options.assert_valid_keys(*Options::VALID_OPTIONS)
 
-      default_options = {
-          back: {action: :import},
-          csv_options: {},
-          template: "admin/import",
-          resource_class: config.resource_class,
-          resource_label: config.resource_label,
-          plural_resource_label: config.plural_resource_label,
-          headers_rewrites: {}
-      }
-      options = default_options.deep_merge(options)
+      options = Options.options_for(config, options)
       params_key = ActiveModel::Naming.param_key(options[:template_object] || ActiveAdminImport::Model.new)
 
       collection_action :import, method: :get do
@@ -75,7 +66,7 @@ module ActiveAdminImport
       collection_action :do_import, method: :post do
         authorize!(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
 
-        @active_admin_import_model = options[:template_object] || ActiveAdminImport::Model.new
+        @active_admin_import_model = options[:template_object]
         @active_admin_import_model.assign_attributes(params[params_key].try(:deep_symbolize_keys) || {})
         #go back to form
         return render template: options[:template] unless @active_admin_import_model.valid?

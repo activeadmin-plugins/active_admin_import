@@ -130,9 +130,9 @@ describe 'import', type: :feature do
 
       context "without headers" do
         context "with known csv headers" do
-          before do
-            allow_any_instance_of(ActiveAdminImport::Model).to receive(:csv_headers).and_return(['Name', 'Last name', 'Birthday'])
-          end
+          let(:options) {
+            {template_object: ActiveAdminImport::Model.new(csv_headers: ['Name', 'Last name', 'Birthday'])}
+          }
 
           it "should import file" do
             upload_file!(:authors_no_headers)
