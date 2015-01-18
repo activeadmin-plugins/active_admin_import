@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module ActiveAdminImport
   class Model
 
@@ -5,8 +7,9 @@ module ActiveAdminImport
     include ActiveModel::Validations
     include ActiveModel::Validations::Callbacks
 
-    validates :file, presence: {message: Proc.new { I18n.t('active_admin_import.no_file_error') }},
-              unless: proc { |me| me.new_record? }
+    validates :file, presence: {
+      message: proc { I18n.t("active_admin_import.no_file_error") }
+    }, unless: proc { |me| me.new_record? }
 
     validate :correct_content_type, if: proc { |me| me.file.present? }
     validate :file_contents_present, if: proc { |me| me.file.present? }
@@ -22,7 +25,6 @@ module ActiveAdminImport
       @attributes = {}
       assign_attributes(default_attributes.merge(args), true)
     end
-
 
     def assign_attributes(args = {}, new_record = false)
       @attributes.merge!(args)
@@ -75,9 +77,9 @@ module ActiveAdminImport
     end
 
     def encode_file
-      data = File.read(file_path).encode(force_encoding, invalid: :replace, undef: :replace)
+      data = File.read(file_path)
       File.open(file_path, 'w') do |f|
-        f.write(data)
+        f.write(encode(data))
       end
     end
 
@@ -85,12 +87,10 @@ module ActiveAdminImport
       Zip::File.open(file_path) do |zip_file|
         self.file = Tempfile.new("active-admin-import-unzipped")
         data = zip_file.entries.select { |f| f.file? }.first.get_input_stream.read
-        data = data.encode(force_encoding, invalid: :replace, undef: :replace) if self.force_encoding?
         self.file << data
         self.file.close
       end
     end
-
 
     def csv_allowed_types
       [
@@ -102,7 +102,6 @@ module ActiveAdminImport
           'application/vnd.msexcel'
       ]
     end
-
 
     def correct_content_type
       unless file.blank? || file.is_a?(Tempfile)
@@ -132,6 +131,11 @@ module ActiveAdminImport
       end
     end
 
+    def encode(data)
+      data.encode(force_encoding, "binary",
+                  invalid: :replace, undef: :replace,  replace: "").
+          sub("\xEF\xBB\xBF", "")
+    end
 
     class <<self
       def define_set_method(attr_name)

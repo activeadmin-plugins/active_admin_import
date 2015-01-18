@@ -112,6 +112,16 @@ describe 'import', type: :feature do
         end
       end
 
+      context "BOM" do
+
+        it "should import file with many records" do
+          upload_file!(:authors_bom)
+          expect(page).to have_content "Successfully imported 2 authors"
+          expect(Author.count).to eq(2)
+        end
+
+      end
+
       context "with headers" do
 
         it "should import file with many records" do
