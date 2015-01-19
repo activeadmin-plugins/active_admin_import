@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'rchardet'
+
 module ActiveAdminImport
   class Model
 
@@ -132,7 +134,7 @@ module ActiveAdminImport
     end
 
     def encode(data)
-      data = data.force_encoding(force_encoding) if force_encoding?
+      data = content_encode(data) if force_encoding?
       data = data.encode('UTF-8',
                          invalid: :replace, undef: :replace)
       begin
@@ -140,6 +142,23 @@ module ActiveAdminImport
       rescue StandardError => _
         data
       end
+    end
+
+    def detect_encoding?
+      force_encoding == :auto
+    end
+
+    def dynamic_encoding(data)
+      CharDet.detect(data)['encoding']
+    end
+
+    def content_encode(data)
+      encoding_name = if detect_encoding?
+                        dynamic_encoding(data)
+                      else
+                        force_encoding.to_s
+                      end
+      data.force_encoding(encoding_name)
     end
 
     class <<self

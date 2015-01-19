@@ -2,6 +2,28 @@ require 'spec_helper'
 
 describe 'import', type: :feature do
 
+  shared_examples 'successful inserts' do |encoding, csv_file_name|
+    let(:options) do
+      attributes = { force_encoding: encoding }
+      { template_object: ActiveAdminImport::Model.new(attributes) }
+    end
+
+    before do
+      upload_file!(csv_file_name)
+    end
+
+    it "should import file with many records" do
+      expect(page).to have_content "Successfully imported 2 authors"
+      expect(Author.count).to eq(2)
+      Author.all.each do |author|
+        expect(author).to be_valid
+        expect(author.name).to be_present
+        expect(author.last_name).to be_present
+      end
+    end
+
+  end
+
   def with_zipped_csv(name, &block)
 
     zip_file = File.expand_path("./spec/fixtures/files/#{name}.zip")
@@ -25,7 +47,6 @@ describe 'import', type: :feature do
   context "authors index" do
     before do
       add_author_resource
-
     end
 
     it "should navigate to import page" do
@@ -81,15 +102,13 @@ describe 'import', type: :feature do
     end
 
     context "with hint defined" do
-      let(:options) {
-        {template_object: ActiveAdminImport::Model.new(hint: "hint")}
-      }
+      let(:options) do
+        { template_object: ActiveAdminImport::Model.new(hint: "hint") }
+      end
       it "renders hint at upload page" do
         expect(page).to have_content options[:template_object].hint
       end
-
     end
-
 
     context "when importing file" do
 
@@ -111,26 +130,16 @@ describe 'import', type: :feature do
         end
       end
 
+      context "auto detect encoding" do
+        include_examples 'successful inserts',
+                         :auto,
+                         :authors_win1251_win_endline
+      end
+
       context "Win1251" do
-        let(:options) do
-          attributes = { force_encoding: "Windows-1251" }
-          { template_object: ActiveAdminImport::Model.new(attributes) }
-        end
-
-        before do
-          upload_file!(:authors_win1251_win_endline)
-        end
-
-        it "should import file with many records" do
-          expect(page).to have_content "Successfully imported 2 authors"
-          expect(Author.count).to eq(2)
-          Author.all.each do |author|
-            expect(author).to be_valid
-            expect(author.name).to be_present
-            expect(author.last_name).to be_present
-          end
-        end
-
+        include_examples 'successful inserts',
+                         'windows-1251',
+                         :authors_win1251_win_endline
       end
 
       context "BOM" do
@@ -205,7 +214,7 @@ describe 'import', type: :feature do
 
 
         context "without validation" do
-          let(:options) { {validate: false} }
+          let(:options) { { validate: false } }
           it "should render error" do
             upload_file!(:author_invalid)
             expect(page).to have_content "Successfully imported 1 author"
@@ -248,7 +257,7 @@ describe 'import', type: :feature do
       context "with different header attribute names" do
 
         let(:options) do
-          { headers_rewrites: { :'Second name' => :last_name } }
+          { headers_rewrites: {:'Second name' => :last_name} }
         end
 
         it "should import file" do
@@ -299,7 +308,7 @@ describe 'import', type: :feature do
   end
 
   context "with invalid options" do
-    let(:options) { {invalid_option: :invalid_value} }
+    let(:options) { { invalid_option: :invalid_value } }
 
     it "should raise TypeError" do
       expect { add_author_resource(options) }.to raise_error(ArgumentError)
