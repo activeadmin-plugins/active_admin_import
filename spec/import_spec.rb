@@ -112,6 +112,24 @@ describe 'import', type: :feature do
         end
       end
 
+      context "Win1251" do
+
+        before do
+          upload_file!(:authors_win1251_win_endline)
+        end
+
+        it "should import file with many records" do
+          expect(page).to have_content "Successfully imported 2 authors"
+          expect(Author.count).to eq(2)
+          Author.all.each do |author|
+            expect(author).to be_valid
+            expect(author.name).to be_present
+            expect(author.last_name).to be_present
+          end
+        end
+
+      end
+
       context "BOM" do
 
         it "should import file with many records" do

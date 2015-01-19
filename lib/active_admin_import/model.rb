@@ -132,9 +132,16 @@ module ActiveAdminImport
     end
 
     def encode(data)
-      data.encode(force_encoding, "binary",
-                  invalid: :replace, undef: :replace,  replace: "").
-          sub("\xEF\xBB\xBF", "")
+      data = data.force_encoding("UTF-8")
+      unless data.valid_encoding?
+        data = data.encode(force_encoding,
+                           invalid: :replace, undef: :replace, replace: "")
+      end
+      begin
+        data.sub("\xEF\xBB\xBF", "")   # bom
+      rescue ArgumentError => _
+        data
+      end
     end
 
     class <<self
