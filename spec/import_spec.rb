@@ -96,7 +96,6 @@ describe 'import', type: :feature do
       [:empty, :only_headers].each do |file|
         context "when #{file} file" do
           it "should render warning" do
-
             upload_file!(file)
             expect(page).to have_content I18n.t('active_admin_import.file_empty_error')
             expect(Author.count).to eq(0)
@@ -113,6 +112,10 @@ describe 'import', type: :feature do
       end
 
       context "Win1251" do
+        let(:options) do
+          attributes = { force_encoding: "Windows-1251" }
+          { template_object: ActiveAdminImport::Model.new(attributes) }
+        end
 
         before do
           upload_file!(:authors_win1251_win_endline)
@@ -153,20 +156,24 @@ describe 'import', type: :feature do
           expect(page).to have_content "Successfully imported 1 author"
           expect(Author.count).to eq(1)
         end
+
       end
 
 
       context "without headers" do
         context "with known csv headers" do
-          let(:options) {
-            {template_object: ActiveAdminImport::Model.new(csv_headers: ['Name', 'Last name', 'Birthday'])}
-          }
+
+          let(:options) do
+            attributes = { csv_headers: ['Name', 'Last name', 'Birthday'] }
+            { template_object: ActiveAdminImport::Model.new(attributes) }
+          end
 
           it "should import file" do
             upload_file!(:authors_no_headers)
             expect(page).to have_content "Successfully imported 2 authors"
             expect(Author.count).to eq(2)
           end
+
         end
 
         context "with unknown csv headers" do
@@ -224,10 +231,10 @@ describe 'import', type: :feature do
         end
 
         context "when not allowed" do
-          let(:options) { {
-              template_object: ActiveAdminImport::Model.new(allow_archive: false)
-          } }
-
+          let(:options) do
+            attributes = { allow_archive: false }
+            { template_object: ActiveAdminImport::Model.new(attributes) }
+          end
           it "should render error" do
             with_zipped_csv(:authors) do
               upload_file!(:authors, :zip)
@@ -240,11 +247,9 @@ describe 'import', type: :feature do
 
       context "with different header attribute names" do
 
-        let(:options) {
-          {
-              headers_rewrites: {:'Second name' => :last_name}
-          }
-        }
+        let(:options) do
+          { headers_rewrites: { :'Second name' => :last_name } }
+        end
 
         it "should import file" do
           upload_file!(:author_broken_header)
@@ -254,9 +259,12 @@ describe 'import', type: :feature do
       end
 
       context "with semicolons separator" do
-        let(:options) {
-          {template_object: ActiveAdminImport::Model.new(csv_options: {col_sep: ";"})}
-        }
+
+        let(:options) do
+          attributes = { csv_options: { col_sep: ";" } }
+          { template_object: ActiveAdminImport::Model.new(attributes) }
+        end
+
         it "should import file" do
           upload_file!(:authors_with_semicolons)
           expect(page).to have_content "Successfully imported 2 authors"
@@ -268,12 +276,14 @@ describe 'import', type: :feature do
 
 
     context "with callback procs options" do
-      let(:options) { {
-          before_import: proc { |_|},
-          after_import: proc { |_|},
-          before_batch_import: proc { |_|},
-          after_batch_import: proc { |_|}
-      } }
+      let(:options) do
+        {
+          before_import: proc { |_| },
+          after_import: proc { |_| },
+          before_batch_import: proc { |_| },
+          after_batch_import: proc { |_| }
+        }
+      end
 
 
       it "should call each callback" do
