@@ -1,0 +1,4 @@
+ruby:
+  enabled: true
+StringLiterals:
+  EnforcedStyle: single_quotes  
