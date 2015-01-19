@@ -1,6 +1,6 @@
 # ActiveAdminImport 
-The most fastest and efficient CSV import for Active Admin (based on activerecord-import gem) 
-with support of validations and bulk inserts 
+The most fastest and efficient CSV import for Active Admin
+with support of validations, bulk inserts and encodings handling
 
 
 
@@ -35,32 +35,16 @@ And then execute:
     $ bundle
 
 
-
-#Why yet another import for ActiveAdmin ? Now with activerecord-import ....
-
- <p>Because plain-vanilla, out-of-the-box ActiveRecord doesn’t provide support for inserting large amounts of data efficiently</p>
-
-Features of activerecord-import
-
-<ol>
-  <li>activerecord-import can perform validations (fast)</li>
-  <li>activerecord-import can perform on duplicate key updates (requires mysql)</li>
-</ol>
-
-    
-    
-
-
 # active_admin_import features
 <ol>
-  <li>Encoding handling</li>
-  <li>Preview before importing (Example 2)</li>
+  <li> Replacements (Ex 2)</li>
+  <li> Encoding handling (Ex 4, 5)</li>
   <li> CSV options</li>
   <li> Ability to prepend CSV headers automatically</li>
-  <li>Bulk import (activerecord-import)</li>
-  <li>Callbacks</li>
-  <li>Zip files</li>
-  <li>more...</li>
+  <li> Bulk import (activerecord-import)</li>
+  <li> Callbacks</li>
+  <li> Zip files</li>
+  <li> more...</li>
 </ol>
 
    
@@ -151,22 +135,33 @@ Features of activerecord-import
     end
 ```
  
-#### Example4 Importing without forcing to UTF-8 and disallow archives
+#### Example4 Importing  ISO-8859-1 encoded file and disallow archives
 
 
 ```ruby
     ActiveAdmin.register Post  do
         active_admin_import validate: true,
             template_object: ActiveAdminImport::Model.new(
-                hint: "file will be encoded to ISO-8859-1",
+                hint: "file encoded in ISO-8859-1",
                 force_encoding: "ISO-8859-1",
                 allow_archive: false
             )
     end
 ```
 
+#### Example5 Importing file with unknown encoding and autodetect it
 
-#### Example5 Callbacks for each bulk insert iteration
+
+```ruby
+    ActiveAdmin.register Post  do
+        active_admin_import validate: true,
+            template_object: ActiveAdminImport::Model.new(
+                force_encoding: :auto
+            )
+    end
+```
+
+#### Example6 Callbacks for each bulk insert iteration
 
 
 ```ruby
@@ -187,7 +182,7 @@ Features of activerecord-import
     end
 ```    
     
-#### Example6 dynamic CSV options, template overriding
+#### Example7 dynamic CSV options, template overriding
 
  -  put overrided template to ```app/views/import.html.erb```
 
@@ -228,10 +223,18 @@ Features of activerecord-import
     end                      
 ```
 
-#Links
-https://github.com/gregbell/active_admin
+## Dependencies
 
-https://github.com/zdennis/activerecord-import
+Tool                  | Description
+--------------------- | -----------
+[rchardet]            | Character encoding auto-detection in Ruby. As smart as your browser. Open source.
+[activerecord-import] | Powerful library for bulk inserting data using ActiveRecord.
+
+[rchardet]: https://github.com/jmhodges/rchardet
+[activerecord-import]: https://github.com/jmhodges/rchardet
+
+
+
 
 
 
