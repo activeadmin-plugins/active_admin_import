@@ -16,7 +16,6 @@ module ActiveAdminImport
     validate :correct_content_type, if: proc { |me| me.file.present? }
     validate :file_contents_present, if: proc { |me| me.file.present? }
 
-
     before_validation :uncompress_file, if: proc { |me| me.archive? && me.allow_archive? }
     before_validation :encode_file, if: proc { |me| me.force_encoding? && me.file.present? }
 
@@ -45,7 +44,7 @@ module ActiveAdminImport
     end
 
     def allow_archive?
-      !!@attributes[:allow_archive]
+      !!attributes[:allow_archive]
     end
 
     def new_record?
@@ -53,11 +52,7 @@ module ActiveAdminImport
     end
 
     def force_encoding?
-      !!@attributes[:force_encoding]
-    end
-
-    def to_hash
-      @attributes
+      !!attributes[:force_encoding]
     end
 
     def persisted?
@@ -67,6 +62,8 @@ module ActiveAdminImport
     def archive?
       file_type == 'application/zip'
     end
+
+    alias :to_hash :attributes
 
     protected
 

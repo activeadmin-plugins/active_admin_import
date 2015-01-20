@@ -9,7 +9,7 @@ module ActiveAdminImport
 
     def add(result, qty)
        @failed += result.failed_instances
-       @total+=qty 
+       @total+=qty
     end
         
     def imported_qty

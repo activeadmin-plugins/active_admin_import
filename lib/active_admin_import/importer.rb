@@ -2,9 +2,7 @@ require 'csv'
 module ActiveAdminImport
   class Importer
 
-
     attr_reader :resource, :options, :result, :headers, :csv_lines, :model
-
 
     OPTIONS = [
         :validate,
@@ -19,7 +17,6 @@ module ActiveAdminImport
         :batch_size,
         :csv_options
     ].freeze
-
 
     def initialize(resource, model, options)
       @resource = resource
@@ -43,21 +40,7 @@ module ActiveAdminImport
 
     def import
       run_callback(:before_import)
-      lines = []
-      batch_size = options[:batch_size].to_i
-      File.open(file.path) do |f|
-        # capture headers if not exist
-        prepare_headers(headers.any? ? headers : CSV.parse(f.readline, @csv_options).first)
-        f.each_line do |line|
-          next if line.blank?
-          lines << line
-          if lines.size == batch_size || f.eof?
-            cycle(lines)
-            lines = []
-          end
-        end
-      end
-      cycle(lines) unless lines.blank?
+      process_file
       run_callback(:after_import)
       import_result
     end
@@ -68,7 +51,24 @@ module ActiveAdminImport
 
     protected
 
-    def prepare_headers(headers)
+    def process_file
+      lines, batch_size = [], options[:batch_size].to_i
+      File.open(file.path) do |f|
+        # capture headers if not exist
+        prepare_headers{ CSV.parse(f.readline, @csv_options).first }
+        f.each_line do |line|
+          lines << line if line.present?
+          if lines.size == batch_size || f.eof?
+            cycle(lines)
+            lines = []
+          end
+        end
+      end
+      cycle(lines) unless lines.blank?
+    end
+
+    def prepare_headers
+      headers = self.headers.present? ? self.headers : yield
       @headers = Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })].with_indifferent_access
       @headers.merge!(options[:headers_rewrites])
       @headers
@@ -86,9 +86,6 @@ module ActiveAdminImport
         batch_result
       end
     end
-
-
-    private
 
     def assign_options(options)
       @options = {batch_size: 1000, validate: true}.merge(options.slice(*OPTIONS))
