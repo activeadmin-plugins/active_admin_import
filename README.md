@@ -51,28 +51,25 @@ And then execute:
 
 
 #### Options
-
-   <table>
-<tr><td>name</td><td>description</td></tr>
-<tr><td>:back</td><td>resource action to redirect after processing</td></tr>
-<tr><td>:csv_options</td><td>hash with column separator, row separator, etc </td></tr>
-<tr><td>:validate</td><td>true|false, means perform validations or not</td></tr>
-<tr><td>:batch_size</td><td>integer value of max  record count inserted by 1 query/transaction</td></tr>
-<tr><td>:before_import</td><td>proc for before import action, hook called with  importer object</td></tr>
-<tr><td>:after_import</td><td>proc for after import action, hook called with  importer object</td></tr>
-<tr><td>:before_batch_import</td><td>proc for before each batch action, called with  importer object</td></tr>
-<tr><td>:after_batch_import</td><td>proc for after each batch action, called with  importer object</td></tr>
-<tr><td>:on_duplicate_key_update</td><td>an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE ability.</td></tr>
-<tr><td>:timestamps</td><td>true|false, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base</td></tr>
-<tr><td>:ignore</td><td>true|false, tells activerecord-import toto use MySQL's INSERT IGNORE ability</td></tr>
-<tr><td>:template</td><td>custom template rendering</td></tr>
-<tr><td>:template_object</td><td>object passing to view</td></tr>
-<tr><td>:locals</td><td>more variables for template</td></tr>
-<tr><td>:resource_class</td><td>resource class name</td></tr>
-<tr><td>:resource_label</td><td>resource label value</td></tr>
-<tr><td>:plural_resource_label</td><td>pluralized resource label value (default config.plural_resource_label)</td></tr>
-<tr><td>:headers_rewrites</td><td>hash with key (csv header) - value (db column name) rows mapping</td></tr>
-</table>
+Tool                    | Description
+---------------------   | -----------
+:back					|resource action to redirect after processing
+:csv_options			|hash with column separator, row separator, etc 
+:validate				|bool means perform validations or not
+:batch_size				|integer value of max  record count inserted by 1 query/transaction
+:before_import			|proc for before import action, hook called with  importer object
+:after_import			|proc for after import action, hook called with  importer object
+:before_batch_import	|proc for before each batch action, called with  importer object
+:after_batch_import		|proc for after each batch action, called with  importer object
+:on_duplicate_key_update|an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE ability.
+:timestamps				|bool, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
+:ignore					|bool, tells activerecord-import toto use MySQL's INSERT IGNORE ability
+:template				|custom template rendering
+:template_object		|object passing to view
+:resource_class			|resource class name
+:resource_label			|resource label value
+:plural_resource_label	|pluralized resource label value (default config.plural_resource_label)
+:headers_rewrites		|hash with key (csv header) - value (db column name) rows mapping
 
 
 
