@@ -45,23 +45,19 @@ module ActiveAdminImport
       options.assert_valid_keys(*Options::VALID_OPTIONS)
 
       options = Options.options_for(config, options)
-      params_key = ActiveModel::Naming.param_key(options[:template_object] || ActiveAdminImport::Model.new)
+      params_key = ActiveModel::Naming.param_key(options[:template_object])
 
       collection_action :import, method: :get do
-
         authorize!(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
-
-        @active_admin_import_model = options[:template_object] || ActiveAdminImport::Model.new
+        @active_admin_import_model = options[:template_object]
         render template: options[:template]
       end
-
 
       action_item :import, only: :index do
         if authorized?(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
           link_to(I18n.t('active_admin_import.import_model', plural_model: options[:plural_resource_label]), action: :import)
         end
       end
-
 
       collection_action :do_import, method: :post do
         authorize!(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
