@@ -6,7 +6,7 @@ with support of validations, bulk inserts and encodings handling
 
 [![Build Status](http://img.shields.io/travis/Fivell/active_admin_import.svg)](https://travis-ci.org/Fivell/active_admin_import)
 [![Dependency Status](http://img.shields.io/gemnasium/Fivell/active_admin_import.svg)](https://gemnasium.com/Fivell/active_admin_import)
-[![Coverage Status](https://coveralls.io/repos/Fivell/active_admin_import/badge.svg?branch=3.0.0)](https://coveralls.io/r/Fivell/active_admin_import?branch=3.0.0)
+[![Coverage Status](https://coveralls.io/repos/Fivell/active_admin_import/badge.svg)](https://coveralls.io/r/Fivell/active_admin_import)
 
 [![Code Climate](http://img.shields.io/codeclimate/github/Fivell/active_admin_import.svg)](https://codeclimate.com/github/Fivell/active_admin_import)
 [![Gem Version](http://img.shields.io/gem/v/active_admin_import.svg)](https://rubygems.org/gems/active_admin_import)
