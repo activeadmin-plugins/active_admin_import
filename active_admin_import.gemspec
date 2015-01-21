@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
 
 
   gem.add_runtime_dependency 'activerecord-import', '~> 0.7.0'
-  gem.add_runtime_dependency 'rchardet', '~> 1.5.0'
+  gem.add_runtime_dependency 'rchardet', '~> 1.5'
 
   gem.add_runtime_dependency 'rubyzip', '~> 1.0', '>= 1.0.0'
   gem.add_dependency "rails", ">= 4.0"
