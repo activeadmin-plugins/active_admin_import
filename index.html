@@ -1,0 +1,357 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Active admin import by Fivell</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Active admin import</h1>
+        <p>active_admin_import is based on activerecord-import gem  - the most efficient way to import for ActiveAdmin</p>
+        <p class="view"><a href="https://github.com/Fivell/active_admin_import">View the Project on GitHub <small>Fivell/active_admin_import</small></a></p>
+        <ul>
+          <li><a href="https://github.com/Fivell/active_admin_import/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Fivell/active_admin_import/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Fivell/active_admin_import">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="activeadminimport" class="anchor" href="#activeadminimport" aria-hidden="true"><span class="octicon octicon-link"></span></a>ActiveAdminImport</h1>
+
+<p>The most fastest and efficient CSV import for Active Admin
+with support of validations, bulk inserts and encodings handling</p>
+
+<p><a href="https://travis-ci.org/Fivell/active_admin_import"><img src="http://img.shields.io/travis/Fivell/active_admin_import.svg" alt="Build Status"></a>
+<a href="https://gemnasium.com/Fivell/active_admin_import"><img src="http://img.shields.io/gemnasium/Fivell/active_admin_import.svg" alt="Dependency Status"></a>
+<a href="https://coveralls.io/r/Fivell/active_admin_import"><img src="https://coveralls.io/repos/Fivell/active_admin_import/badge.svg" alt="Coverage Status"></a></p>
+
+<p><a href="https://codeclimate.com/github/Fivell/active_admin_import"><img src="http://img.shields.io/codeclimate/github/Fivell/active_admin_import.svg" alt="Code Climate"></a>
+<a href="https://rubygems.org/gems/active_admin_import"><img src="http://img.shields.io/gem/v/active_admin_import.svg" alt="Gem Version"></a>
+<a href="http://Fivell.mit-license.org"><img src="http://img.shields.io/:license-mit-blue.svg" alt="License"></a></p>
+
+<p>master can be used with AA 1.0.0 and Rails &gt;= 4.1</p>
+
+<h1>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<p>Add this line to your application's Gemfile:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s1"><span class="pl-pds">"</span>active_admin_import<span class="pl-pds">"</span></span> , <span class="pl-s1"><span class="pl-pds">'</span>2.1.2<span class="pl-pds">'</span></span>
+</pre></div>
+
+<p>or</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">gem</span> <span class="pl-s1"><span class="pl-pds">"</span>active_admin_import<span class="pl-pds">"</span></span> , <span class="pl-c1">github:</span> <span class="pl-s1"><span class="pl-pds">"</span>Fivell/active_admin_import<span class="pl-pds">"</span></span>
+</pre></div>
+
+<p>And then execute:</p>
+
+<pre><code>$ bundle
+</code></pre>
+
+<h1>
+<a id="active_admin_import-features" class="anchor" href="#active_admin_import-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>active_admin_import features</h1>
+
+<ol>
+  <li> Replacements (Ex 2)</li>
+  <li> Encoding handling (Ex 4, 5)</li>
+  <li> CSV options</li>
+  <li> Ability to prepend CSV headers automatically</li>
+  <li> Bulk import (activerecord-import)</li>
+  <li> Callbacks</li>
+  <li> Zip files</li>
+  <li> more...</li>
+</ol>
+
+<h4>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options</h4>
+
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>:back</td>
+<td>resource action to redirect after processing</td>
+</tr>
+<tr>
+<td>:csv_options</td>
+<td>hash with column separator, row separator, etc</td>
+</tr>
+<tr>
+<td>:validate</td>
+<td>bool means perform validations or not</td>
+</tr>
+<tr>
+<td>:batch_size</td>
+<td>integer value of max  record count inserted by 1 query/transaction</td>
+</tr>
+<tr>
+<td>:before_import</td>
+<td>proc for before import action, hook called with  importer object</td>
+</tr>
+<tr>
+<td>:after_import</td>
+<td>proc for after import action, hook called with  importer object</td>
+</tr>
+<tr>
+<td>:before_batch_import</td>
+<td>proc for before each batch action, called with  importer object</td>
+</tr>
+<tr>
+<td>:after_batch_import</td>
+<td>proc for after each batch action, called with  importer object</td>
+</tr>
+<tr>
+<td>:on_duplicate_key_update</td>
+<td>an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE ability.</td>
+</tr>
+<tr>
+<td>:timestamps</td>
+<td>bool, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base</td>
+</tr>
+<tr>
+<td>:ignore</td>
+<td>bool, tells activerecord-import toto use MySQL's INSERT IGNORE ability</td>
+</tr>
+<tr>
+<td>:template</td>
+<td>custom template rendering</td>
+</tr>
+<tr>
+<td>:template_object</td>
+<td>object passing to view</td>
+</tr>
+<tr>
+<td>:resource_class</td>
+<td>resource class name</td>
+</tr>
+<tr>
+<td>:resource_label</td>
+<td>resource label value</td>
+</tr>
+<tr>
+<td>:plural_resource_label</td>
+<td>pluralized resource label value (default config.plural_resource_label)</td>
+</tr>
+<tr>
+<td>:headers_rewrites</td>
+<td>hash with key (csv header) - value (db column name) rows mapping</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="default-options-values" class="anchor" href="#default-options-values" aria-hidden="true"><span class="octicon octicon-link"></span></a>Default options values</h4>
+
+<div class="highlight highlight-ruby"><pre>    <span class="pl-c1">back:</span> {<span class="pl-c1">action:</span> <span class="pl-c1">:import</span>},
+    <span class="pl-c1">csv_options:</span> {},
+    <span class="pl-c1">template:</span> <span class="pl-s1"><span class="pl-pds">"</span>admin/import<span class="pl-pds">"</span></span>,
+    <span class="pl-c1">fetch_extra_options_from_params:</span> [],
+    <span class="pl-c1">resource_class:</span> config.resource_class,
+    <span class="pl-c1">resource_label:</span>  config.resource_label,
+    <span class="pl-c1">plural_resource_label:</span> config.plural_resource_label,</pre></div>
+
+<h4>
+<a id="example1" class="anchor" href="#example1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example1</h4>
+
+<div class="highlight highlight-ruby"><pre>    <span class="pl-s3">ActiveAdmin</span>.register <span class="pl-vo">Post</span>  <span class="pl-k">do</span>
+       active_admin_import  <span class="pl-c1">validate:</span> <span class="pl-c1">false</span>,
+                            <span class="pl-c1">csv_options:</span> {<span class="pl-c1">col_sep:</span> <span class="pl-s1"><span class="pl-pds">"</span>;<span class="pl-pds">"</span></span> },
+                            <span class="pl-c1">before_import:</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span>(importer){ <span class="pl-s3">Post</span>.delete_all },
+                            <span class="pl-c1">batch_size:</span> <span class="pl-c1">1000</span>
+
+
+    <span class="pl-k">end</span></pre></div>
+
+<h4>
+<a id="example2-importing-to-mediate-table-with-insert-select-operation-after-import-completion" class="anchor" href="#example2-importing-to-mediate-table-with-insert-select-operation-after-import-completion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example2 Importing to mediate table with insert select operation after import completion</h4>
+
+<p> This config allows to replace data in 1 sql query with callback </p>
+
+<div class="highlight highlight-ruby"><pre>    <span class="pl-s3">ActiveAdmin</span>.register <span class="pl-vo">Post</span>  <span class="pl-k">do</span>
+        active_admin_import <span class="pl-c1">validate:</span> <span class="pl-c1">false</span>,
+            <span class="pl-c1">csv_options:</span> {<span class="pl-c1">col_sep:</span> <span class="pl-s1"><span class="pl-pds">"</span>;<span class="pl-pds">"</span></span> },
+            <span class="pl-c1">resource_class:</span> <span class="pl-vo">ImportedPost</span> ,  <span class="pl-c"># we import data into another resource</span>
+            <span class="pl-c1">before_import:</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span>(importer){  <span class="pl-s3">ImportedPost</span>.delete_all },
+            <span class="pl-c1">after_import:</span>  <span class="pl-k">-</span><span class="pl-k">&gt;</span>(importer){
+                <span class="pl-s3">Post</span>.transaction <span class="pl-k">do</span>
+                    <span class="pl-s3">Post</span>.delete_all
+                    <span class="pl-s3">Post</span>.connection.execute(<span class="pl-s1"><span class="pl-pds">"</span>INSERT INTO posts (SELECT * FROM imported_posts)<span class="pl-pds">"</span></span>)
+                <span class="pl-k">end</span>
+            },
+            <span class="pl-c1">back:</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span> {  config.namespace.resource_for(<span class="pl-vo">Post</span>).route_collection_path } <span class="pl-c"># redirect to post index</span>
+    <span class="pl-k">end</span></pre></div>
+
+<h4>
+<a id="example3-importing-file-without-headers-but-we-always-know-file-format-so-we-can-predefine-it" class="anchor" href="#example3-importing-file-without-headers-but-we-always-know-file-format-so-we-can-predefine-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example3 Importing file without headers, but we always know file format, so we can predefine it</h4>
+
+<div class="highlight highlight-ruby"><pre>    <span class="pl-s3">ActiveAdmin</span>.register <span class="pl-vo">Post</span>  <span class="pl-k">do</span>
+        active_admin_import <span class="pl-c1">validate:</span> <span class="pl-c1">true</span>,
+            <span class="pl-c1">template_object:</span> <span class="pl-s3">ActiveAdminImport</span>::<span class="pl-s3">Model</span>.<span class="pl-k">new</span>(
+                <span class="pl-c1">hint:</span> <span class="pl-s1"><span class="pl-pds">"</span>file will be imported with such header format: 'body','title','author'<span class="pl-pds">"</span></span>,
+                <span class="pl-c1">csv_headers:</span> [<span class="pl-s1"><span class="pl-pds">"</span>body<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>title<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>author<span class="pl-pds">"</span></span>]
+            )
+    <span class="pl-k">end</span></pre></div>
+
+<h4>
+<a id="example4-importing--iso-8859-1-encoded-file-and-disallow-archives" class="anchor" href="#example4-importing--iso-8859-1-encoded-file-and-disallow-archives" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example4 Importing  ISO-8859-1 encoded file and disallow archives</h4>
+
+<div class="highlight highlight-ruby"><pre>    <span class="pl-s3">ActiveAdmin</span>.register <span class="pl-vo">Post</span>  <span class="pl-k">do</span>
+        active_admin_import <span class="pl-c1">validate:</span> <span class="pl-c1">true</span>,
+            <span class="pl-c1">template_object:</span> <span class="pl-s3">ActiveAdminImport</span>::<span class="pl-s3">Model</span>.<span class="pl-k">new</span>(
+                <span class="pl-c1">hint:</span> <span class="pl-s1"><span class="pl-pds">"</span>file encoded in ISO-8859-1<span class="pl-pds">"</span></span>,
+                <span class="pl-c1">force_encoding:</span> <span class="pl-s1"><span class="pl-pds">"</span>ISO-8859-1<span class="pl-pds">"</span></span>,
+                <span class="pl-c1">allow_archive:</span> <span class="pl-c1">false</span>
+            )
+    <span class="pl-k">end</span></pre></div>
+
+<h4>
+<a id="example5-importing-file-with-unknown-encoding-and-autodetect-it" class="anchor" href="#example5-importing-file-with-unknown-encoding-and-autodetect-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example5 Importing file with unknown encoding and autodetect it</h4>
+
+<div class="highlight highlight-ruby"><pre>    <span class="pl-s3">ActiveAdmin</span>.register <span class="pl-vo">Post</span>  <span class="pl-k">do</span>
+        active_admin_import <span class="pl-c1">validate:</span> <span class="pl-c1">true</span>,
+            <span class="pl-c1">template_object:</span> <span class="pl-s3">ActiveAdminImport</span>::<span class="pl-s3">Model</span>.<span class="pl-k">new</span>(
+                <span class="pl-c1">force_encoding:</span> <span class="pl-c1">:auto</span>
+            )
+    <span class="pl-k">end</span></pre></div>
+
+<h4>
+<a id="example6-callbacks-for-each-bulk-insert-iteration" class="anchor" href="#example6-callbacks-for-each-bulk-insert-iteration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example6 Callbacks for each bulk insert iteration</h4>
+
+<div class="highlight highlight-ruby"><pre>    <span class="pl-s3">ActiveAdmin</span>.register <span class="pl-vo">Post</span>  <span class="pl-k">do</span>
+        active_admin_import <span class="pl-c1">validate:</span> <span class="pl-c1">true</span>,
+        <span class="pl-c1">before_batch_import:</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span>(importer) {
+           import.file <span class="pl-c">#current file used</span>
+           import.resource <span class="pl-c">#ActiveRecord class to import to</span>
+           import.options <span class="pl-c"># options</span>
+           import.result <span class="pl-c"># result before bulk iteration</span>
+           import.headers <span class="pl-c"># CSV headers</span>
+           import.csv_lines <span class="pl-c">#lines to import</span>
+           import.model <span class="pl-c">#template_object instance</span>
+        },
+        <span class="pl-c1">after_batch_import:</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span>(importer) {
+           <span class="pl-c">#the same</span>
+        }
+    <span class="pl-k">end</span></pre></div>
+
+<h4>
+<a id="example7-update-by-id-emulation" class="anchor" href="#example7-update-by-id-emulation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example7 update by id emulation</h4>
+
+<pre><code> ```ruby
+     ActiveAdmin.register Post  do
+        active_admin_import({
+            before_batch_import: -&gt;(importer) {
+                Post.where(id: importer.values_at('id')).delete_all
+            }
+        })
+     end
+
+  ```
+</code></pre>
+
+<h4>
+<a id="example8-change-csv-values-before-import-find-each-author-name-column-and-replace-it-with-authors_id-before-insert-" class="anchor" href="#example8-change-csv-values-before-import-find-each-author-name-column-and-replace-it-with-authors_id-before-insert-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example8 change csv values before import (find each 'Author name' column and replace it with authors_id before insert )</h4>
+
+<div class="highlight highlight-ruby"><pre>     <span class="pl-s3">ActiveAdmin</span>.register <span class="pl-vo">Post</span>  <span class="pl-k">do</span>
+             active_admin_import <span class="pl-c1">validate:</span> <span class="pl-c1">true</span>,
+              <span class="pl-c1">headers_rewrites:</span> { <span class="pl-c1">:'Author name'</span> =&gt; <span class="pl-c1">:author_id</span> },
+              <span class="pl-c1">before_batch_import:</span> <span class="pl-k">-</span><span class="pl-k">&gt;</span>(importer) {
+                authors_names <span class="pl-k">=</span> importer.values_at(<span class="pl-c1">:author_id</span>)
+                <span class="pl-c"># replacing author name with author id</span>
+                authors   <span class="pl-k">=</span> <span class="pl-s3">Author</span>.where(<span class="pl-c1">name:</span> authors_names).pluck(<span class="pl-c1">:name</span>, <span class="pl-c1">:id</span>)
+                options <span class="pl-k">=</span> <span class="pl-s3">Hash</span>[<span class="pl-k">*</span>authors.flatten] <span class="pl-c"># #{"Jane" =&gt; 2, "John" =&gt; 1}</span>
+                importer.batch_replace(<span class="pl-c1">:author_id</span>, options)
+              }
+         <span class="pl-k">end</span></pre></div>
+
+<h4>
+<a id="example9-dynamic-csv-options-template-overriding" class="anchor" href="#example9-dynamic-csv-options-template-overriding" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example9 dynamic CSV options, template overriding</h4>
+
+<ul>
+<li> put overridden template to <code>app/views/import.html.erb</code>
+</li>
+</ul>
+
+<div class="highlight highlight-erb"><pre>
+    &lt;<span class="pl-ent">p</span>&gt;
+       <span class="pl-pse">&lt;%=</span><span class="pl-s2"> raw(<span class="pl-vo">@active_admin_import_model</span>.hint) </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span> 
+    &lt;/<span class="pl-ent">p</span>&gt;
+    <span class="pl-pse">&lt;%=</span><span class="pl-s2"> semantic_form_for <span class="pl-vo">@active_admin_import_model</span>, <span class="pl-c1">url:</span> {<span class="pl-c1">action:</span> <span class="pl-c1">:do_import</span>}, <span class="pl-c1">html:</span> {<span class="pl-c1">multipart:</span> <span class="pl-c1">true</span>} <span class="pl-k">do </span>|<span class="pl-vo">f</span>| </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+        <span class="pl-pse">&lt;%=</span><span class="pl-s2"> f.inputs <span class="pl-k">do </span></span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+            <span class="pl-pse">&lt;%=</span><span class="pl-s2"> f.input <span class="pl-c1">:file</span>, <span class="pl-c1">as:</span> <span class="pl-c1">:file</span> </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+        <span class="pl-pse">&lt;%</span><span class="pl-s2"> <span class="pl-k">end</span> </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+        <span class="pl-pse">&lt;%=</span><span class="pl-s2"> f.inputs <span class="pl-s1"><span class="pl-pds">"</span>CSV options<span class="pl-pds">"</span></span>, <span class="pl-c1">for:</span> [<span class="pl-c1">:csv_options</span>, <span class="pl-s3">OpenStruct</span>.<span class="pl-k">new</span>(<span class="pl-vo">@active_admin_import_model</span>.csv_options)] <span class="pl-k">do </span>|<span class="pl-vo">csv</span>| </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+            <span class="pl-pse">&lt;%</span><span class="pl-s2"> csv.with_options <span class="pl-c1">input_html:</span> {<span class="pl-c1">style:</span> <span class="pl-s1"><span class="pl-pds">'</span>width:40px;<span class="pl-pds">'</span></span>} <span class="pl-k">do </span>|<span class="pl-vo">opts</span>| </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+                <span class="pl-pse">&lt;%=</span><span class="pl-s2"> opts.input <span class="pl-c1">:col_sep</span> </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+                <span class="pl-pse">&lt;%=</span><span class="pl-s2"> opts.input <span class="pl-c1">:row_sep</span> </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+                <span class="pl-pse">&lt;%=</span><span class="pl-s2"> opts.input <span class="pl-c1">:quote_char</span> </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+            <span class="pl-pse">&lt;%</span><span class="pl-s2"> <span class="pl-k">end</span> </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+        <span class="pl-pse">&lt;%</span><span class="pl-s2"> <span class="pl-k">end</span> </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+
+        <span class="pl-pse">&lt;%=</span><span class="pl-s2"> f.actions <span class="pl-k">do </span></span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+            <span class="pl-pse">&lt;%=</span><span class="pl-s2"> f.action <span class="pl-c1">:submit</span>, <span class="pl-c1">label:</span> t(<span class="pl-s1"><span class="pl-pds">"</span>active_admin_import.import_btn<span class="pl-pds">"</span></span>), <span class="pl-c1">button_html:</span> {<span class="pl-c1">disable_with:</span> t(<span class="pl-s1"><span class="pl-pds">"</span>active_admin_import.import_btn_disabled<span class="pl-pds">"</span></span>)} </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+        <span class="pl-pse">&lt;%</span><span class="pl-s2"> <span class="pl-k">end</span> </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+    <span class="pl-pse">&lt;%</span><span class="pl-s2"> <span class="pl-k">end</span> </span><span class="pl-pse"><span class="pl-s2">%</span>&gt;</span>
+</pre></div>
+
+<ul>
+<li>call method with following parameters</li>
+</ul>
+
+<div class="highlight highlight-ruby"><pre>    <span class="pl-s3">ActiveAdmin</span>.register <span class="pl-vo">Post</span>  <span class="pl-k">do</span>
+        active_admin_import <span class="pl-c1">validate:</span> <span class="pl-c1">false</span>,
+                          <span class="pl-c1">template:</span> <span class="pl-s1"><span class="pl-pds">'</span>import<span class="pl-pds">'</span></span> ,
+                          <span class="pl-c1">template_object:</span> <span class="pl-s3">ActiveAdminImport</span>::<span class="pl-s3">Model</span>.<span class="pl-k">new</span>(
+                              <span class="pl-c1">hint:</span> <span class="pl-s1"><span class="pl-pds">"</span>specify CSV options<span class="pl-pds">"</span></span>
+                              <span class="pl-c1">csv_options:</span> {<span class="pl-c1">col_sep:</span> <span class="pl-s1"><span class="pl-pds">"</span>;<span class="pl-pds">"</span></span>, <span class="pl-c1">row_sep:</span> <span class="pl-c1">nil</span>, <span class="pl-c1">quote_char:</span> <span class="pl-c1">nil</span>}
+                          )
+    <span class="pl-k">end</span>                      </pre></div>
+
+<h2>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/jmhodges/rchardet">rchardet</a></td>
+<td>Character encoding auto-detection in Ruby. As smart as your browser. Open source.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/jmhodges/rchardet">activerecord-import</a></td>
+<td>Powerful library for bulk inserting data using ActiveRecord.</td>
+</tr>
+</tbody>
+</table>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/Fivell">Fivell</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
