@@ -46,24 +46,24 @@ describe 'import', type: :feature do
 
   context "posts index" do
     before do
-        Author.create!(name: 'John', last_name: 'Doe')
-        Author.create!(name: 'Jane', last_name: 'Roe')
-        add_post_resource({
-          validate: true,
-          headers_rewrites: {
-              :'Author Name' => :author_id
-          },
-          before_batch_import: ->(importer) do
-            authors_names = importer.values_at(:author_id)
-            # replacing author name with author id
-            authors   = Author.where(name: authors_names).pluck(:name, :id)
-            #{"Jane" => 2, "John" => 1}
-            options = Hash[*authors.flatten]
-            importer.batch_replace(:author_id, options)
-          end
-        })
-        visit '/admin/posts/import'
-        upload_file!(:posts)
+      Author.create!(name: "John", last_name: "Doe")
+      Author.create!(name: "Jane", last_name: "Roe")
+      add_post_resource({
+        validate: true,
+        headers_rewrites: {
+          :'Author Name' => :author_id
+        },
+        before_batch_import: ->(importer) do
+          authors_names = importer.values_at(:author_id)
+          # replacing author name with author id
+          authors   = Author.where(name: authors_names).pluck(:name, :id)
+          #{"Jane" => 2, "John" => 1}
+          options = Hash[*authors.flatten]
+          importer.batch_replace(:author_id, options)
+        end
+      })
+      visit "/admin/posts/import"
+      upload_file!(:posts)
     end
 
     it "should resolve author_id by author name" do
@@ -111,6 +111,37 @@ describe 'import', type: :feature do
       expect(page).to have_content "some custom message"
     end
 
+
+  end
+
+  context "authors already exist" do
+    before do
+      Author.create!(id: 1, name: "Jane", last_name: "Roe")
+      Author.create!(id: 2, name: "John", last_name: "Doe")
+    end
+
+    context "having authors with the same Id" do
+      before do
+        add_author_resource({
+          before_batch_import: ->(importer) do
+            Author.where(id: importer.values_at("id")).delete_all
+          end
+        })
+        visit "/admin/authors/import"
+        upload_file!(:authors_with_ids)
+      end
+
+      it "should replace authors" do
+        expect(page).to have_content "Successfully imported 2 authors"
+        expect(Author.count).to eq(2)
+      end
+
+      it "should replace authors by id"  do
+        expect(Author.find(1).name).to eq("John")
+        expect(Author.find(2).name).to eq("Jane")
+      end
+
+    end
 
   end
 
@@ -322,10 +353,10 @@ describe 'import', type: :feature do
     context "with callback procs options" do
       let(:options) do
         {
-          before_import: proc { |_| },
-          after_import: proc { |_| },
-          before_batch_import: proc { |_| },
-          after_batch_import: proc { |_| }
+          before_import: ->(_) { true },
+          after_import: ->(_) { true },
+          before_batch_import: ->(_) { true },
+          after_batch_import: ->(_) { true }
         }
       end
 

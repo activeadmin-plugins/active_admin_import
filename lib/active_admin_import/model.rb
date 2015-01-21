@@ -10,14 +10,14 @@ module ActiveAdminImport
     include ActiveModel::Validations::Callbacks
 
     validates :file, presence: {
-      message: proc { I18n.t("active_admin_import.no_file_error") }
-    }, unless: proc { |me| me.new_record? }
+      message: ->(*_){ I18n.t("active_admin_import.no_file_error") }
+    }, unless: ->(me){ me.new_record? }
 
-    validate :correct_content_type, if: proc { |me| me.file.present? }
-    validate :file_contents_present, if: proc { |me| me.file.present? }
+    validate :correct_content_type, if: ->(me) { me.file.present? }
+    validate :file_contents_present, if: ->(me) { me.file.present? }
 
-    before_validation :uncompress_file, if: proc { |me| me.archive? && me.allow_archive? }
-    before_validation :encode_file, if: proc { |me| me.force_encoding? && me.file.present? }
+    before_validation :unzip_file, if: ->(me) { me.archive? && me.allow_archive? }
+    before_validation :encode_file, if: ->(me) { me.force_encoding? && me.file.present? }
 
     attr_reader :attributes
 
@@ -40,7 +40,13 @@ module ActiveAdminImport
     end
 
     def default_attributes
-      {hint: '', file: nil, csv_headers: [], allow_archive: true, force_encoding: 'UTF-8'}
+      {
+        allow_archive: true,
+        csv_headers: [],
+        file: nil,
+        force_encoding: "UTF-8",
+        hint: ""
+      }
     end
 
     def allow_archive?
@@ -82,7 +88,7 @@ module ActiveAdminImport
       end
     end
 
-    def uncompress_file
+    def unzip_file
       Zip::File.open(file_path) do |zip_file|
         self.file = Tempfile.new('active-admin-import-unzipped')
         data = zip_file.entries.select { |f| f.file? }.first.get_input_stream.read
