@@ -37,17 +37,25 @@ And then execute:
 
 # active_admin_import features
 <ol>
-  <li> Replacements (Ex 2)</li>
-  <li> Encoding handling (Ex 4, 5)</li>
+  <li> Replacements/Updates support</li>
+  <li> Encoding handling</li>
   <li> CSV options</li>
-  <li> Ability to prepend CSV headers automatically</li>
+  <li> Ability to descibe/change CSV headers</li>
   <li> Bulk import (activerecord-import)</li>
   <li> Callbacks</li>
   <li> Zip files</li>
-  <li> more...</li>
+  <li> and more...</li>
 </ol>
 
    
+
+#### Basic usage
+
+```ruby
+ActiveAdmin.register Post
+  active_admin_import options
+end
+```
 
 
 #### Options
@@ -73,185 +81,9 @@ Tool                    | Description
 
 
 
-#### Default options values
+#### Wiki
 
-```ruby    
-    back: {action: :import},
-    csv_options: {},
-    template: "admin/import",
-    fetch_extra_options_from_params: [],
-    resource_class: config.resource_class,
-    resource_label:  config.resource_label,
-    plural_resource_label: config.plural_resource_label,
-```    
-
-#### Example1 
-
-```ruby  
-    ActiveAdmin.register Post  do
-       active_admin_import  validate: false,
-                            csv_options: {col_sep: ";" },
-                            before_import: ->(importer){ Post.delete_all },
-                            batch_size: 1000
-    
-    
-    end
-```
-
-
-#### Example2 Importing to mediate table with insert select operation after import completion
-
-<p> This config allows to replace data in 1 sql query with callback </p>
-
-```ruby
-    ActiveAdmin.register Post  do
-        active_admin_import validate: false,
-            csv_options: {col_sep: ";" },
-            resource_class: ImportedPost ,  # we import data into another resource
-            before_import: ->(importer){  ImportedPost.delete_all },
-            after_import:  ->(importer){
-                Post.transaction do
-                    Post.delete_all
-                    Post.connection.execute("INSERT INTO posts (SELECT * FROM imported_posts)")
-                end
-            },
-            back: -> {  config.namespace.resource_for(Post).route_collection_path } # redirect to post index
-    end
-```
-
-
-#### Example3 Importing file without headers, but we always know file format, so we can predefine it
-
-```ruby
-    ActiveAdmin.register Post  do
-        active_admin_import validate: true,
-            template_object: ActiveAdminImport::Model.new(
-                hint: "file will be imported with such header format: 'body','title','author'",
-                csv_headers: ["body","title","author"]
-            )
-    end
-```
- 
-#### Example4 Importing  ISO-8859-1 encoded file and disallow archives
-
-
-```ruby
-    ActiveAdmin.register Post  do
-        active_admin_import validate: true,
-            template_object: ActiveAdminImport::Model.new(
-                hint: "file encoded in ISO-8859-1",
-                force_encoding: "ISO-8859-1",
-                allow_archive: false
-            )
-    end
-```
-
-#### Example5 Importing file with unknown encoding and autodetect it
-
-
-```ruby
-    ActiveAdmin.register Post  do
-        active_admin_import validate: true,
-            template_object: ActiveAdminImport::Model.new(
-                force_encoding: :auto
-            )
-    end
-```
-
-#### Example6 Callbacks for each bulk insert iteration
-
-
-```ruby
-    ActiveAdmin.register Post  do
-        active_admin_import validate: true,
-        before_batch_import: ->(importer) {
-           import.file #current file used
-           import.resource #ActiveRecord class to import to
-           import.options # options
-           import.result # result before bulk iteration
-           import.headers # CSV headers
-           import.csv_lines #lines to import
-           import.model #template_object instance
-        },
-        after_batch_import: ->(importer) {
-           #the same
-        }
-    end
-```    
-
-#### Example7 update by id emulation
-
-```ruby
-
-         ActiveAdmin.register Post  do
-            active_admin_import({
-                before_batch_import: ->(importer) {
-                    Post.where(id: importer.values_at('id')).delete_all
-                }
-            })
-         end
-
-```
-
-
-
-#### Example8 change csv values before import (find each 'Author name' column and replace it with authors_id before insert )
-
-   ```ruby
-     ActiveAdmin.register Post  do
-             active_admin_import validate: true,
-              headers_rewrites: { :'Author name' => :author_id },
-              before_batch_import: ->(importer) {
-                authors_names = importer.values_at(:author_id)
-                # replacing author name with author id
-                authors   = Author.where(name: authors_names).pluck(:name, :id)
-                options = Hash[*authors.flatten] # #{"Jane" => 2, "John" => 1}
-                importer.batch_replace(:author_id, options)
-              }
-         end
-  ```
-
-
-#### Example9 dynamic CSV options, template overriding
-
- -  put overridden template to ```app/views/import.html.erb```
-
-```erb
-
-    <p>
-       <%= raw(@active_admin_import_model.hint) %> 
-    </p>
-    <%= semantic_form_for @active_admin_import_model, url: {action: :do_import}, html: {multipart: true} do |f| %>
-        <%= f.inputs do %>
-            <%= f.input :file, as: :file %>
-        <% end %>
-        <%= f.inputs "CSV options", for: [:csv_options, OpenStruct.new(@active_admin_import_model.csv_options)] do |csv| %>
-            <% csv.with_options input_html: {style: 'width:40px;'} do |opts| %>
-                <%= opts.input :col_sep %>
-                <%= opts.input :row_sep %>
-                <%= opts.input :quote_char %>
-            <% end %>
-        <% end %>
-    
-        <%= f.actions do %>
-            <%= f.action :submit, label: t("active_admin_import.import_btn"), button_html: {disable_with: t("active_admin_import.import_btn_disabled")} %>
-        <% end %>
-    <% end %>
-    
-```
-
- - call method with following parameters
-
-```ruby
-    ActiveAdmin.register Post  do
-        active_admin_import validate: false,
-                          template: 'import' ,
-                          template_object: ActiveAdminImport::Model.new(
-                              hint: "specify CSV options"
-                              csv_options: {col_sep: ";", row_sep: nil, quote_char: nil}
-                          )
-    end                      
-```
+[Check various examples](https://github.com/Fivell/active_admin_import/wiki)
 
 ## Dependencies
 
@@ -263,6 +95,14 @@ Tool                  | Description
 [rchardet]: https://github.com/jmhodges/rchardet
 [activerecord-import]: https://github.com/jmhodges/rchardet
 
+
+## Contributing
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
 
 
 
