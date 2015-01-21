@@ -181,7 +181,8 @@ Tool                    | Description
 
 #### Example7 update by id emulation
 
-     ```ruby
+```ruby
+
          ActiveAdmin.register Post  do
             active_admin_import({
                 before_batch_import: ->(importer) {
@@ -190,7 +191,7 @@ Tool                    | Description
             })
          end
 
-      ```
+```
 
 
 
