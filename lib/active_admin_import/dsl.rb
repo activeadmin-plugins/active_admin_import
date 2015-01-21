@@ -24,7 +24,7 @@ module ActiveAdminImport
     #
 
 
-    DEFAULT_RESULT_PROC = proc do |result, options|
+    DEFAULT_RESULT_PROC =  ->(result, options) do
 
       model_name = options[:resource_label].downcase
       plural_model_name = options[:plural_resource_label].downcase

@@ -91,7 +91,7 @@ Tool                    | Description
     ActiveAdmin.register Post  do
        active_admin_import  validate: false,
                             csv_options: {col_sep: ";" },
-                            before_import: proc{ Post.delete_all},
+                            before_import: ->(importer){ Post.delete_all },
                             batch_size: 1000
     
     
@@ -108,14 +108,14 @@ Tool                    | Description
         active_admin_import validate: false,
             csv_options: {col_sep: ";" },
             resource_class: ImportedPost ,  # we import data into another resource
-            before_import: proc{ ImportedPost.delete_all },
-            after_import: proc{
+            before_import: ->(importer){  ImportedPost.delete_all },
+            after_import:  ->(importer){
                 Post.transaction do
                     Post.delete_all
                     Post.connection.execute("INSERT INTO posts (SELECT * FROM imported_posts)")
                 end
             },
-            back: proc { config.namespace.resource_for(Post).route_collection_path } # redirect to post index
+            back: -> {  config.namespace.resource_for(Post).route_collection_path } # redirect to post index
     end
 ```
 
@@ -164,7 +164,7 @@ Tool                    | Description
 ```ruby
     ActiveAdmin.register Post  do
         active_admin_import validate: true,
-        before_batch_import: proc { |import|
+        before_batch_import: ->(importer) {
            import.file #current file used
            import.resource #ActiveRecord class to import to
            import.options # options
@@ -173,13 +173,28 @@ Tool                    | Description
            import.csv_lines #lines to import
            import.model #template_object instance
         },
-        after_batch_import: proc{ |import|
+        after_batch_import: ->(importer) {
            #the same
         }
     end
 ```    
 
-#### Example7 change csv values before import (find each 'Author name' column and replace it with authors_id before insert )
+#### Example7 update by id emulation
+
+     ```ruby
+         ActiveAdmin.register Post  do
+            active_admin_import({
+                before_batch_import: ->(importer) {
+                    Post.where(id: importer.values_at('id')).delete_all
+                }
+            })
+         end
+
+      ```
+
+
+
+#### Example8 change csv values before import (find each 'Author name' column and replace it with authors_id before insert )
 
    ```ruby
      ActiveAdmin.register Post  do
@@ -196,9 +211,9 @@ Tool                    | Description
   ```
 
 
-#### Example8 dynamic CSV options, template overriding
+#### Example9 dynamic CSV options, template overriding
 
- -  put overrided template to ```app/views/import.html.erb```
+ -  put overridden template to ```app/views/import.html.erb```
 
 ```erb
 
