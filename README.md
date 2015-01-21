@@ -178,8 +178,25 @@ Tool                    | Description
         }
     end
 ```    
-    
-#### Example7 dynamic CSV options, template overriding
+
+#### Example7 change csv values before import (find each 'Author name' column and replace it with authors_id before insert )
+
+   ```ruby
+     ActiveAdmin.register Post  do
+             active_admin_import validate: true,
+              headers_rewrites: { :'Author name' => :author_id },
+              before_batch_import: ->(importer) {
+                authors_names = importer.values_at(:author_id)
+                # replacing author name with author id
+                authors   = Author.where(name: authors_names).pluck(:name, :id)
+                options = Hash[*authors.flatten] # #{"Jane" => 2, "John" => 1}
+                importer.batch_replace(:author_id, options)
+              }
+         end
+  ```
+
+
+#### Example8 dynamic CSV options, template overriding
 
  -  put overrided template to ```app/views/import.html.erb```
 

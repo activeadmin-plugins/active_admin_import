@@ -44,6 +44,41 @@ describe 'import', type: :feature do
     find_button('Import').click
   end
 
+  context "posts index" do
+    before do
+        Author.create!(name: 'John', last_name: 'Doe')
+        Author.create!(name: 'Jane', last_name: 'Roe')
+        add_post_resource({
+          validate: true,
+          headers_rewrites: {
+              :'Author Name' => :author_id
+          },
+          before_batch_import: ->(importer) do
+            authors_names = importer.values_at(:author_id)
+            # replacing author name with author id
+            authors   = Author.where(name: authors_names).pluck(:name, :id)
+            #{"Jane" => 2, "John" => 1}
+            options = Hash[*authors.flatten]
+            importer.batch_replace(:author_id, options)
+          end
+        })
+        visit '/admin/posts/import'
+        upload_file!(:posts)
+    end
+
+    it "should resolve author_id by author name" do
+      Post.all.each do |post|
+        expect(Author.where(id: post.author.id)).to be_present
+      end
+    end
+
+    it "should be imported" do
+      expect(Post.count).to eq(2)
+      expect(page).to have_content "Successfully imported 2 posts"
+    end
+
+  end
+
   context "authors index" do
     before do
       add_author_resource
