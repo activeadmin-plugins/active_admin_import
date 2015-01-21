@@ -49,13 +49,30 @@ module ActiveAdminImport
       @import_options ||= options.slice(:validate, :on_duplicate_key_update, :ignore, :timestamps)
     end
 
+    def batch_replace(header_key, options)
+      index = header_index(header_key)
+      csv_lines.map! do |line|
+        from = line[index]
+        line[index] = options[from] if options.has_key?(from)
+        line
+      end
+    end
+
+    def values_at(header_key)
+      csv_lines.collect { |line| line[header_index(header_key)] }.uniq
+    end
+
+    def header_index(header_key)
+      headers.values.index(header_key)
+    end
+
     protected
 
     def process_file
       lines, batch_size = [], options[:batch_size].to_i
       File.open(file.path) do |f|
         # capture headers if not exist
-        prepare_headers{ CSV.parse(f.readline, @csv_options).first }
+        prepare_headers { CSV.parse(f.readline, @csv_options).first }
         f.each_line do |line|
           lines << line if line.present?
           if lines.size == batch_size || f.eof?
