@@ -1,7 +1,7 @@
 # ActiveAdminImport 
-The most fastest and efficient CSV import for Active Admin
-with support of validations, bulk inserts and encodings handling
-
+[The most fastest and efficient CSV import for Active Admin
+with support of validations, bulk inserts and encodings handling](http://fivell.github.io/active_admin_import)
+ 
 
 
 [![Build Status](http://img.shields.io/travis/Fivell/active_admin_import.svg)](https://travis-ci.org/Fivell/active_admin_import)
