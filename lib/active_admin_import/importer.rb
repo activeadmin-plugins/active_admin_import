@@ -87,7 +87,7 @@ module ActiveAdminImport
     def prepare_headers
       headers = self.headers.present? ? self.headers : yield
       @headers = Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })].with_indifferent_access
-      @headers.merge!(options[:headers_rewrites])
+      @headers.merge!(options[:headers_rewrites].symbolize_keys.slice(*@headers.symbolize_keys.keys))
       @headers
     end
 
