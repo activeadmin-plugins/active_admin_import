@@ -2,7 +2,8 @@ require 'csv'
 module ActiveAdminImport
   class Importer
 
-    attr_reader :resource, :options, :result, :headers, :csv_lines, :model
+    attr_reader :resource, :options, :result, :model
+    attr_accessor :csv_lines, :headers
 
     OPTIONS = [
         :validate,
@@ -85,7 +86,7 @@ module ActiveAdminImport
     end
 
     def prepare_headers
-      headers = self.headers.present? ? self.headers : yield
+      headers = self.headers.present? ? self.headers.map(&:to_s) : yield
       @headers = Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })].with_indifferent_access
       @headers.merge!(options[:headers_rewrites].symbolize_keys.slice(*@headers.symbolize_keys.keys))
       @headers
