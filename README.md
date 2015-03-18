@@ -83,7 +83,7 @@ Tool                    | Description
 
 #### Wiki
 
-[Check various examples](https://github.com/Fivell/active_admin_import/wiki)
+[Check various examples](https://github.com/activeadmin-plugins/active_admin_import/wiki)
 
 ## Dependencies
 
