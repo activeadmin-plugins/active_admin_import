@@ -4,8 +4,8 @@ describe 'import', type: :feature do
 
   shared_examples 'successful inserts' do |encoding, csv_file_name|
     let(:options) do
-      attributes = {force_encoding: encoding}
-      {template_object: ActiveAdminImport::Model.new(attributes)}
+      attributes = { force_encoding: encoding }
+      { template_object: ActiveAdminImport::Model.new(attributes) }
     end
 
     before do
@@ -64,12 +64,12 @@ describe 'import', type: :feature do
 
       context "no headers" do
         before do
-          add_post_resource(
-              template_object: ActiveAdminImport::Model.new(author_id: author.id, csv_headers: [:title, :body, :author_id]),
-              validate: true,
-              before_batch_import: ->(importer) do
-                importer.csv_lines.map! { |row| row << importer.model.author_id }
-              end
+          add_post_resource(template_object: ActiveAdminImport::Model.new(author_id: author.id,
+                                                                          csv_headers: [:title, :body, :author_id]),
+                            validate: true,
+                            before_batch_import: ->(importer) do
+                              importer.csv_lines.map! { |row| row << importer.model.author_id }
+                            end
           )
 
           visit "/admin/posts/import"
@@ -80,13 +80,12 @@ describe 'import', type: :feature do
 
       context "with headers" do
         before do
-          add_post_resource(
-              template_object: ActiveAdminImport::Model.new(author_id: author.id),
-              validate: true,
-              before_batch_import: ->(importer) do
-                importer.csv_lines.map! { |row| row << importer.model.author_id }
-                importer.headers.merge!({:'Author Id' => :author_id})
-              end
+          add_post_resource(template_object: ActiveAdminImport::Model.new(author_id: author.id),
+                            validate: true,
+                            before_batch_import: ->(importer) do
+                              importer.csv_lines.map! { |row| row << importer.model.author_id }
+                              importer.headers.merge!({ :'Author Id' => :author_id })
+                            end
           )
 
           visit "/admin/posts/import"
@@ -101,7 +100,7 @@ describe 'import', type: :feature do
         add_post_resource(
             validate: true,
             template_object: ActiveAdminImport::Model.new,
-            headers_rewrites: {:'Author Name' => :author_id},
+            headers_rewrites: { :'Author Name' => :author_id },
             before_batch_import: ->(importer) do
               authors_names = importer.values_at(:author_id)
               # replacing author name with author id
@@ -209,7 +208,7 @@ describe 'import', type: :feature do
 
     context "with hint defined" do
       let(:options) do
-        {template_object: ActiveAdminImport::Model.new(hint: "hint")}
+        { template_object: ActiveAdminImport::Model.new(hint: "hint") }
       end
       it "renders hint at upload page" do
         expect(page).to have_content options[:template_object].hint
@@ -273,8 +272,8 @@ describe 'import', type: :feature do
       context "without headers" do
         context "with known csv headers" do
           let(:options) do
-            attributes = {csv_headers: ['Name', 'Last name', 'Birthday']}
-            {template_object: ActiveAdminImport::Model.new(attributes)}
+            attributes = { csv_headers: ['Name', 'Last name', 'Birthday'] }
+            { template_object: ActiveAdminImport::Model.new(attributes) }
           end
 
           it "should import file" do
@@ -311,7 +310,7 @@ describe 'import', type: :feature do
         end
 
         context "without validation" do
-          let(:options) { {validate: false} }
+          let(:options) { { validate: false } }
           it "should render error" do
             upload_file!(:author_invalid)
             expect(page).to have_content "Successfully imported 1 author"
@@ -333,8 +332,8 @@ describe 'import', type: :feature do
 
         context "when not allowed" do
           let(:options) do
-            attributes = {allow_archive: false}
-            {template_object: ActiveAdminImport::Model.new(attributes)}
+            attributes = { allow_archive: false }
+            { template_object: ActiveAdminImport::Model.new(attributes) }
           end
           it "should render error" do
             with_zipped_csv(:authors) do
@@ -348,7 +347,7 @@ describe 'import', type: :feature do
 
       context "with different header attribute names" do
         let(:options) do
-          {headers_rewrites: {:'Second name' => :last_name}}
+          { headers_rewrites: { :'Second name' => :last_name } }
         end
 
         it "should import file" do
@@ -360,8 +359,8 @@ describe 'import', type: :feature do
 
       context "with semicolons separator" do
         let(:options) do
-          attributes = {csv_options: {col_sep: ";"}}
-          {template_object: ActiveAdminImport::Model.new(attributes)}
+          attributes = { csv_options: { col_sep: ";" } }
+          { template_object: ActiveAdminImport::Model.new(attributes) }
         end
 
         it "should import file" do
@@ -395,7 +394,7 @@ describe 'import', type: :feature do
   end
 
   context "with invalid options" do
-    let(:options) { {invalid_option: :invalid_value} }
+    let(:options) { { invalid_option: :invalid_value } }
 
     it "should raise TypeError" do
       expect { add_author_resource(options) }.to raise_error(ArgumentError)
