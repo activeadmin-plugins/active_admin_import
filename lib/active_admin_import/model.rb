@@ -138,8 +138,10 @@ module ActiveAdminImport
 
     def encode(data)
       data = content_encode(data) if force_encoding?
-      data = data.encode('UTF-8',
-                         invalid: :replace, undef: :replace)
+      data = data.encode(
+        'UTF-8',
+        invalid: :replace, undef: :replace, universal_newline: true
+      )
       begin
         data.sub("\xEF\xBB\xBF", '')  # bom
       rescue StandardError => _
