@@ -17,7 +17,7 @@ run "rm Gemfile"
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-generate :'active_admin:install'
+generate :'active_admin:install --skip-users'
 generate :'formtastic:install'
 
 run "rm -r test"
