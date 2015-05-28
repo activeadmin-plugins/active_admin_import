@@ -1,14 +1,14 @@
 # ActiveAdminImport 
 [The most fastest and efficient CSV import for Active Admin
-with support of validations, bulk inserts and encodings handling](http://fivell.github.io/active_admin_import)
+with support of validations, bulk inserts and encodings handling](http://activeadmin-plugins.github.io/active_admin_import/)
  
 
 
-[![Build Status](http://img.shields.io/travis/Fivell/active_admin_import.svg)](https://travis-ci.org/Fivell/active_admin_import)
+[![Build Status](https://img.shields.io/travis/activeadmin-plugins/active_admin_import.svg)](https://travis-ci.org/activeadmin-pluginsl/active_admin_import)
 [![Dependency Status](http://img.shields.io/gemnasium/Fivell/active_admin_import.svg)](https://gemnasium.com/Fivell/active_admin_import)
 [![Coverage Status](https://coveralls.io/repos/Fivell/active_admin_import/badge.svg)](https://coveralls.io/r/Fivell/active_admin_import)
 
-[![Code Climate](http://img.shields.io/codeclimate/github/Fivell/active_admin_import.svg)](https://codeclimate.com/github/Fivell/active_admin_import)
+[![Code Climate](http://img.shields.io/codeclimate/github/activeadmin-plugins/active_admin_import.svg)](https://codeclimate.com/github/activeadmin-plugins/active_admin_import)
 [![Gem Version](http://img.shields.io/gem/v/active_admin_import.svg)](https://rubygems.org/gems/active_admin_import)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://Fivell.mit-license.org)
 
@@ -26,7 +26,7 @@ gem "active_admin_import" , '2.1.2'
 or
 
 ```ruby
-gem "active_admin_import" , github: "Fivell/active_admin_import"
+gem "active_admin_import" , github: "active_admin_import/active_admin_import"
 
 ```
 
