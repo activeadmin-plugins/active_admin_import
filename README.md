@@ -26,7 +26,7 @@ gem "active_admin_import" , '2.1.2'
 or
 
 ```ruby
-gem "active_admin_import" , github: "active_admin_import/active_admin_import"
+gem "active_admin_import" , github: "activeadmin-plugins/active_admin_import"
 
 ```
 
