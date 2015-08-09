@@ -5,8 +5,8 @@ with support of validations, bulk inserts and encodings handling](http://activea
 
 
 [![Build Status](https://img.shields.io/travis/activeadmin-plugins/active_admin_import.svg)](https://travis-ci.org/activeadmin-pluginsl/active_admin_import)
-[![Dependency Status](http://img.shields.io/gemnasium/Fivell/active_admin_import.svg)](https://gemnasium.com/Fivell/active_admin_import)
-[![Coverage Status](https://coveralls.io/repos/Fivell/active_admin_import/badge.svg)](https://coveralls.io/r/Fivell/active_admin_import)
+[![Dependency Status](http://img.shields.io/gemnasium/Fivell/active_admin_import.svg)](https://gemnasium.com/activeadmin-plugins/active_admin_import)
+[![Coverage Status](https://coveralls.io/repos/Fivell/active_admin_import/badge.svg)](https://coveralls.io/r/activeadmin-plugins/active_admin_import)
 
 [![Code Climate](http://img.shields.io/codeclimate/github/activeadmin-plugins/active_admin_import.svg)](https://codeclimate.com/github/activeadmin-plugins/active_admin_import)
 [![Gem Version](http://img.shields.io/gem/v/active_admin_import.svg)](https://rubygems.org/gems/active_admin_import)
