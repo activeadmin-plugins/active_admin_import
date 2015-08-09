@@ -76,7 +76,8 @@ module ActiveAdminImport
             instance_exec result, options, &DEFAULT_RESULT_PROC
           end
         rescue ActiveRecord::Import::MissingColumnError, NoMethodError, ActiveRecord::StatementInvalid => e
-          flash[:error] = I18n.t('active_admin_import.file_error', message: e.message)
+          Rails.logger.error(I18n.t('active_admin_import.file_error', message: e.message))
+          flash[:error] = I18n.t('active_admin_import.file_error', message: e.message[0..200])
         end
         redirect_to options[:back]
       end
