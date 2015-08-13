@@ -40,7 +40,7 @@ And then execute:
   <li> Replacements/Updates support</li>
   <li> Encoding handling</li>
   <li> CSV options</li>
-  <li> Ability to descibe/change CSV headers</li>
+  <li> Ability to describe/change CSV headers</li>
   <li> Bulk import (activerecord-import)</li>
   <li> Callbacks</li>
   <li> Zip files</li>
@@ -65,6 +65,7 @@ Tool                    | Description
 :csv_options			|hash with column separator, row separator, etc 
 :validate				|bool means perform validations or not
 :batch_size				|integer value of max  record count inserted by 1 query/transaction
+:batch_transaction    |bool, if batch import using transaction, false by default
 :before_import			|proc for before import action, hook called with  importer object
 :after_import			|proc for after import action, hook called with  importer object
 :before_batch_import	|proc for before each batch action, called with  importer object
@@ -93,7 +94,7 @@ Tool                  | Description
 [activerecord-import] | Powerful library for bulk inserting data using ActiveRecord.
 
 [rchardet]: https://github.com/jmhodges/rchardet
-[activerecord-import]: https://github.com/jmhodges/rchardet
+[activerecord-import]: https://github.com/zdennis/activerecord-import
 
 
 ## Contributing
