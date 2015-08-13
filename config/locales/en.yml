@@ -11,8 +11,8 @@ en:
       one: "Successfully imported 1 %{model}"
       other: "Successfully imported %{count} %{plural_model}"
     failed:
-      one:   "Failed to import 1 %{model}"
-      other: "Failed to import %{count} %{plural_model}"
+      one:   "Failed to import 1 %{model}: %{message}"
+      other: "Failed to import %{count} %{plural_model}: %{message}"
     import_model: "Import %{plural_model}"
     import_btn: "Import"
     import_btn_disabled: "Wait..."
