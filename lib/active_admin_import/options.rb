@@ -6,6 +6,7 @@ module ActiveAdminImport
         :csv_options,
         :validate,
         :batch_size,
+        :batch_transaction,
         :before_import,
         :after_import,
         :before_batch_import,
