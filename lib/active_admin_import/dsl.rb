@@ -8,6 +8,7 @@ module ActiveAdminImport
     # +back+:: resource action to redirect after processing
     # +csv_options+:: hash to override default CSV options
     # +batch_size+:: integer value of max  record count inserted by 1 query/transaction
+    # +batch_transaction+:: bool, if batch import using transaction, false by default
     # +before_import+:: proc for before import action, hook called with  importer object
     # +after_import+:: proc for after import action, hook called with  importer object
     # +before_batch_import+:: proc for before each batch action, called with  importer object
@@ -31,11 +32,12 @@ module ActiveAdminImport
       if result.empty?
         flash[:warning] = I18n.t('active_admin_import.file_empty_error')
       else
-        if result.has_imported?
-          flash[:notice] = I18n.t('active_admin_import.imported', count: result.imported_qty, model: model_name, plural_model: plural_model_name)
-        end
         if result.has_failed?
           flash[:error] = I18n.t('active_admin_import.failed', count: result.failed.count, model: model_name, plural_model: plural_model_name, message: result.failed_message)
+          return if options[:batch_transaction]
+        end
+        if result.has_imported?
+          flash[:notice] = I18n.t('active_admin_import.imported', count: result.imported_qty, model: model_name, plural_model: plural_model_name)
         end
       end
     end

@@ -65,6 +65,7 @@ Tool                    | Description
 :csv_options			|hash with column separator, row separator, etc 
 :validate				|bool means perform validations or not
 :batch_size				|integer value of max  record count inserted by 1 query/transaction
+:batch_transaction    |bool, if batch import using transaction, false by default
 :before_import			|proc for before import action, hook called with  importer object
 :after_import			|proc for after import action, hook called with  importer object
 :before_batch_import	|proc for before each batch action, called with  importer object
