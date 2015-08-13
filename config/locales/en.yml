@@ -2,6 +2,7 @@ en:
   active_admin:
     import: "Import"
   active_admin_import:
+    file: 'File'
     file_error: "Error: %{message}"
     file_format_error: "You can import only valid csv file"
     file_empty_error: "You can't import empty file"
@@ -16,3 +17,7 @@ en:
     import_model: "Import %{plural_model}"
     import_btn: "Import"
     import_btn_disabled: "Wait..."
+    csv_options: "CSV options"
+    col_sep: 'Col sep'
+    row_sep: 'Row sep'
+    quote_char: 'Quote char'
