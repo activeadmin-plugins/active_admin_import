@@ -4,7 +4,7 @@ generate :model, 'author name:string{10}:uniq last_name:string birthday:date'
 generate :model, 'post title:string:uniq body:text author:references'
 
 #Add validation
-inject_into_file "app/models/author.rb", "  validates_presence_of :name\n", after: "Base\n"
+inject_into_file "app/models/author.rb", "  validates_presence_of :name\n  validates_uniqueness_of :last_name\n", after: "Base\n"
 inject_into_file "app/models/post.rb", "   validates_presence_of :author\n", after: ":author\n"
 
 # Configure default_url_options in test environment
