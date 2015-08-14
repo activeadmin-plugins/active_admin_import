@@ -292,11 +292,38 @@ describe 'import', type: :feature do
         end
       end
 
-      context "with invalid data insert" do
+      context "with invalid data insert on DB constraint" do
+        # :name field has an uniq index
         it "should render error" do
           upload_file!(:authors_invalid_db)
           expect(page).to have_content "Error:"
           expect(Author.count).to eq(0)
+        end
+      end
+
+      context "with invalid data insert on model validation" do
+        let(:options) { { validate: true } }
+
+        before do
+          Author.create!(name: "John", last_name: "Doe")
+        end
+
+        it "should render both successful and failed message" do
+          upload_file!(:authors_invalid_model)
+          expect(page).to have_content "Failed to import 1 author"
+          expect(page).to have_content "Successfully imported 1 author"
+          expect(Author.count).to eq(2)
+        end
+
+        context "use batch_transaction to make transaction work on model validation" do
+          let(:options) { { validate: true, batch_transaction: true } }
+
+          it "should render only the failed message" do
+            upload_file!(:authors_invalid_model)
+            expect(page).to     have_content "Failed to import 1 author"
+            expect(page).to_not have_content "Successfully imported"
+            expect(Author.count).to eq(1)
+          end
         end
       end
 
