@@ -28,8 +28,9 @@ module ActiveAdminImport
       total == 0
     end
 
-    def failed_message
-      failed.map{|record|
+    def failed_message(limit: nil)
+      limit ||= failed.count
+      failed.first(limit).map{|record|
         errors = record.errors
         (errors.full_messages.zip errors.keys.map{|k| record.send k}).map{|ms| ms.join(' - ')}.join(', ')
       }.join(" ; ")
