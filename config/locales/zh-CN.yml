@@ -1,0 +1,24 @@
+zh-CN:
+  active_admin:
+    import: "导入"
+    do_import: "导入"
+  active_admin_import:
+    file: '文件'
+    file_error: "导入错误: %{message}"
+    file_format_error: "请您上传 CSV 格式的文件"
+    file_empty_error: "您上传的文件为空"
+    no_file_error: "请您选择要上传的文件"
+    details: "请您选择要上传的文件"
+    imported:
+      one: "成功导入 1 份%{model}"
+      other: "成功导入 %{count} 份%{plural_model}"
+    failed:
+      one:   "未能导入 1 份%{model}: %{message}"
+      other: "未能导入 %{count} 份%{plural_model}: %{message}"
+    import_model: "导入%{plural_model}"
+    import_btn: "导入"
+    import_btn_disabled: "请稍等..."
+    csv_options: "选项"
+    col_sep: '列分隔符'
+    row_sep: '行分隔符'
+    quote_char: '引用字符'

@@ -40,7 +40,7 @@ And then execute:
   <li> Replacements/Updates support</li>
   <li> Encoding handling</li>
   <li> CSV options</li>
-  <li> Ability to descibe/change CSV headers</li>
+  <li> Ability to describe/change CSV headers</li>
   <li> Bulk import (activerecord-import)</li>
   <li> Callbacks</li>
   <li> Zip files</li>
@@ -94,7 +94,7 @@ Tool                  | Description
 [activerecord-import] | Powerful library for bulk inserting data using ActiveRecord.
 
 [rchardet]: https://github.com/jmhodges/rchardet
-[activerecord-import]: https://github.com/jmhodges/rchardet
+[activerecord-import]: https://github.com/zdennis/activerecord-import
 
 
 ## Contributing
