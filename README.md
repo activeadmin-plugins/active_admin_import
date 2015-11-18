@@ -4,7 +4,7 @@ with support of validations, bulk inserts and encodings handling](http://activea
  
 
 
-[![Build Status](https://img.shields.io/travis/activeadmin-plugins/active_admin_import.svg)](https://travis-ci.org/activeadmin-pluginsl/active_admin_import)
+[![Build Status](https://img.shields.io/travis/activeadmin-plugins/active_admin_import.svg)](https://travis-ci.org/activeadmin-plugins/active_admin_import)
 [![Dependency Status](http://img.shields.io/gemnasium/activeadmin-plugins/active_admin_import.svg)](https://gemnasium.com/activeadmin-plugins/active_admin_import)
 [![Coverage Status](https://coveralls.io/repos/activeadmin-plugins/active_admin_import/badge.svg)](https://coveralls.io/r/activeadmin-plugins/active_admin_import)
 
