@@ -20,7 +20,12 @@ end
 
 # Ensure the Active Admin load path is happy
 require 'rails'
+
 require 'active_model'
+
+# require ActiveRecord to ensure that Ransack loads correctly
+require 'active_record'
+
 require 'active_admin'
 ActiveAdmin.application.load_paths = [ENV['RAILS_ROOT'] + "/app/admin"]
 
