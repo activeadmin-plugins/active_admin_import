@@ -23,7 +23,6 @@ generate :'formtastic:install'
 run "rm -r test"
 run "rm -r spec"
 
-# Setup a root path for devise
 route "root :to => 'admin/dashboard#index'"
 
 rake "db:migrate"

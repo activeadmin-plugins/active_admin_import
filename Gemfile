@@ -3,13 +3,10 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in active_admin_importable.gemspec
 gemspec
 group :test do
-  gem 'rails',  '4.1.9'
+  gem 'rails',  '4.2.0'
   gem 'rspec-rails'
-  gem 'activeadmin', github: 'activeadmin'  , ref: '54bede0558a99ab759f98f9b24e1b0144063a81e'
-
+  gem 'activeadmin', github: 'activeadmin'  , ref: 'd787029e5523be2eb2ed99816eb0cecca2b72862'
   gem 'coveralls', require: false # Test coverage website. Go to https://coveralls.io
-
-  gem 'devise'
   gem 'sass-rails'
   gem 'sqlite3'
   gem 'launchy'
