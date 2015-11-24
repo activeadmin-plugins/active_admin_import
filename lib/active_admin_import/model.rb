@@ -101,10 +101,12 @@ module ActiveAdminImport
       [
           'text/csv',
           'text/x-csv',
+          'text/x-comma-separated-values',
           'text/comma-separated-values',
           'application/csv',
           'application/vnd.ms-excel',
-          'application/vnd.msexcel'
+          'application/vnd.msexcel',
+          
       ]
     end
 
