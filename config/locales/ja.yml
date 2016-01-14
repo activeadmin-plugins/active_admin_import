@@ -1,0 +1,24 @@
+ja:
+  active_admin:
+    import: "インポート"
+  active_admin_import:
+    file: "ファイル"
+    file_error: "エラー: %{message}"
+    file_format_error: "有効なCSVファイルでないとインポートできません"
+    file_empty_error: "空ファイルはインポートできません"
+    no_file_error: "インポートするファイルを選択してください"
+    details: "インポートするファイルを選択してください"
+    imported:
+      one: "1つの%{model}のインポートに成功しました"
+      other: "%{count}つの%{plural_model}のインポートに成功しました"
+    failed:
+      one: "1つの%{model}のインポートに失敗しました: %{message}"
+      other: "%{count}つの%{plural_model}のインポートに失敗しました: %{message}"
+    import_model: "%{plural_model}をインポートする"
+    import_btn: "インポート"
+    import_btn_disabled: "お待ちください..."
+    csv_options: "CSVオプション"
+    col_sep: "カラム区切り"
+    row_sep: "行区切り"
+    quote_char: "クォート文字"
+
