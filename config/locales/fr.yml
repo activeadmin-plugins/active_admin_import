@@ -1,0 +1,23 @@
+fr:
+  active_admin:
+    import: "Importer"
+  active_admin_import:
+    file: 'Fichier'
+    file_error: "Erreur: %{message}"
+    file_format_error: "Vous ne pouvez importer qu'un fichier csv valide"
+    file_empty_error: "Vous ne pouvez pas importer de ficher vide"
+    no_file_error: "Veuillez sélectionner un fichier"
+    details: "Veuillez sélectionner un fichier à importer"
+    imported:
+      one: "Importé 1 %{model} avec succès"
+      other: "Importé %{count} %{plural_model} avec succès"
+    failed:
+      one: "Impossible d'importer 1 %{model}: %{message}"
+      other: "Impossible d'importer %{count} %{plural_model}: %{message}"
+    import_model: "Importer %{plural_model}"
+    import_btn: "Importer"
+    import_btn_disabled: "Veuillez patienter..."
+    csv_options: "Options CSV"
+    col_sep: 'Sép de col'
+    row_sep: 'Sep de ligne'
+    quote_char: 'Guillemets'
