@@ -16,10 +16,10 @@ Gem::Specification.new do |gem|
   gem.version = ActiveAdminImport::VERSION
 
 
-  gem.add_runtime_dependency 'activerecord-import', '~> 0.10.0'
+  gem.add_runtime_dependency 'activerecord-import', '~> 0.13.0'
   gem.add_runtime_dependency 'rchardet', '~> 1.6'
 
-  gem.add_runtime_dependency 'rubyzip', '~> 1.1', '>= 1.0.0'
+  gem.add_runtime_dependency 'rubyzip', '~> 1.2'
   gem.add_dependency "rails", ">= 4.0"
 
 end
