@@ -235,6 +235,12 @@ describe 'import', type: :feature do
         end
       end
 
+      context "authors_test_mac" do
+        include_examples 'successful inserts',
+                         :auto,
+                         :authors_test_mac
+      end
+
       context "auto detect encoding" do
         include_examples 'successful inserts',
                          :auto,
