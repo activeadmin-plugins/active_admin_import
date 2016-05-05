@@ -77,7 +77,7 @@ module ActiveAdminImport
           else
             instance_exec result, options, &DEFAULT_RESULT_PROC
           end
-        rescue ActiveRecord::Import::MissingColumnError, NoMethodError, ActiveRecord::StatementInvalid => e
+        rescue ActiveRecord::Import::MissingColumnError, NoMethodError, ActiveRecord::StatementInvalid,  CSV::MalformedCSVError => e
           Rails.logger.error(I18n.t('active_admin_import.file_error', message: e.message))
           flash[:error] = I18n.t('active_admin_import.file_error', message: e.message[0..200])
         end
