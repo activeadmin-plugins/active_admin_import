@@ -16,5 +16,9 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'poltergeist'
-  gem "mime-types", (RUBY_VERSION >= "2.0" ? "~> 3.0" : "~> 2.99")
+  if RUBY_VERSION >= '2.0'
+    gem 'mime-types',  '~> 3.0'
+  else
+    gem 'mime-types', '< 3.0.0'
+  end
 end
