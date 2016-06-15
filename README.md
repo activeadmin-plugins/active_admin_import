@@ -19,7 +19,7 @@ master can be used with AA 1.0.0 and Rails >= 4.1
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "active_admin_import" , '2.1.2'
+gem "active_admin_import" , '3.0.0.pre'
 
 ```
 or
