@@ -69,7 +69,7 @@ Tool                    | Description
 :after_import			|proc for after import action, hook called with  importer object
 :before_batch_import	|proc for before each batch action, called with  importer object
 :after_batch_import		|proc for after each batch action, called with  importer object
-:on_duplicate_key_update|an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE ability.
+:on_duplicate_key_update|an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE or Postgres 9.5+ ON CONFLICT DO UPDATE ability.
 :timestamps				|bool, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
 :ignore					|bool, tells activerecord-import toto use MySQL's INSERT IGNORE ability
 :template				|custom template rendering
