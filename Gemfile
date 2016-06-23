@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 source 'https://rubygems.org'
 
 # Specify your gem's dependencies in active_admin_importable.gemspec
@@ -7,7 +8,6 @@ rails_version = ENV['RAILS'] || default_rails_version
 rails_major = rails_version[0]
 
 group :test do
-
   gem 'rails', rails_version
   if rails_major == '5'
     gem 'inherited_resources', github: 'activeadmin/inherited_resources'
@@ -20,6 +20,7 @@ group :test do
   gem 'coveralls', require: false # Test coverage website. Go to https://coveralls.io
   gem 'sqlite3'
   gem 'launchy'
+  gem 'pry'
   gem 'database_cleaner'
   gem 'capybara'
   gem 'selenium-webdriver'

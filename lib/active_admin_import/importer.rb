@@ -1,23 +1,23 @@
+# frozen_string_literal: true
 require 'csv'
 module ActiveAdminImport
   class Importer
-
     attr_reader :resource, :options, :result, :model
     attr_accessor :csv_lines, :headers
 
     OPTIONS = [
-        :validate,
-        :on_duplicate_key_update,
-        :ignore,
-        :timestamps,
-        :before_import,
-        :after_import,
-        :before_batch_import,
-        :after_batch_import,
-        :headers_rewrites,
-        :batch_size,
-        :batch_transaction,
-        :csv_options
+      :validate,
+      :on_duplicate_key_update,
+      :ignore,
+      :timestamps,
+      :before_import,
+      :after_import,
+      :before_batch_import,
+      :after_batch_import,
+      :headers_rewrites,
+      :batch_size,
+      :batch_transaction,
+      :csv_options
     ].freeze
 
     def initialize(resource, model, options)
@@ -55,7 +55,7 @@ module ActiveAdminImport
       index = header_index(header_key)
       csv_lines.map! do |line|
         from = line[index]
-        line[index] = options[from] if options.has_key?(from)
+        line[index] = options[from] if options.key?(from)
         line
       end
     end
@@ -71,7 +71,8 @@ module ActiveAdminImport
     protected
 
     def process_file
-      lines, batch_size = [], options[:batch_size].to_i
+      lines = []
+      batch_size = options[:batch_size].to_i
       File.open(file.path) do |f|
         # capture headers if not exist
         prepare_headers { CSV.parse(f.readline, @csv_options).first }
@@ -109,7 +110,7 @@ module ActiveAdminImport
     end
 
     def assign_options(options)
-      @options = {batch_size: 1000, validate: true}.merge(options.slice(*OPTIONS))
+      @options = { batch_size: 1000, validate: true }.merge(options.slice(*OPTIONS))
       detect_csv_options
     end
 
@@ -120,6 +121,5 @@ module ActiveAdminImport
                        options[:csv_options] || {}
                      end.reject { |_, value| value.blank? }
     end
-
   end
 end
