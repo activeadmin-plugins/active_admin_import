@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'activerecord-import'
 require 'active_admin'
 require 'active_admin_import/version'
@@ -9,5 +10,3 @@ require 'active_admin_import/importer'
 require 'active_admin_import/model'
 require 'active_admin_import/authorization'
 ::ActiveAdmin::DSL.send(:include, ActiveAdminImport::DSL)
-
-
