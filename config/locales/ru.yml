@@ -1,0 +1,27 @@
+ru:
+  active_admin:
+    import: "Импорт"
+  active_admin_import:
+    file: 'Файл'
+    file_error: "Ошибка: %{message}"
+    file_format_error: "Файл должен быть корректно сформатированным CSV-файлом"
+    file_empty_error: "Файл пуст"
+    no_file_error: "Выберите файл для импорта"
+    details: "Выберите файл для импорта"
+    imported:
+      one: "Успешно импортировано: 1 %{model}"
+      few: "Успешно импортировано: %{count} %{plural_model}"
+      many: "Успешно импортировано: %{count} %{plural_model}"
+      other: "Успешно импортировано: %{count} %{plural_model}"
+    failed:
+      one:   "Не удалось импортировать: 1 %{model}: %{message}"
+      few: "Не удалось импортировать: %{count} %{plural_model}: %{message}"
+      many: "Не удалось импортировать: %{count} %{plural_model}: %{message}"
+      other: "Не удалось импортировать: %{count} %{plural_model}: %{message}"
+    import_model: "Импорт %{plural_model}"
+    import_btn: "Импортировать"
+    import_btn_disabled: "Подождите..."
+    csv_options: "Параметры CSV"
+    col_sep: 'Разделитель колонок'
+    row_sep: 'Разделитель строк'
+    quote_char: 'Обособляющий символ'
