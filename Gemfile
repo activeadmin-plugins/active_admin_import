@@ -16,9 +16,6 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'poltergeist'
-  if RUBY_VERSION >= '2.0'
-    gem 'mime-types',  '~> 3.0'
-  else
-    gem 'mime-types', '< 3.0.0'
-  end
+  gem 'json', '~> 1.8', platforms: :ruby_19 # Json 2.0 requires Ruby >= 2.0
+  gem 'mime-types', '< 3.0.0', platforms: [:ruby_19, :ruby_20]
 end
