@@ -7,7 +7,7 @@ group :test do
   gem 'sprockets-rails', '2.3.3'
   gem 'rails',  "#{ENV['RAILS'] || default_rails_version}"
   gem 'rspec-rails'
-  gem 'activeadmin', github: 'activeadmin'  , ref: 'd787029e5523be2eb2ed99816eb0cecca2b72862'
+  gem 'activeadmin', '1.0.0.pre4'
   gem 'coveralls', require: false # Test coverage website. Go to https://coveralls.io
   gem 'sass-rails'
   gem 'sqlite3'
@@ -16,6 +16,8 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'poltergeist'
-  gem 'json', '~> 1.8', platforms: :ruby_19 # Json 2.0 requires Ruby >= 2.0
+  gem 'json', '< 2.0', platforms: :ruby_19 # Json 2.0 requires Ruby >= 2.0
   gem 'mime-types', '< 3.0.0', platforms: [:ruby_19, :ruby_20]
+  gem 'tins', '~> 1.6.0', platforms: :ruby_19
+  gem 'sass', '< 3.5', platforms: :ruby_19
 end
