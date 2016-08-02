@@ -18,10 +18,5 @@ group :test do
   gem 'poltergeist'
   gem 'json', '< 2.0', platforms: :ruby_19 # Json 2.0 requires Ruby >= 2.0
   gem 'mime-types', '< 3.0.0', platforms: [:ruby_19, :ruby_20]
-  gem 'tins', '~> 1.6.0', platforms: :ruby_19
-  gem 'sass', '< 3.5', platforms: :ruby_19
-  gem 'sqlite3', platform: :mri
-# for JRuby
-  gem 'jdbc-sqlite3', platform: :jruby
-  gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
+  gem 'tins', '~> 1.5.0', platforms: :ruby_19
 end
