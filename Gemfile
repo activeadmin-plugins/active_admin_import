@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gemspec
 group :test do
   default_rails_version = '4.2.6'
-  gem 'sprockets-rails', '2.3.3'
+  # gem 'sprockets-rails', '2.3.3'
   gem 'rails',  "#{ENV['RAILS'] || default_rails_version}"
   gem 'rspec-rails'
   gem 'activeadmin', '1.0.0.pre4'
