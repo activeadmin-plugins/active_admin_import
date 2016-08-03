@@ -9,17 +9,14 @@ rails_major   = rails_version[0]
 group :test do
 
   gem 'rails', rails_version
-  if rails_major == '5'
-    # Note: when updating this list, be sure to also update the README
-    gem 'sass-rails',          github: 'rails/sass-rails'
-    gem 'inherited_resources', github: 'activeadmin/inherited_resources'
-    gem 'ransack',             github: 'activerecord-hackery/ransack'
-  end
+   if rails_major == '5'
+     gem 'activeadmin', github: 'activeadmin/activeadmin'
+   else
+     gem 'activeadmin', '1.0.0.pre4'
+   end
 
   gem 'rspec-rails'
-  gem 'activeadmin', '1.0.0.pre4'
   gem 'coveralls', require: false # Test coverage website. Go to https://coveralls.io
-  gem 'sass-rails'
   gem 'sqlite3'
   gem 'launchy'
   gem 'database_cleaner'
