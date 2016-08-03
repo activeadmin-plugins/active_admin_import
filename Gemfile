@@ -2,10 +2,20 @@ source 'https://rubygems.org'
 
 # Specify your gem's dependencies in active_admin_importable.gemspec
 gemspec
+default_rails_version = '4.2.6'
+rails_version = ENV['RAILS'] || default_rails_version
+rails_major   = rails_version[0]
+
 group :test do
-  default_rails_version = '4.2.6'
-  # gem 'sprockets-rails', '2.3.3'
-  gem 'rails',  "#{ENV['RAILS'] || default_rails_version}"
+
+  gem 'rails', rails_version
+  if rails_major == '5'
+    # Note: when updating this list, be sure to also update the README
+    gem 'sass-rails',          github: 'rails/sass-rails'
+    gem 'inherited_resources', github: 'activeadmin/inherited_resources'
+    gem 'ransack',             github: 'activerecord-hackery/ransack'
+  end
+
   gem 'rspec-rails'
   gem 'activeadmin', '1.0.0.pre4'
   gem 'coveralls', require: false # Test coverage website. Go to https://coveralls.io
