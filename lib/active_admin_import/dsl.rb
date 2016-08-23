@@ -63,7 +63,8 @@ module ActiveAdminImport
 
       collection_action :do_import, method: :post do
         authorize!(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
-
+        _params = params.respond_to?(:to_unsafe_h) ? params.to_unsafe_h : params
+        params = ActiveSupport::HashWithIndifferentAccess.new _params
         @active_admin_import_model = options[:template_object]
         @active_admin_import_model.assign_attributes(params[params_key].to_unsafe_h.deep_symbolize_keys) if params[params_key]
         #go back to form
@@ -77,7 +78,7 @@ module ActiveAdminImport
           else
             instance_exec result, options, &DEFAULT_RESULT_PROC
           end
-        rescue ActiveRecord::Import::MissingColumnError, NoMethodError, ActiveRecord::StatementInvalid => e
+        rescue ActiveRecord::Import::MissingColumnError, NoMethodError, ActiveRecord::StatementInvalid,  CSV::MalformedCSVError => e
           Rails.logger.error(I18n.t('active_admin_import.file_error', message: e.message))
           flash[:error] = I18n.t('active_admin_import.file_error', message: e.message[0..200])
         end

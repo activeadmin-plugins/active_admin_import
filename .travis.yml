@@ -1,9 +1,20 @@
 script: bundle exec rspec spec
+env:
+  matrix:
+    - RAILS=4.0.13
+    - RAILS=4.1.15
+    - RAILS=4.2.6
+    - RAILS=5.0.0
 rvm:
   - 1.9.3
   - 2.0.0
-  - 2.1.5
-  - 2.2.0
+  - 2.1.9
+  - 2.2.5
+  - 2.3.1
+matrix:
+  exclude:
+    - rvm: 1.9.3
+      env: RAILS=5.0.0
 before_install:
   - gem install bundler -v '= 1.9.3'
   - gem update --system
