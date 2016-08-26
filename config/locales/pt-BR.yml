@@ -1,0 +1,23 @@
+pt-BR:
+  active_admin:
+    import: "Importar"
+  active_admin_import:
+    file: 'Arquivo'
+    file_error: "Error: %{message}"
+    file_format_error: "Você só pode importar arquivos csv válidos"
+    file_empty_error: "Você não pode importar arquivos vázios"
+    no_file_error: "Por favor, selecione o arquivo para importar"
+    details: "Por favor, selecione o arquivo para importar"
+    imported:
+      one: "Importado com sucesso 1 %{model}"
+      other: "Importado com sucesso %{count} %{plural_model}"
+    failed:
+      one:   "Não foi possível importar 1 %{model}: %{message}"
+      other: "Não foi possível importar %{count} %{plural_model}: %{message}"
+    import_model: "Importar %{plural_model}"
+    import_btn: "Importr"
+    import_btn_disabled: "Aguarde..."
+    csv_options: "opções CSV"
+    col_sep: 'Col sep'
+    row_sep: 'Row sep'
+    quote_char: 'Quote char'
