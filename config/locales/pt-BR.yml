@@ -15,7 +15,7 @@ pt-BR:
       one:   "Não foi possível importar 1 %{model}: %{message}"
       other: "Não foi possível importar %{count} %{plural_model}: %{message}"
     import_model: "Importar %{plural_model}"
-    import_btn: "Importr"
+    import_btn: "Importar"
     import_btn_disabled: "Aguarde..."
     csv_options: "opções CSV"
     col_sep: 'Col sep'
