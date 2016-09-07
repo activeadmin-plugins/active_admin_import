@@ -4,16 +4,17 @@ source 'https://rubygems.org'
 gemspec
 default_rails_version = '4.2.6'
 rails_version = ENV['RAILS'] || default_rails_version
-rails_major   = rails_version[0]
+rails_major = rails_version[0]
 
 group :test do
 
   gem 'rails', rails_version
-   if rails_major == '5'
-     gem 'activeadmin', github: 'activeadmin/activeadmin'
-   else
-     gem 'activeadmin', '1.0.0.pre4'
-   end
+  if rails_major == '5'
+    gem 'inherited_resources', github: 'activeadmin/inherited_resources'
+    gem 'activeadmin', github: 'activeadmin/activeadmin'
+  else
+    gem 'activeadmin', '1.0.0.pre4'
+  end
 
   gem 'rspec-rails'
   gem 'coveralls', require: false # Test coverage website. Go to https://coveralls.io
