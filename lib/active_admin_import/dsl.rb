@@ -66,7 +66,7 @@ module ActiveAdminImport
         _params = params.respond_to?(:to_unsafe_h) ? params.to_unsafe_h : params
         params = ActiveSupport::HashWithIndifferentAccess.new _params
         @active_admin_import_model = options[:template_object]
-        @active_admin_import_model.assign_attributes(params[params_key].try(:deep_symbolize_keys) || {})
+        @active_admin_import_model.assign_attributes(params[params_key].to_unsafe_h.deep_symbolize_keys) if params[params_key]
         #go back to form
         return render template: options[:template] unless @active_admin_import_model.valid?
         @importer = Importer.new(options[:resource_class], @active_admin_import_model, options)
