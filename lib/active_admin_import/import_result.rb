@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ActiveAdminImport
   class ImportResult
     attr_reader :failed, :total
@@ -16,12 +17,12 @@ module ActiveAdminImport
       total - failed.count
     end
 
-    def has_imported?
+    def imported?
       imported_qty > 0
     end
 
-    def has_failed?
-      @failed.any?
+    def failed?
+      failed.any?
     end
 
     def empty?
@@ -30,10 +31,10 @@ module ActiveAdminImport
 
     def failed_message(options = {})
       limit = options.fetch(:limit, failed.count)
-      failed.first(limit).map{|record|
+      failed.first(limit).map do |record|
         errors = record.errors
-        (errors.full_messages.zip errors.keys.map{|k| record.send k}).map{|ms| ms.join(' - ')}.join(', ')
-      }.join(" ; ")
+        (errors.full_messages.zip errors.keys.map { |k| record.send k }).map { |ms| ms.join(' - ') }.join(', ')
+      end.join(' ; ')
     end
   end
 end

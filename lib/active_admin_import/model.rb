@@ -1,17 +1,17 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 require 'rchardet'
 
 module ActiveAdminImport
   class Model
-
     include ActiveModel::Model
     include ActiveModel::Validations
     include ActiveModel::Validations::Callbacks
 
     validates :file, presence: {
-      message: ->(*_){ I18n.t("active_admin_import.no_file_error") }
-    }, unless: ->(me){ me.new_record? }
+      message: ->(*_) { I18n.t('active_admin_import.no_file_error') }
+    }, unless: ->(me) { me.new_record? }
 
     validate :correct_content_type, if: ->(me) { me.file.present? }
     validate :file_contents_present, if: ->(me) { me.file.present? }
@@ -21,7 +21,7 @@ module ActiveAdminImport
 
     attr_reader :attributes
 
-    def initialize(args={})
+    def initialize(args = {})
       @new_record = true
       @attributes = {}
       assign_attributes(default_attributes.merge(args), true)
@@ -44,21 +44,21 @@ module ActiveAdminImport
         allow_archive: true,
         csv_headers: [],
         file: nil,
-        force_encoding: "UTF-8",
-        hint: ""
+        force_encoding: 'UTF-8',
+        hint: ''
       }
     end
 
     def allow_archive?
-      !!attributes[:allow_archive]
+      attributes[:allow_archive].present?
     end
 
     def new_record?
-      !!@new_record
+      @new_record.present?
     end
 
     def force_encoding?
-      !!attributes[:force_encoding]
+      attributes[:force_encoding].present?
     end
 
     def persisted?
@@ -69,7 +69,7 @@ module ActiveAdminImport
       file_type == 'application/zip'
     end
 
-    alias :to_hash :attributes
+    alias to_hash attributes
 
     protected
 
@@ -91,33 +91,35 @@ module ActiveAdminImport
     def unzip_file
       Zip::File.open(file_path) do |zip_file|
         self.file = Tempfile.new('active-admin-import-unzipped')
-        data = zip_file.entries.select { |f| f.file? }.first.get_input_stream.read
-        self.file << data
-        self.file.close
+        data = zip_file.entries.select(&:file?).first.get_input_stream.read
+        file << data
+        file.close
       end
     end
 
     def csv_allowed_types
       [
-          'text/csv',
-          'text/x-csv',
-          'text/x-comma-separated-values',
-          'text/comma-separated-values',
-          'application/csv',
-          'application/vnd.ms-excel',
-          'application/vnd.msexcel',
-          
+        'text/csv',
+        'text/x-csv',
+        'text/x-comma-separated-values',
+        'text/comma-separated-values',
+        'application/csv',
+        'application/vnd.ms-excel',
+        'application/vnd.msexcel'
+
       ]
     end
 
     def correct_content_type
-      unless file.blank? || file.is_a?(Tempfile)
-        errors.add(:file, I18n.t('active_admin_import.file_format_error')) unless csv_allowed_types.include? file_type
-      end
+      return if file.blank? ||
+          file.is_a?(Tempfile) ||
+          (csv_allowed_types.include? file_type)
+      errors.add(:file, I18n.t('active_admin_import.file_format_error'))
     end
 
     def file_contents_present
-      errors.add(:file, I18n.t('active_admin_import.file_empty_error')) if File.zero?(file_path)
+      return unless File.zero?(file_path)
+      errors.add(:file, I18n.t('active_admin_import.file_empty_error'))
     end
 
     def file_type
@@ -128,10 +130,8 @@ module ActiveAdminImport
       end
     end
 
-    protected
-
     def define_methods_for(attr_name)
-      #generate methods for instance object by attributes
+      # generate methods for instance object by attributes
       singleton_class.class_eval do
         define_set_method(attr_name)
         define_get_method(attr_name)
@@ -145,7 +145,7 @@ module ActiveAdminImport
         invalid: :replace, undef: :replace, universal_newline: true
       )
       begin
-        data.sub("\xEF\xBB\xBF", '')  # bom
+        data.sub("\xEF\xBB\xBF", '') # bom
       rescue StandardError => _
         data
       end
@@ -170,15 +170,14 @@ module ActiveAdminImport
 
     class <<self
       def define_set_method(attr_name)
-        define_method(attr_name) { self.attributes[attr_name] } unless method_defined? attr_name
+        return if method_defined? attr_name
+        define_method(attr_name) { attributes[attr_name] }
       end
 
       def define_get_method(attr_name)
-        define_method("#{attr_name}=") { |new_value| @attributes[attr_name] = new_value } unless method_defined? "#{attr_name}="
+        return if method_defined? "#{attr_name}="
+        define_method("#{attr_name}=") { |new_value| @attributes[attr_name] = new_value }
       end
     end
-
   end
 end
-
-
