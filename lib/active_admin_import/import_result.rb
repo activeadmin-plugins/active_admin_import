@@ -30,7 +30,7 @@ module ActiveAdminImport
     end
 
     def failed_message(options = {})
-      limit = options.fetch(:limit, failed.count)
+      limit = options[:limit] || failed.count
       failed.first(limit).map do |record|
         errors = record.errors
         (errors.full_messages.zip errors.keys.map { |k| record.send k }).map { |ms| ms.join(' - ') }.join(', ')

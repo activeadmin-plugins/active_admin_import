@@ -37,7 +37,7 @@ module ActiveAdminImport
             count: result.failed.count,
             model: model_name,
             plural_model: plural_model_name,
-            message: result.failed_message(limit: 5))
+            message: result.failed_message(limit: options[:error_limit]))
           return if options[:batch_transaction]
         end
         if result.imported?
