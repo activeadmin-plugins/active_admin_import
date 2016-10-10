@@ -1,7 +1,7 @@
-# ActiveAdminImport 
+# ActiveAdminImport
 [The most fastest and efficient CSV import for Active Admin
 with support of validations, bulk inserts and encodings handling](http://activeadmin-plugins.github.io/active_admin_import/)
- 
+
 
 
 [![Build Status](https://img.shields.io/travis/activeadmin-plugins/active_admin_import.svg)](https://travis-ci.org/activeadmin-plugins/active_admin_import)
@@ -46,7 +46,7 @@ And then execute:
   <li> and more...</li>
 </ol>
 
-   
+
 
 #### Basic usage
 
@@ -60,24 +60,25 @@ end
 #### Options
 Tool                    | Description
 ---------------------   | -----------
-:back					|resource action to redirect after processing
-:csv_options			|hash with column separator, row separator, etc 
-:validate				|bool means perform validations or not
-:batch_size				|integer value of max  record count inserted by 1 query/transaction
+:back                   |resource action to redirect after processing
+:csv_options            |hash with column separator, row separator, etc
+:validate               |bool means perform validations or not
+:batch_size             |integer value of max  record count inserted by 1 query/transaction
 :batch_transaction    |bool (false by default), if transaction is used when batch importing and works when :validate is set to true
-:before_import			|proc for before import action, hook called with  importer object
-:after_import			|proc for after import action, hook called with  importer object
-:before_batch_import	|proc for before each batch action, called with  importer object
-:after_batch_import		|proc for after each batch action, called with  importer object
+:before_import          |proc for before import action, hook called with  importer object
+:after_import           |proc for after import action, hook called with  importer object
+:before_batch_import    |proc for before each batch action, called with  importer object
+:after_batch_import     |proc for after each batch action, called with  importer object
 :on_duplicate_key_update|an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE or Postgres 9.5+ ON CONFLICT DO UPDATE ability.
-:timestamps				|bool, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
-:ignore					|bool, tells activerecord-import to use MySQL's INSERT IGNORE ability
-:template				|custom template rendering
-:template_object		|object passing to view
-:resource_class			|resource class name
-:resource_label			|resource label value
-:plural_resource_label	|pluralized resource label value (default config.plural_resource_label)
-:headers_rewrites		|hash with key (csv header) - value (db column name) rows mapping
+:timestamps             |bool, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
+:ignore                 |bool, tells activerecord-import to use MySQL's INSERT IGNORE ability
+:template               |custom template rendering
+:template_object        |object passing to view
+:resource_class         |resource class name
+:resource_label         |resource label value
+:plural_resource_label  |pluralized resource label value (default config.plural_resource_label)
+:error_limit            |Limit the number of errors reported (default `5`, set to `nil` for all)
+:headers_rewrites       |hash with key (csv header) - value (db column name) rows mapping
 
 
 
@@ -103,11 +104,3 @@ Tool                  | Description
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-
-
-
-
-
-
-
-

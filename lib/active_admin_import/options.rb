@@ -19,6 +19,7 @@ module ActiveAdminImport
       :resource_class,
       :resource_label,
       :plural_resource_label,
+      :error_limit,
       :headers_rewrites
     ].freeze
 
@@ -34,6 +35,7 @@ module ActiveAdminImport
         resource_class: config.resource_class,
         resource_label: config.resource_label,
         plural_resource_label: config.plural_resource_label,
+        error_limit: 5,
         headers_rewrites: {}
       }.deep_merge(options)
     end
