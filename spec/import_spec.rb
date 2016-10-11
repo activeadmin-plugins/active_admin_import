@@ -311,6 +311,7 @@ describe 'import', type: :feature do
         it 'should render both successful and failed message' do
           upload_file!(:authors_invalid_model)
           expect(page).to have_content 'Failed to import 1 author'
+          expect(page).to have_content 'Last name has already been taken - Doe'
           expect(page).to have_content 'Successfully imported 1 author'
           expect(Author.count).to eq(2)
         end
@@ -320,7 +321,8 @@ describe 'import', type: :feature do
 
           it 'should render only the failed message' do
             upload_file!(:authors_invalid_model)
-            expect(page).to     have_content 'Failed to import 1 author'
+            expect(page).to have_content 'Failed to import 1 author'
+            expect(page).to have_content 'Last name has already been taken - Doe'
             expect(page).to_not have_content 'Successfully imported'
             expect(Author.count).to eq(1)
           end
