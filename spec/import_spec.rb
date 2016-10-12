@@ -312,6 +312,7 @@ describe 'import', type: :feature do
           upload_file!(:authors_invalid_model)
           expect(page).to have_content 'Failed to import 1 author'
           expect(page).to have_content 'Successfully imported 1 author'
+          expect(page).to have_content 'Last name has already been taken - Doe'
           expect(Author.count).to eq(2)
         end
 
