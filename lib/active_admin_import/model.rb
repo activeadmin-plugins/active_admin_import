@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'rchardet'
+require 'zip'
 
 module ActiveAdminImport
   class Model
@@ -14,7 +15,7 @@ module ActiveAdminImport
       TMP_FILE = 'active-admin-import-unzipped'.freeze
       CSV_TYPES = %w(
         text/csv
-        text/csv
+        text/x-csv
         text/x-comma-separated-values
         text/comma-separated-values
         application/csv

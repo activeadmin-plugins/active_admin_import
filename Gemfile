@@ -23,8 +23,8 @@ group :test do
   gem 'pry'
   gem 'database_cleaner'
   gem 'capybara'
-  gem 'selenium-webdriver'
   gem 'poltergeist'
+  gem 'selenium-webdriver', '< 3.0', platforms: :ruby_19
   gem 'json', '< 2.0', platforms: :ruby_19 # Json 2.0 requires Ruby >= 2.0
   gem 'mime-types', '< 3.0.0', platforms: [:ruby_19, :ruby_20]
   gem 'tins', '< 1.3.4', platforms: :ruby_19
