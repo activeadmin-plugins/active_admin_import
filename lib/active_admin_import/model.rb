@@ -9,6 +9,20 @@ module ActiveAdminImport
     include ActiveModel::Validations
     include ActiveModel::Validations::Callbacks
 
+    module CONST
+      ZIP_TYPE = 'application/zip'.freeze
+      TMP_FILE = 'active-admin-import-unzipped'.freeze
+      CSV_TYPES = %w(
+        text/csv
+        text/csv
+        text/x-comma-separated-values
+        text/comma-separated-values
+        application/csv
+        application/vnd.ms-excel
+        application/vnd.msexcel
+      ).freeze
+    end
+
     validates :file, presence: {
       message: ->(*_) { I18n.t('active_admin_import.no_file_error') }
     }, unless: ->(me) { me.new_record? }
@@ -66,7 +80,7 @@ module ActiveAdminImport
     end
 
     def archive?
-      file_type == 'application/zip'
+      file_type == CONST::ZIP_TYPE
     end
 
     alias to_hash attributes
@@ -90,7 +104,7 @@ module ActiveAdminImport
 
     def unzip_file
       Zip::File.open(file_path) do |zip_file|
-        self.file = Tempfile.new('active-admin-import-unzipped')
+        self.file = Tempfile.new(CONST::TMP_FILE)
         data = zip_file.entries.select(&:file?).first.get_input_stream.read
         file << data
         file.close
@@ -98,16 +112,7 @@ module ActiveAdminImport
     end
 
     def csv_allowed_types
-      [
-        'text/csv',
-        'text/x-csv',
-        'text/x-comma-separated-values',
-        'text/comma-separated-values',
-        'application/csv',
-        'application/vnd.ms-excel',
-        'application/vnd.msexcel'
-
-      ]
+      CONST::CSV_TYPES
     end
 
     def correct_content_type
