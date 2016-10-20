@@ -1,0 +1,23 @@
+en:
+  active_admin:
+    import: "가져오기"
+  active_admin_import:
+    file: '파일'
+    file_error: "오류: %{message}"
+    file_format_error: "CSV 파일만 가져오기 할 수 있습니다"
+    file_empty_error: "파일을 추가해주세요"
+    no_file_error: "파일을 추가해주세요"
+    details: "가져오기할 파일을 추가해주세요"
+    imported:
+      one: "1개의 %{model}을 가져왔습니다"
+      other: "%{count}개의 %{plural_model}을 가져왔습니다"
+    failed:
+      one:   "1개의 %{model} 가져오기 실패 : %{message}"
+      other: "%{count}개의 %{plural_model} 가져오기 실패: %{message}"
+    import_model: "%{plural_model} 가져오기"
+    import_btn: "가져오기"
+    import_btn_disabled: "가져오는 중입니다..."
+    csv_options: "CSV 옵션"
+    col_sep: '열 sep'
+    row_sep: '행 sep'
+    quote_char: 'Quote char'
