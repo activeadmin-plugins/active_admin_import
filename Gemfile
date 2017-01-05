@@ -9,24 +9,26 @@ rails_major = rails_version[0]
 
 group :test do
   gem 'rails', rails_version
-  if rails_major == '5'
-    gem 'inherited_resources', github: 'activeadmin/inherited_resources'
-    gem 'activeadmin', github: 'activeadmin/activeadmin'
-  else
-    gem 'activeadmin', '1.0.0.pre4'
-  end
+  gem 'inherited_resources', github: 'activeadmin/inherited_resources' if rails_major == '5'
+  gem 'activeadmin', github: 'activeadmin/activeadmin', ref: 'd5638b33841cd6b0987f9086c7cd4e2b10982b88'
 
   gem 'rspec-rails'
   gem 'coveralls', require: false # Test coverage website. Go to https://coveralls.io
   gem 'sqlite3'
   gem 'launchy'
-  gem 'pry'
   gem 'database_cleaner'
   gem 'capybara'
   gem 'poltergeist'
-  gem 'selenium-webdriver', '< 3.0', platforms: :ruby_19
-  gem 'json', '< 2.0', platforms: :ruby_19 # Json 2.0 requires Ruby >= 2.0
-  gem 'mime-types', '< 3.0.0', platforms: [:ruby_19, :ruby_20]
-  gem 'tins', '< 1.3.4', platforms: :ruby_19
-  gem 'term-ansicolor', '< 1.4.0', platforms: :ruby_19
+  gem 'jquery-ui-rails', '~> 5.0'
+
+  platform :ruby_19 do # Remove this block when we drop support for Ruby 1.9
+    gem 'mime-types', '< 3'
+    gem 'nokogiri', '< 1.7'
+    gem 'public_suffix', '< 1.5'
+    gem 'term-ansicolor', '< 1.4'
+    gem 'tins', '< 1.3.4'
+    gem 'selenium-webdriver', '< 3.0'
+  end
+
+
 end
