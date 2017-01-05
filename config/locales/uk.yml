@@ -1,0 +1,27 @@
+uk:
+  active_admin:
+    import: "Імпорт"
+  active_admin_import:
+    file: "Файл"
+    file_error: "Помилка: %{message}"
+    file_format_error: "Файл повинен бути коректно форматованим CSV-файлом"
+    file_empty_error: "Файл порожній"
+    no_file_error: "Виберіть файл для імпорту"
+    details: "Виберіть файл для імпорту"
+    imported:
+      one: "Успішно імпортовано: 1 %{model}"
+      few: "Успішно імпортовано: %{count} %{plural_model}"
+      many: "Успішно імпортовано: %{count} %{plural_model}"
+      other: "Успішно імпортовано: %{count} %{plural_model}"
+    failed:
+      one:   "Не вдалося імпортувати: 1 %{model}: %{message}"
+      few: "Не вдалося імпортувати: %{count} %{plural_model}: %{message}"
+      many: "Не вдалося імпортувати: %{count} %{plural_model}: %{message}"
+      other: "Не вдалося імпортувати: %{count} %{plural_model}: %{message}"
+    import_model: "Імпорт %{plural_model}"
+    import_btn: "Імпортувати"
+    import_btn_disabled: "Зачекайте..."
+    csv_options: "Параметри CSV"
+    col_sep: "Роздільник колонок"
+    row_sep: "Роздільник рядків"
+    quote_char: "Відокремлювальний символ"
