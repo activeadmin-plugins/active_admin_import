@@ -21,6 +21,10 @@ module ActiveAdminImport
         application/csv
         application/vnd.ms-excel
         application/vnd.msexcel
+        text/tsv
+        text/x-tsv
+        text/tab-separated-values
+        text/x-tab-separated-values
       ).freeze
     end
 

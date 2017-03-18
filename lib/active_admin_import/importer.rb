@@ -119,7 +119,7 @@ module ActiveAdminImport
                        model.csv_options
                      else
                        options[:csv_options] || {}
-                     end.reject { |_, value| value.blank? }
+                     end.reject { |_, value| value.nil? || value == "" }
     end
   end
 end
