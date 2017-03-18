@@ -397,6 +397,19 @@ describe 'import', type: :feature do
           expect(Author.count).to eq(2)
         end
       end
+
+      context 'with tab separator' do
+        let(:options) do
+          attributes = { csv_options: { col_sep: "\t" } }
+          { template_object: ActiveAdminImport::Model.new(attributes) }
+        end
+
+        it 'should import file' do
+          upload_file!(:authors_with_tabs, 'tsv')
+          expect(page).to have_content 'Successfully imported 2 authors'
+          expect(Author.count).to eq(2)
+        end
+      end
     end
 
     context 'with callback procs options' do
