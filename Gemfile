@@ -20,15 +20,4 @@ group :test do
   gem 'capybara'
   gem 'poltergeist'
   gem 'jquery-ui-rails', '~> 5.0'
-
-  platform :ruby_19 do # Remove this block when we drop support for Ruby 1.9
-    gem 'mime-types', '< 3'
-    gem 'nokogiri', '< 1.7'
-    gem 'public_suffix', '< 1.5'
-    gem 'term-ansicolor', '< 1.4'
-    gem 'tins', '< 1.3.4'
-    gem 'selenium-webdriver', '< 3.0'
-  end
-
-
 end
