@@ -20,7 +20,8 @@ module ActiveAdminImport
       :resource_label,
       :plural_resource_label,
       :error_limit,
-      :headers_rewrites
+      :headers_rewrites,
+      :if
     ].freeze
 
     def self.options_for(config, options = {})
@@ -36,7 +37,8 @@ module ActiveAdminImport
         resource_label: config.resource_label,
         plural_resource_label: config.plural_resource_label,
         error_limit: 5,
-        headers_rewrites: {}
+        headers_rewrites: {},
+        if: true
       }.deep_merge(options)
     end
   end

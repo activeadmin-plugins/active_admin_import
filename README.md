@@ -79,6 +79,7 @@ Tool                    | Description
 :plural_resource_label  |pluralized resource label value (default config.plural_resource_label)
 :error_limit            |Limit the number of errors reported (default `5`, set to `nil` for all)
 :headers_rewrites       |hash with key (csv header) - value (db column name) rows mapping
+:if                     |Controls whether the 'Import' button is displayed. It supports a proc to be evaluated into a boolean value within the activeadmin render context.
 
 
 
