@@ -11,7 +11,6 @@ with support of validations, bulk inserts and encodings handling](http://activea
 [![Gem Version](http://img.shields.io/gem/v/active_admin_import.svg)](https://rubygems.org/gems/active_admin_import)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://Fivell.mit-license.org)
 
-master can be used with AA 1.0.0 and Rails >= 4.1
 
 
 #Installation
@@ -19,7 +18,7 @@ master can be used with AA 1.0.0 and Rails >= 4.1
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "active_admin_import" , '3.0.0.pre'
+gem "active_admin_import" , '3.0.0'
 
 ```
 or
