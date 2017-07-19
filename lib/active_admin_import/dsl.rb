@@ -73,6 +73,7 @@ module ActiveAdminImport
 
       collection_action :do_import, method: :post do
         authorize!(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
+        options[:controller_context] = self
         _params = params.respond_to?(:to_unsafe_h) ? params.to_unsafe_h : params
         params = ActiveSupport::HashWithIndifferentAccess.new _params
         @active_admin_import_model = options[:template_object]

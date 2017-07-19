@@ -17,7 +17,8 @@ module ActiveAdminImport
       :headers_rewrites,
       :batch_size,
       :batch_transaction,
-      :csv_options
+      :csv_options,
+      :controller_context
     ].freeze
 
     def initialize(resource, model, options)
