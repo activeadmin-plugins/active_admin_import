@@ -47,6 +47,12 @@ module ActiveAdminImport
       import_result
     end
 
+    def transaction_import
+      @resource.transaction do
+        import
+      end
+    end
+
     def import_options
       @import_options ||= options.slice(:validate, :on_duplicate_key_update, :ignore, :timestamps, :batch_transaction)
     end

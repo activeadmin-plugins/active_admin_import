@@ -12,6 +12,7 @@ module ActiveAdminImport
   # +after_import+:: proc for after import action, hook called with  importer object
   # +before_batch_import+:: proc for before each batch action, called with  importer object
   # +after_batch_import+:: proc for after each batch action, called with  importer object
+  # +transaction_callbacks+:: true|false, tells activerecord-import to run you before_import and after_import in a transaction
   # +validate+:: true|false, means perform validations or not
   # +on_duplicate_key_update+:: an Array or Hash, tells activerecord-import
   # to use MySQL's ON DUPLICATE KEY UPDATE ability.
@@ -85,7 +86,7 @@ module ActiveAdminImport
           options
         )
         begin
-          result = @importer.import
+          result = options[:transaction_callbacks] ? @importer.transaction_import : @importer.import
 
           if block_given?
             instance_eval(&block)

@@ -11,6 +11,7 @@ module ActiveAdminImport
       :after_import,
       :before_batch_import,
       :after_batch_import,
+      :transaction_callbacks,
       :on_duplicate_key_update,
       :timestamps,
       :ignore,
