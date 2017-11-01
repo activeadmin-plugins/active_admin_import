@@ -1,0 +1,23 @@
+tr:
+  active_admin:
+    import: "İçe aktar"
+  active_admin_import:
+    file: 'Dosya'
+    file_error: "Hata: %{message}"
+    file_format_error: "Sadece geçerli csv dosyasını içe aktarabilirsiniz"
+    file_empty_error: "Boş dosyayı içe aktaramazsın"
+    no_file_error: "Lütfen, içe aktarmak için dosya seçin"
+    details: "Lütfen, içe aktarmak için dosya seçin"
+    imported:
+      one: "Başarıyla 1 %{model} içe aktarıldı."
+      other: "Başarıyla %{count} %{plural_model} içe aktarıldı."
+    failed:
+      one:   "1 %{model} içe aktarılamadı: %{message}"
+      other: "%{count} %{plural_model} içe aktarılamadı: %{message}"
+    import_model: "İçe aktar %{plural_model}"
+    import_btn: "İçe aktar"
+    import_btn_disabled: "Bekleyin..."
+    csv_options: "CSV seçenekleri"
+    col_sep: 'Sutün ayracı'
+    row_sep: 'Satır ayracı'
+    quote_char: 'Alıntı karakteri'
