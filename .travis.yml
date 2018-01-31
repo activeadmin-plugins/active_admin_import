@@ -11,7 +11,3 @@ matrix:
   exclude:
     - rvm: 2.1.9
       env: RAILS=5.0.0 # Rails 5.0 requires Ruby 2.2.2 or newer
-before_install:
-  - gem update --system # use the very latest Rubygems
-  - rvm @global do gem uninstall bundler -a -x
-  - rvm @global do gem install bundler -v 1.14.6 # latest version known to work
