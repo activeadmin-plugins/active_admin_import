@@ -1,0 +1,23 @@
+de:
+  active_admin:
+    import: "Importieren"
+  active_admin_import:
+    file: 'File'
+    file_error: "Error: %{message}"
+    file_format_error: "Sie können nur valide CSV Dateien importieren"
+    file_empty_error: "Sie können keine leere Datei importieren"
+    no_file_error: "Bitte wählen sie eine Datei für den Upload aus"
+    details: "Bitte wählen sie eine Datei aus"
+    imported:
+      one: "Erfolgreich 1 %{model} importiert"
+      other: "Erfolgreich %{count} %{plural_model} importiert"
+    failed:
+      one:   "Konnte nicht 1 %{model} importieren: %{message}"
+      other: "Konnte nicht %{count} %{plural_model} importieren: %{message}"
+    import_model: "Importiere %{plural_model}"
+    import_btn: "Importieren"
+    import_btn_disabled: "Warten..."
+    csv_options: "CSV Optionen"
+    col_sep: 'Spalten sep'
+    row_sep: 'Reihen sep'
+    quote_char: 'Ausrufezeichen'
