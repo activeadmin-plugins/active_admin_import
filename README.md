@@ -1,31 +1,28 @@
 # ActiveAdminImport
-[The most fastest and efficient CSV import for Active Admin
-with support of validations, bulk inserts and encodings handling](http://activeadmin-plugins.github.io/active_admin_import/)
+
+[![Travis Build   ][build_badge]][build_link]
+[![Coverage Status][coveralls_badge]][coveralls_link]
+[![Code Climate   ][codeclimate_badge]][codeclimate_link]
+[![Gem Version    ][rubygems_badge]][rubygems_link]
+[![License        ][license_badge]][license_link]
 
 
+The most fastest and efficient CSV import for Active Admin with support of validations, bulk inserts and encodings handling.
 
-[![Build Status](https://img.shields.io/travis/activeadmin-plugins/active_admin_import.svg)](https://travis-ci.org/activeadmin-plugins/active_admin_import)
-[![Dependency Status](http://img.shields.io/gemnasium/activeadmin-plugins/active_admin_import.svg)](https://gemnasium.com/activeadmin-plugins/active_admin_import)
-[![Coverage Status](https://coveralls.io/repos/activeadmin-plugins/active_admin_import/badge.svg)](https://coveralls.io/r/activeadmin-plugins/active_admin_import)
-[![Code Climate](https://codeclimate.com/github/activeadmin-plugins/active_admin_import/badges/gpa.svg)](https://codeclimate.com/github/activeadmin-plugins/active_admin_import)
-[![Gem Version](http://img.shields.io/gem/v/active_admin_import.svg)](https://rubygems.org/gems/active_admin_import)
-[![License](http://img.shields.io/:license-mit-blue.svg)](http://Fivell.mit-license.org)
+For more about ActiveAdminImport installation and usage, check [Documentation website](http://activeadmin-plugins.github.io/active_admin_import/) and [Wiki pages](https://github.com/activeadmin-plugins/active_admin_import/wiki) for some specific cases and caveats.
 
 
-
-#Installation
+## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "active_admin_import" , '3.0.0'
-
+gem "active_admin_import"
 ```
 or
 
 ```ruby
 gem "active_admin_import" , github: "activeadmin-plugins/active_admin_import"
-
 ```
 
 And then execute:
@@ -33,18 +30,15 @@ And then execute:
     $ bundle
 
 
-# active_admin_import features
-<ol>
-  <li> Replacements/Updates support</li>
-  <li> Encoding handling</li>
-  <li> CSV options</li>
-  <li> Ability to describe/change CSV headers</li>
-  <li> Bulk import (activerecord-import)</li>
-  <li> Callbacks</li>
-  <li> Zip files</li>
-  <li> and more...</li>
-</ol>
-
+## Features
+* Replacements/Updates support
+* Encoding handling
+* CSV options
+* Ability to describe/change CSV headers
+* Bulk import (activerecord-import)
+* Callbacks
+* Zip files
+* and more...
 
 
 #### Basic usage
@@ -95,6 +89,17 @@ Tool                  | Description
 
 [rchardet]: https://github.com/jmhodges/rchardet
 [activerecord-import]: https://github.com/zdennis/activerecord-import
+
+[build_badge]: https://travis-ci.org/activeadmin-plugins/active_admin_import.svg?branch=master
+[build_link]: https://travis-ci.org/activeadmin-plugins/active_admin_import
+[coveralls_badge]: https://coveralls.io/repos/activeadmin-plugins/active_admin_import/badge.svg
+[coveralls_link]: https://coveralls.io/github/activeadmin-plugins/active_admin_import
+[codeclimate_badge]: https://codeclimate.com/github/activeadmin-plugins/active_admin_import/badges/gpa.svg
+[codeclimate_link]: https://codeclimate.com/github/activeadmin-plugins/active_admin_import
+[rubygems_badge]: https://badge.fury.io/rb/active_admin_import.svg
+[rubygems_link]: https://rubygems.org/gems/active_admin_import
+[license_badge]: http://img.shields.io/:license-mit-blue.svg
+[license_link]: http://Fivell.mit-license.org
 
 
 ## Contributing
