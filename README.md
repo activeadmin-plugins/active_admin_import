@@ -55,16 +55,17 @@ Tool                    | Description
 ---------------------   | -----------
 :back                   |resource action to redirect after processing
 :csv_options            |hash with column separator, row separator, etc
-:validate               |bool means perform validations or not
+:validate               |bool (true by default), perform validations or not
+:batch_transaction      |bool (false by default), if transaction is used when batch importing and works when :validate is set to true
 :batch_size             |integer value of max  record count inserted by 1 query/transaction
-:batch_transaction    |bool (false by default), if transaction is used when batch importing and works when :validate is set to true
 :before_import          |proc for before import action, hook called with  importer object
 :after_import           |proc for after import action, hook called with  importer object
 :before_batch_import    |proc for before each batch action, called with  importer object
 :after_batch_import     |proc for after each batch action, called with  importer object
-:on_duplicate_key_update|an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE or Postgres 9.5+ ON CONFLICT DO UPDATE ability.
+:on_duplicate_key_update|an Array or Hash, tells activerecord-import to use MySQL's ON DUPLICATE KEY UPDATE or Postgres 9.5+/SQLite 3.24.0+ ON CONFLICT DO UPDATE ability
+:on_duplicate_key_ignore|bool, tells activerecord-import to use MySQL's INSERT IGNORE or Postgres 9.5+ ON CONFLICT DO NOTHING or SQLite's INSERT OR IGNORE ability
+:ignore                 |bool, alias for on_duplicate_key_ignore
 :timestamps             |bool, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
-:ignore                 |bool, tells activerecord-import to use MySQL's INSERT IGNORE ability
 :template               |custom template rendering
 :template_object        |object passing to view
 :resource_class         |resource class name
