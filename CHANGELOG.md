@@ -1,6 +1,7 @@
 # Changelog
 
-## [Unreleased]
+## [4.1.0] - 2019-01-15
+- Upgrade dependencies: `activerecord-import` to >=0.27.1 | @jkowens
 
 ## [4.0.0] - 2018-07-19
 - Adde German translation | @morris-frank
