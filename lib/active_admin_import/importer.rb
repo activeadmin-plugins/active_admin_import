@@ -8,6 +8,7 @@ module ActiveAdminImport
     OPTIONS = [
       :validate,
       :on_duplicate_key_update,
+      :on_duplicate_key_ignore,
       :ignore,
       :timestamps,
       :before_import,
@@ -48,7 +49,16 @@ module ActiveAdminImport
     end
 
     def import_options
-      @import_options ||= options.slice(:validate, :on_duplicate_key_update, :ignore, :timestamps, :batch_transaction)
+      @import_options ||= options.slice(
+        :validate,
+        :validate_uniqueness,
+        :on_duplicate_key_update,
+        :on_duplicate_key_ignore,
+        :ignore,
+        :timestamps,
+        :batch_transaction,
+        :batch_size
+      )
     end
 
     def batch_replace(header_key, options)
@@ -134,7 +144,10 @@ module ActiveAdminImport
     end
 
     def assign_options(options)
-      @options = { batch_size: 1000, validate: true }.merge(options.slice(*OPTIONS))
+      @options = {
+        batch_size: 1000,
+        validate_uniqueness: true
+      }.merge(options.slice(*OPTIONS))
       detect_csv_options
     end
 
