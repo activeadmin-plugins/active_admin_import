@@ -33,7 +33,10 @@ module ActiveAdminImport
       limit = options[:limit] || failed.count
       failed.first(limit).map do |record|
         errors = record.errors
-        (errors.full_messages.zip errors.keys.map { |k| record.send k }).map { |ms| ms.join(' - ') }.join(', ')
+        failed_values = errors.keys.map do |key|
+          key == :base ? nil : record.public_send(key)
+        end
+        errors.full_messages.zip(failed_values).map { |ms| ms.compact.join(' - ') }.join(', ')
       end.join(' ; ')
     end
   end

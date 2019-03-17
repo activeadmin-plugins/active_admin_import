@@ -5,17 +5,18 @@ describe ActiveAdminImport::ImportResult do
   context 'failed_message' do
     let(:import_result) { ActiveAdminImport::ImportResult.new }
 
-    before do
-      Author.create(name: 'John', last_name: 'Doe')
-      Author.create(name: 'Jane', last_name: 'Roe')
 
+    let(:failed_instances) do
+     [
+         Author.new(last_name: 'Doe').tap {|r| r.errors.add(:last_name,  :taken) },
+         Author.new(name: "", last_name: 'Doe').tap {|r| r.errors.add(:name,  :blank); r.errors.add(:last_name,  :taken)  },
+         Author.new.tap {|r| r.errors.add(:base,  'custom') }
+     ]
+    end
+
+    before do
       @result = double \
-        failed_instances: [
-          # {:last_name=>["has already been taken"]}
-          Author.create(name: 'Jim', last_name: 'Doe'),
-          # {:name=>["can't be blank"], :last_name=>["has already been taken"]}
-          Author.create(name: nil,   last_name: 'Doe')
-        ]
+        failed_instances: failed_instances
     end
 
     it 'should work without any failed instances' do
@@ -26,7 +27,7 @@ describe ActiveAdminImport::ImportResult do
       import_result.add(@result, 4)
       expect(import_result.failed_message)
         .to eq(
-          "Last name has already been taken - Doe ; Name can't be blank - , Last name has already been taken - Doe"
+          "Last name has already been taken - Doe ; Name can't be blank - , Last name has already been taken - Doe ; custom"
         )
     end
 
