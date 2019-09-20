@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.1.1] - 2019-09-20
+- Fix column slicing #168 | @doredesign
+- Handle errors on base #163
+
 ## [4.1.0] - 2019-01-15
 - Upgrade dependencies: `activerecord-import` to >=0.27.1 | @jkowens
 
