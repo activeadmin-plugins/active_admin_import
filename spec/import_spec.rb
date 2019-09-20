@@ -434,11 +434,14 @@ describe 'import', type: :feature do
   end
 
   context "with slice_columns option" do
+    let(:batch_size) { 2 }
+
     before do
       add_author_resource template_object: ActiveAdminImport::Model.new,
                           before_batch_import: lambda { |importer|
                             importer.batch_slice_columns(slice_columns)
-                          }
+                          },
+                          batch_size: batch_size
       visit "/admin/authors/import"
       upload_file!(:authors)
     end
@@ -446,13 +449,23 @@ describe 'import', type: :feature do
     context "slice last column and superfluous column" do
       let(:slice_columns) { %w(name last_name not_existing_column) }
 
-      it "should not fill `birthday` column" do
-        expect(Author.pluck(:name, :last_name, :birthday)).to match_array(
-          [
-            ["Jane", "Roe", nil],
-            ["John", "Doe", nil]
-          ]
-        )
+      shared_examples_for "birthday column removed" do
+        it "should not fill `birthday` column" do
+          expect(Author.pluck(:name, :last_name, :birthday)).to match_array(
+            [
+              ["Jane", "Roe", nil],
+              ["John", "Doe", nil]
+            ]
+          )
+        end
+      end
+
+      it_behaves_like "birthday column removed"
+
+      context "when doing more than one batch" do
+        let(:batch_size) { 1 }
+
+        it_behaves_like "birthday column removed"
       end
     end
 
