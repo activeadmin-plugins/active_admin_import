@@ -21,6 +21,7 @@ module ActiveAdminImport
         application/csv
         application/vnd.ms-excel
         application/vnd.msexcel
+        application/octet-stream
         text/tsv
         text/x-tsv
         text/tab-separated-values
