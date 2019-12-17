@@ -1,4 +1,7 @@
 # Changelog
+## [4.1.2] - 2019-12-16
+- allow application/octet-stream content-type #172 | @dmitry-sinina
+- Allow activerecord-import >= 0.27 #171 | @sagium 
 
 ## [4.1.1] - 2019-09-20
 - Fix column slicing #168 | @doredesign
