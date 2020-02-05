@@ -430,6 +430,28 @@ describe 'import', type: :feature do
         upload_file!(:authors)
         expect(Author.count).to eq(2)
       end
+
+      context 'when the option before_import raises a ActiveAdminImport::Exception' do
+        let(:options) { { before_import: ->(_) { raise ActiveAdminImport::Exception, 'error message' } } }
+
+        before { upload_file!(:authors) }
+
+        it 'should show error' do
+          expect(page).to have_content I18n.t('active_admin_import.file_error', message: 'error message')
+          expect(Author.count).to eq(0)
+        end
+      end
+
+      context 'when the option before_batch_import raises a ActiveAdminImport::Exception' do
+        let(:options) { { before_batch_import: ->(_) { raise ActiveAdminImport::Exception, 'error message' } } }
+
+        before { upload_file!(:authors) }
+
+        it 'should show error' do
+          expect(page).to have_content I18n.t('active_admin_import.file_error', message: 'error message')
+          expect(Author.count).to eq(0)
+        end
+      end
     end
   end
 
