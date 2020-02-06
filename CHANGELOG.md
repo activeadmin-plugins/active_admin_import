@@ -1,4 +1,7 @@
 # Changelog
+## [4.2.0] - 2020-02-05
+- generic exception for import added #175 | @linqueta
+
 ## [4.1.2] - 2019-12-16
 - allow application/octet-stream content-type #172 | @dmitry-sinina
 - Allow activerecord-import >= 0.27 #171 | @sagium 
