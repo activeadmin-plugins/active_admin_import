@@ -56,6 +56,7 @@ Tool                    | Description
 :back                   |resource action to redirect after processing
 :csv_options            |hash with column separator, row separator, etc
 :validate               |bool (true by default), perform validations or not
+:validate_uniqueness    |bool (true by default), perform uniqueness validation or not and works when :validate is set to true
 :batch_transaction      |bool (false by default), if transaction is used when batch importing and works when :validate is set to true
 :batch_size             |integer value of max  record count inserted by 1 query/transaction
 :before_import          |proc for before import action, hook called with  importer object
