@@ -139,12 +139,21 @@ module ActiveAdminImport
     end
 
     def batch_import
+      @resource.respond_to?(:transaction) ? batch_improt_with_transaction : batch_import_without_transaction
+    end
+
+    def batch_import_without_transaction
+      run_callback(:before_batch_import)
+      batch_result = resource.import(headers.values, csv_lines, import_options)
+      raise ActiveRecord::Rollback if Object.const_defined?('ActiveRecord::Rollback') && import_options[:batch_transaction] && batch_result.failed_instances.any?
+      run_callback(:after_batch_import)
+      batch_result
+    end
+
+    def batch_improt_with_transaction
       batch_result = nil
       @resource.transaction do
-        run_callback(:before_batch_import)
-        batch_result = resource.import(headers.values, csv_lines, import_options)
-        raise ActiveRecord::Rollback if import_options[:batch_transaction] && batch_result.failed_instances.any?
-        run_callback(:after_batch_import)
+        batch_result = batch_import_without_transaction
       end
       batch_result
     end
