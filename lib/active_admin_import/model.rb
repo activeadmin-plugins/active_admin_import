@@ -65,7 +65,8 @@ module ActiveAdminImport
         csv_headers: [],
         file: nil,
         force_encoding: 'UTF-8',
-        hint: ''
+        hint: '',
+        col_sep: ';'
       }
     end
 

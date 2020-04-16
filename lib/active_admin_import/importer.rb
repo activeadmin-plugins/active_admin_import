@@ -172,6 +172,7 @@ module ActiveAdminImport
                      else
                        options[:csv_options] || {}
                      end.reject { |_, value| value.nil? || value == "" }
+      @csv_options[:col_sep] = model.col_sep if model.respond_to?(:col_sep)
     end
   end
 end
