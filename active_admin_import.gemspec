@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
   gem.version = ActiveAdminImport::VERSION
   gem.add_runtime_dependency 'activerecord-import', '>= 0.27'
-  gem.add_runtime_dependency 'rchardet', '~> 1.6'
-  gem.add_runtime_dependency 'rubyzip', '~> 1.2'
+  gem.add_runtime_dependency 'rchardet', '>= 1.6'
+  gem.add_runtime_dependency 'rubyzip', '>= 1.2'
   gem.add_dependency 'activeadmin', '>= 1.0.0.pre2'
 end
