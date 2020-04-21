@@ -37,7 +37,7 @@ module ActiveAdminImport
     end
 
     def cycle(lines)
-      @csv_lines = CSV.parse(lines.join, @csv_options)
+      @csv_lines = lines
       import_result.add(batch_import, lines.count)
     end
 
@@ -113,17 +113,20 @@ module ActiveAdminImport
     def process_file
       lines = []
       batch_size = options[:batch_size].to_i
-      File.open(file.path) do |f|
-        # capture headers if not exist
-        prepare_headers { CSV.parse(f.readline, @csv_options).first }
-        f.each_line do |line|
-          lines << line if line.present?
-          if lines.size == batch_size || f.eof?
-            cycle(lines)
-            lines = []
-          end
+
+      csv = CSV.read(file.path, @csv_options)
+
+      prepare_headers { csv.shift }
+
+      csv.each do |line|
+        lines << line
+
+        if lines.size == batch_size
+          cycle(lines)
+          lines = []
         end
       end
+
       cycle(lines) unless lines.blank?
     end
 
