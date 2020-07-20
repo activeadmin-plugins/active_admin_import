@@ -12,4 +12,4 @@ rvm:
 jobs:
   exclude:
     - rvm: 2.4.5
-      env: RAILS=6.0.2.2
+      env: RAILS=6.0.3.2
