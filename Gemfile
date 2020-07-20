@@ -6,7 +6,7 @@ gemspec
 
 
 group :test do
-  default_rails_version = "~> 5.1"
+  default_rails_version = "~> 5.2.4"
   rails_version = ENV['RAILS'] || default_rails_version
   gem 'rails', rails_version
   gem 'rspec-rails'

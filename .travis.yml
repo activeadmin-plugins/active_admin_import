@@ -1,9 +1,8 @@
 script: bundle exec rspec spec
 env:
   matrix:
-    - RAILS=5.1.6.2
-    - RAILS=5.2.2.1
-    - RAILS=6.0.2.2
+    - RAILS=5.2.4.3
+    - RAILS=6.0.3.2
 rvm:
   - 2.4.5
   - 2.5.5
