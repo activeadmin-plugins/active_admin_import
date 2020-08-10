@@ -371,6 +371,20 @@ describe 'import', type: :feature do
             end
           end
         end
+
+        context 'when zipped with Win1251 file' do
+          let(:options) do
+            attributes = { force_encoding: :auto }
+            { template_object: ActiveAdminImport::Model.new(attributes) }
+          end
+          it 'should import file' do
+            with_zipped_csv(:authors_win1251_win_endline) do
+              upload_file!(:authors_win1251_win_endline, :zip)
+              expect(page).to have_content 'Successfully imported 2 authors'
+              expect(Author.count).to eq(2)
+            end
+          end
+        end
       end
 
       context 'with different header attribute names' do

@@ -110,7 +110,7 @@ module ActiveAdminImport
 
     def unzip_file
       Zip::File.open(file_path) do |zip_file|
-        self.file = Tempfile.new(CONST::TMP_FILE)
+        self.file = Tempfile.new(CONST::TMP_FILE, binmode: true)
         data = zip_file.entries.select(&:file?).first.get_input_stream.read
         file << data
         file.close
