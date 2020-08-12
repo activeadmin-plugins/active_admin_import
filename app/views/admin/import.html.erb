@@ -1,10 +1,12 @@
 <p class="active_admin_import_hint">
-   <%= raw(@active_admin_import_model.hint) %> 
+   <%= raw(@active_admin_import_model.hint) %>
 </p>
 <%= semantic_form_for @active_admin_import_model, url: {action: :do_import}, html: {multipart: true} do |f| %>
     <%= f.inputs name: t("active_admin_import.details") do %>
         <%= f.input :file, as: :file %>
+        <%= f.input :col_sep, collection: [';', ','], include_blank: false, selected: ';' %>
     <% end %>
+
     <%= f.actions do %>
         <%= f.action :submit, label: t("active_admin_import.import_btn"), button_html: {data: {disable_with: t("active_admin_import.import_btn_disabled")}} %>
     <% end %>

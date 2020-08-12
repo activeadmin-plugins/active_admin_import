@@ -37,7 +37,7 @@ module ActiveAdminImport
     end
 
     def cycle(lines)
-      @csv_lines = CSV.parse(lines.join, @csv_options)
+      @csv_lines = lines
       import_result.add(batch_import, lines.count)
     end
 
@@ -113,17 +113,20 @@ module ActiveAdminImport
     def process_file
       lines = []
       batch_size = options[:batch_size].to_i
-      File.open(file.path) do |f|
-        # capture headers if not exist
-        prepare_headers { CSV.parse(f.readline, @csv_options).first }
-        f.each_line do |line|
-          lines << line if line.present?
-          if lines.size == batch_size || f.eof?
-            cycle(lines)
-            lines = []
-          end
+
+      csv = CSV.read(file.path, @csv_options)
+
+      prepare_headers { csv.shift }
+
+      csv.each do |line|
+        lines << line
+
+        if lines.size == batch_size
+          cycle(lines)
+          lines = []
         end
       end
+
       cycle(lines) unless lines.blank?
     end
 
@@ -139,12 +142,21 @@ module ActiveAdminImport
     end
 
     def batch_import
+      @resource.respond_to?(:transaction) ? batch_improt_with_transaction : batch_import_without_transaction
+    end
+
+    def batch_import_without_transaction
+      run_callback(:before_batch_import)
+      batch_result = resource.import(headers.values, csv_lines, import_options)
+      raise ActiveRecord::Rollback if Object.const_defined?('ActiveRecord::Rollback') && import_options[:batch_transaction] && batch_result.failed_instances.any?
+      run_callback(:after_batch_import)
+      batch_result
+    end
+
+    def batch_improt_with_transaction
       batch_result = nil
       @resource.transaction do
-        run_callback(:before_batch_import)
-        batch_result = resource.import(headers.values, csv_lines, import_options)
-        raise ActiveRecord::Rollback if import_options[:batch_transaction] && batch_result.failed_instances.any?
-        run_callback(:after_batch_import)
+        batch_result = batch_import_without_transaction
       end
       batch_result
     end
@@ -163,6 +175,7 @@ module ActiveAdminImport
                      else
                        options[:csv_options] || {}
                      end.reject { |_, value| value.nil? || value == "" }
+      @csv_options[:col_sep] = model.col_sep if model.respond_to?(:col_sep)
     end
   end
 end
