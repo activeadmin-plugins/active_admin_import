@@ -8,6 +8,7 @@ gemspec
 group :test do
   default_rails_version = "~> 5.2.4"
   rails_version = ENV['RAILS'] || default_rails_version
+  gem 'sassc-rails'
   gem 'rails', rails_version
   gem 'rspec-rails'
   gem 'coveralls', require: false # Test coverage website. Go to https://coveralls.io
