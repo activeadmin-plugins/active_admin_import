@@ -14,13 +14,21 @@ describe ActiveAdminImport::ImportResult do
      ]
     end
 
+    let(:ids){ [1,2] }
+
     before do
       @result = double \
-        failed_instances: failed_instances
+        failed_instances: failed_instances,
+        ids: ids
     end
 
     it 'should work without any failed instances' do
       expect(import_result.failed_message).to eq('')
+    end
+
+    it 'should store the supplied ids' do
+      import_result.add(@result, 4)
+      expect(import_result.ids).to eq(ids)
     end
 
     it 'should work' do
