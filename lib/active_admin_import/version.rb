@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module ActiveAdminImport
-  VERSION = '4.2.0'
+  VERSION = '5.0.0'
 end
