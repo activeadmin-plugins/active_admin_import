@@ -1,4 +1,11 @@
 # Changelog
+## [5.0.0] - 2021-11-16
+- Ruby 3 compatibility added #190  | @clinejj
+- Support for a non UTF-8 file when zip uploading #185| @naokirin 
+- Rails 6 supported #183 | @pnghai
+- Drop ruby 2.4 support #192 | @Fivell
+
+
 ## [4.2.0] - 2020-02-05
 - generic exception for import added #175 | @linqueta
 
