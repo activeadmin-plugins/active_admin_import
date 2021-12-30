@@ -1,6 +1,6 @@
 # ActiveAdminImport
 
-[![Travis Build   ][build_badge]][build_link]
+[![Build Status   ][build_badge]][build_link]
 [![Coverage Status][coveralls_badge]][coveralls_link]
 [![Code Climate   ][codeclimate_badge]][codeclimate_link]
 [![Gem Version    ][rubygems_badge]][rubygems_link]
@@ -91,8 +91,8 @@ Tool                  | Description
 [rchardet]: https://github.com/jmhodges/rchardet
 [activerecord-import]: https://github.com/zdennis/activerecord-import
 
-[build_badge]: https://travis-ci.org/activeadmin-plugins/active_admin_import.svg?branch=master
-[build_link]: https://travis-ci.org/activeadmin-plugins/active_admin_import
+[build_badge]: https://github.com/activeadmin-plugins/active_admin_import/actions/workflows/test.yml/badge.svg
+[build_link]: https://github.com/activeadmin-plugins/active_admin_import/actions
 [coveralls_badge]: https://coveralls.io/repos/activeadmin-plugins/active_admin_import/badge.svg
 [coveralls_link]: https://coveralls.io/github/activeadmin-plugins/active_admin_import
 [codeclimate_badge]: https://codeclimate.com/github/activeadmin-plugins/active_admin_import/badges/gpa.svg

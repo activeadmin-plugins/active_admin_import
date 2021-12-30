@@ -1,0 +1,40 @@
+name: Test
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        ruby_version:
+          - '2.6'
+          - '2.7'
+          - '3.0'
+        rails_version:
+          - '5.2.6'
+          - '6.0.4'
+          - '6.1.4'
+        exclude:
+          - ruby_version: '3.0'
+            rails_version: '5.2.6'
+
+    name: Ruby ${{ matrix.ruby_version }} / Rails ${{ matrix.rails_version }}
+
+    env:
+      RAILS: ${{ matrix.rails_version }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler-cache: true
+
+      - name: Test
+        run: bundle exec rspec spec
