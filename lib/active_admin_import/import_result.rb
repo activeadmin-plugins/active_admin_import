@@ -33,8 +33,15 @@ module ActiveAdminImport
       limit = options[:limit] || failed.count
       failed.first(limit).map do |record|
         errors = record.errors
-        failed_values = errors.keys.map do |key|
-          key == :base ? nil : record.public_send(key)
+        # Avoid an error when ActiveModel::Errors#keys is deprecated.
+        if Gem::Version.new(Rails.version) >= Gem::Version.new('6.2')
+          failed_values = errors.attribute_names.map do |key|
+            key == :base ? nil : record.public_send(key)
+          end
+        else
+          failed_values = errors.keys.map do |key|
+            key == :base ? nil : record.public_send(key)
+          end
         end
         errors.full_messages.zip(failed_values).map { |ms| ms.compact.join(' - ') }.join(', ')
       end.join(' ; ')
