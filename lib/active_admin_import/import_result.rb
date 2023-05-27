@@ -35,13 +35,12 @@ module ActiveAdminImport
         errors = record.errors
         # Avoid an error when ActiveModel::Errors#keys is deprecated.
         if Gem::Version.new(Rails.version) >= Gem::Version.new('6.2')
-          failed_values = errors.attribute_names.map do |key|
-            key == :base ? nil : record.public_send(key)
-          end
+          attribute_names = errors.attribute_names
         else
-          failed_values = errors.keys.map do |key|
-            key == :base ? nil : record.public_send(key)
-          end
+          attribute_names = errors.keys
+        end
+        failed_values = attribute_names.map do |key|
+          key == :base ? nil : record.public_send(key)
         end
         errors.full_messages.zip(failed_values).map { |ms| ms.compact.join(' - ') }.join(', ')
       end.join(' ; ')
