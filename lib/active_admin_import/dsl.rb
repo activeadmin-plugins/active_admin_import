@@ -94,6 +94,7 @@ module ActiveAdminImport
           end
         rescue ActiveRecord::Import::MissingColumnError,
                NoMethodError,
+               ArgumentError,
                ActiveRecord::StatementInvalid,
                CSV::MalformedCSVError,
                ActiveAdminImport::Exception => e
