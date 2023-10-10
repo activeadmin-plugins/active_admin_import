@@ -424,6 +424,22 @@ describe 'import', type: :feature do
           expect(Author.count).to eq(2)
         end
       end
+
+      context 'with empty csv and auto detect encoding' do
+        let(:options) do
+          attributes = { force_encoding: :auto }
+          { template_object: ActiveAdminImport::Model.new(attributes) }
+        end
+
+        before do
+          upload_file!(:empty)
+        end
+
+        it 'should render warning' do
+          expect(page).to have_content I18n.t('active_admin_import.file_empty_error')
+          expect(Author.count).to eq(0)
+        end
+      end
     end
 
     context 'with callback procs options' do
