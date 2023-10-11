@@ -103,6 +103,8 @@ module ActiveAdminImport
 
     def encode_file
       data = File.read(file_path)
+      return if data.empty?
+
       File.open(file_path, 'w') do |f|
         f.write(encode(data))
       end

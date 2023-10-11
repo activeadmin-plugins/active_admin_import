@@ -424,6 +424,36 @@ describe 'import', type: :feature do
           expect(Author.count).to eq(2)
         end
       end
+
+      context 'with empty csv and auto detect encoding' do
+        let(:options) do
+          attributes = { force_encoding: :auto }
+          { template_object: ActiveAdminImport::Model.new(attributes) }
+        end
+
+        before do
+          upload_file!(:empty)
+        end
+
+        it 'should render warning' do
+          expect(page).to have_content I18n.t('active_admin_import.file_empty_error')
+          expect(Author.count).to eq(0)
+        end
+      end
+
+      context 'with csv which has exceeded values' do
+        before do
+          upload_file!(:authors_values_exceeded_headers)
+        end
+
+        it 'should render warning' do
+          # 5 columns: 'birthday, name, last_name, created_at, updated_at'
+          # 6 values: '"1988-11-16", "Jane", "Roe", " exceeded value", datetime, datetime'
+          msg = 'Number of values (6) exceeds number of columns (5)'
+          expect(page).to have_content I18n.t('active_admin_import.file_error', message: msg)
+          expect(Author.count).to eq(0)
+        end
+      end
     end
 
     context 'with callback procs options' do
