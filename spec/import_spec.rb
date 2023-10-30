@@ -96,6 +96,38 @@ describe 'import', type: :feature do
         end
         include_examples 'successful inserts for author'
       end
+
+      context 'when template object passed like proc' do
+        before do
+          add_post_resource(template_object: -> { ActiveAdminImport::Model.new(author_id: author.id) },
+                            validate: true,
+                            before_batch_import: lambda do |importer|
+                              importer.csv_lines.map! { |row| row << importer.model.author_id }
+                              importer.headers.merge!(:'Author Id' => :author_id)
+                            end
+          )
+
+          visit '/admin/posts/import'
+          upload_file!(:posts_for_author)
+        end
+
+        include_examples 'successful inserts for author'
+
+        context 'after successful import try without file' do
+          let(:after_successful_import_do!) do
+            # reload page
+            visit '/admin/posts/import'
+            # submit form without file
+            find_button('Import').click
+          end
+
+          it 'should render validation error' do
+            after_successful_import_do!
+
+            expect(page).to have_content I18n.t('active_admin_import.no_file_error')
+          end
+        end
+      end
     end
 
     context 'for csv with author name' do

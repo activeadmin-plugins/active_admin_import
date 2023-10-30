@@ -26,7 +26,7 @@ module ActiveAdminImport
 
     def self.options_for(config, options = {})
       unless options.key? :template_object
-        options[:template_object] = ActiveAdminImport::Model.new
+        options[:template_object] = -> { ActiveAdminImport::Model.new }
       end
 
       {
