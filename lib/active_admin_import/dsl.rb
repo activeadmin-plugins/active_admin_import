@@ -54,11 +54,14 @@ module ActiveAdminImport
       options.assert_valid_keys(*Options::VALID_OPTIONS)
 
       options = Options.options_for(config, options)
-      params_key = ActiveModel::Naming.param_key(options[:template_object])
 
       collection_action :import, method: :get do
         authorize!(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
-        @active_admin_import_model = options[:template_object]
+        @active_admin_import_model = if options[:template_object].is_a?(Proc)
+                                       options[:template_object].call
+                                     else
+                                       options[:template_object]
+                                     end
         render template: options[:template]
       end
 
@@ -75,7 +78,12 @@ module ActiveAdminImport
         authorize!(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
         _params = params.respond_to?(:to_unsafe_h) ? params.to_unsafe_h : params
         params = ActiveSupport::HashWithIndifferentAccess.new _params
-        @active_admin_import_model = options[:template_object]
+        @active_admin_import_model = if options[:template_object].is_a?(Proc)
+                                       options[:template_object].call
+                                     else
+                                       options[:template_object]
+                                     end
+        params_key = ActiveModel::Naming.param_key(@active_admin_import_model.class)
         @active_admin_import_model.assign_attributes(params[params_key].try(:deep_symbolize_keys) || {})
         # go back to form
         return render template: options[:template] unless @active_admin_import_model.valid?
