@@ -33,11 +33,21 @@ module ActiveAdminImport
       limit = options[:limit] || failed.count
       failed.first(limit).map do |record|
         errors = record.errors
-        failed_values = errors.keys.map do |key|
+        failed_values = attribute_names_for(errors).map do |key|
           key == :base ? nil : record.public_send(key)
         end
         errors.full_messages.zip(failed_values).map { |ms| ms.compact.join(' - ') }.join(', ')
       end.join(' ; ')
+    end
+
+    private
+
+    def attribute_names_for(errors)
+      if Gem::Version.new(Rails.version) >= Gem::Version.new('7.0')
+        errors.attribute_names
+      else
+        errors.keys
+      end
     end
   end
 end

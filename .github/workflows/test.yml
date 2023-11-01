@@ -18,9 +18,12 @@ jobs:
           - '5.2.6'
           - '6.0.4'
           - '6.1.4'
+          - '7.0.0'
         exclude:
           - ruby_version: '3.0'
             rails_version: '5.2.6'
+          - ruby_version: '2.6'
+            rails_version: '7.0.0'
 
     name: Ruby ${{ matrix.ruby_version }} / Rails ${{ matrix.rails_version }}
 
