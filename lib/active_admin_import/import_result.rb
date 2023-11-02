@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 module ActiveAdminImport
   class ImportResult
-    attr_reader :failed, :total
+    attr_reader :failed, :ids, :total
 
     def initialize
       @failed = []
+      @ids = []
       @total = 0
     end
 
     def add(result, qty)
       @failed += result.failed_instances
-      @total  += qty
+      @ids += result.ids
+      @total += qty
     end
 
     def imported_qty
