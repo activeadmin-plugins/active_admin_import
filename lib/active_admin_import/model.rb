@@ -48,6 +48,7 @@ module ActiveAdminImport
     end
 
     def assign_attributes(args = {}, new_record = false)
+      args[:file] = nil unless args.key?(:file)
       @attributes.merge!(args)
       @new_record = new_record
       args.keys.each do |key|
