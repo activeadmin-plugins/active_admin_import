@@ -1,43 +1,26 @@
-name: Test
-
+name: CI
 on:
-  - push
-  - pull_request
-
+  pull_request:
+  push:
+    branches: [master]
 jobs:
-  build:
+  test:
+    name: Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }} / AA ${{ matrix.activeadmin }}
     runs-on: ubuntu-latest
-
     strategy:
+      fail-fast: false
       matrix:
-        ruby_version:
-          - '2.6'
-          - '2.7'
-          - '3.0'
-        rails_version:
-          - '5.2.6'
-          - '6.0.4'
-          - '6.1.4'
-          - '7.0.0'
-        exclude:
-          - ruby_version: '3.0'
-            rails_version: '5.2.6'
-          - ruby_version: '2.6'
-            rails_version: '7.0.0'
-
-    name: Ruby ${{ matrix.ruby_version }} / Rails ${{ matrix.rails_version }}
-
+        ruby: ['3.2.0', '3.3.0', '3.4.0']
+        rails: ['7.1.0', '7.2.0']
+        activeadmin: ['3.2.0', '3.3.0']
     env:
-      RAILS: ${{ matrix.rails_version }}
-
+      RAILS: ${{ matrix.rails }}
+      AA: ${{ matrix.activeadmin }}
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby_version }}
+          ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-
-      - name: Test
+      - name: Run tests
         run: bundle exec rspec spec

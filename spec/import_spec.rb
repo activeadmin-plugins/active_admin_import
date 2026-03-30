@@ -27,7 +27,7 @@ describe 'import', type: :feature do
     zip_file = File.expand_path("./spec/fixtures/files/#{name}.zip")
 
     begin
-      Zip::File.open(zip_file, Zip::File::CREATE) do |z|
+      Zip::File.open(zip_file, create: true) do |z|
         z.add "#{name}.csv", File.expand_path("./spec/fixtures/files/#{name}.csv")
       end
       instance_eval &block
