@@ -7,7 +7,7 @@
 [![License        ][license_badge]][license_link]
 
 
-The most fastest and efficient CSV import for Active Admin with support of validations, bulk inserts and encodings handling.
+The fastest and most efficient CSV import for Active Admin with support for validations, bulk inserts, and encoding handling.
 
 For more about ActiveAdminImport installation and usage, check [Documentation website](http://activeadmin-plugins.github.io/active_admin_import/) and [Wiki pages](https://github.com/activeadmin-plugins/active_admin_import/wiki) for some specific cases and caveats.
 
@@ -44,7 +44,7 @@ And then execute:
 #### Basic usage
 
 ```ruby
-ActiveAdmin.register Post
+ActiveAdmin.register Post do
   active_admin_import options
 end
 ```
@@ -99,8 +99,8 @@ Tool                  | Description
 [codeclimate_link]: https://codeclimate.com/github/activeadmin-plugins/active_admin_import
 [rubygems_badge]: https://badge.fury.io/rb/active_admin_import.svg
 [rubygems_link]: https://rubygems.org/gems/active_admin_import
-[license_badge]: http://img.shields.io/:license-mit-blue.svg
-[license_link]: http://Fivell.mit-license.org
+[license_badge]: https://img.shields.io/:license-mit-blue.svg
+[license_link]: https://Fivell.mit-license.org
 
 
 ## Contributing
