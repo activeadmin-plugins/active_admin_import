@@ -10,6 +10,7 @@ gem 'sprockets-rails'
 gem 'sass-rails'
 
 group :test do
+  gem 'simplecov', require: false
   gem 'rspec-rails'
   gem 'sqlite3', '~> 2.0'
   gem 'database_cleaner'
