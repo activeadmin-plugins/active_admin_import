@@ -1,3 +1,5 @@
+create_file "app/assets/config/manifest.js", skip: true
+
 generate :model, 'author name:string{10}:uniq last_name:string birthday:date --force'
 generate :model, 'post title:string:uniq body:text author:references --force'
 
