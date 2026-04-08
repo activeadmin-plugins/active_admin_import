@@ -588,4 +588,42 @@ describe 'import', type: :feature do
       expect { add_author_resource(options) }.to raise_error(ArgumentError)
     end
   end
+
+  context 'when submitting empty form after validation error' do
+    let(:options) { {} }
+
+    before do
+      add_author_resource(options)
+      visit '/admin/authors/import'
+    end
+
+    it 'should NOT reuse cached file from previous submission' do
+      expect do
+        upload_file!(:author_broken_header)
+        expect(page).to have_content("can't write unknown attribute")
+      end.not_to change { Author.count }
+
+      # Second submission without selecting a file
+      expect do
+        find_button('Import').click
+        expect(page).to have_content(I18n.t('active_admin_import.no_file_error'))
+      end.not_to change { Author.count }
+    end
+  end
+
+  context 'when importing file with invalid format and auto force_encoding' do
+    let(:options) { { template_object: ActiveAdminImport::Model.new(force_encoding: :auto) } }
+
+    before do
+      add_author_resource(options)
+      visit '/admin/authors/import'
+    end
+
+    it 'should reject invalid file format before encoding' do
+      expect do
+        upload_file!(:author_invalid_format, 'txt')
+        expect(page).to have_content I18n.t('active_admin_import.file_format_error')
+      end.not_to change { Author.count }
+    end
+  end
 end
