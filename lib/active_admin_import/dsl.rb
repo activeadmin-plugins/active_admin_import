@@ -25,6 +25,22 @@ module ActiveAdminImport
   # +plural_resource_label+:: pluralized resource label value (default config.plural_resource_label)
   #
   module DSL
+    CONTEXT_METHOD = :active_admin_import_context
+
+    def self.prepare_import_model(template_object, controller, params: nil)
+      model = template_object.is_a?(Proc) ? template_object.call : template_object
+      if params
+        params_key = ActiveModel::Naming.param_key(model.class)
+        model.assign_attributes(params[params_key].try(:deep_symbolize_keys) || {})
+      end
+      return model unless controller.respond_to?(CONTEXT_METHOD, true)
+      context = controller.send(CONTEXT_METHOD)
+      return model unless context.is_a?(Hash)
+      context = context.merge(file: model.file) if model.respond_to?(:file) && !context.key?(:file)
+      model.assign_attributes(context)
+      model
+    end
+
     DEFAULT_RESULT_PROC = lambda do |result, options|
       model_name = options[:resource_label].downcase
       plural_model_name = options[:plural_resource_label].downcase
@@ -57,11 +73,7 @@ module ActiveAdminImport
 
       collection_action :import, method: :get do
         authorize!(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
-        @active_admin_import_model = if options[:template_object].is_a?(Proc)
-                                       options[:template_object].call
-                                     else
-                                       options[:template_object]
-                                     end
+        @active_admin_import_model = ActiveAdminImport::DSL.prepare_import_model(options[:template_object], self)
         render template: options[:template]
       end
 
@@ -78,13 +90,9 @@ module ActiveAdminImport
         authorize!(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
         _params = params.respond_to?(:to_unsafe_h) ? params.to_unsafe_h : params
         params = ActiveSupport::HashWithIndifferentAccess.new _params
-        @active_admin_import_model = if options[:template_object].is_a?(Proc)
-                                       options[:template_object].call
-                                     else
-                                       options[:template_object]
-                                     end
-        params_key = ActiveModel::Naming.param_key(@active_admin_import_model.class)
-        @active_admin_import_model.assign_attributes(params[params_key].try(:deep_symbolize_keys) || {})
+        @active_admin_import_model = ActiveAdminImport::DSL.prepare_import_model(
+          options[:template_object], self, params: params
+        )
         # go back to form
         return render template: options[:template] unless @active_admin_import_model.valid?
         @importer = Importer.new(

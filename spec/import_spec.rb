@@ -626,4 +626,67 @@ describe 'import', type: :feature do
       end.not_to change { Author.count }
     end
   end
+
+  context 'with active_admin_import_context defined on the controller' do
+    before { Author.create!(name: 'John', last_name: 'Doe') }
+
+    let(:author) { Author.take }
+
+    context 'when context returns request-derived attributes' do
+      before do
+        author_id = author.id
+        add_post_resource(
+          template_object: ActiveAdminImport::Model.new(author_id: author_id),
+          before_batch_import: lambda do |importer|
+            ip = importer.model.request_ip
+            a_id = importer.model.author_id
+            importer.csv_lines.map! { |row| row << ip << a_id }
+            importer.headers.merge!(:'Request Ip' => :request_ip, :'Author Id' => :author_id)
+          end,
+          controller_block: proc do
+            def active_admin_import_context
+              { request_ip: request.remote_ip }
+            end
+          end
+        )
+        visit '/admin/posts/import'
+        upload_file!(:posts_for_author)
+      end
+
+      it 'merges the context into the import model so callbacks see it' do
+        expect(page).to have_content 'Successfully imported 2 posts'
+        expect(Post.count).to eq(2)
+        Post.all.each do |post|
+          expect(post.request_ip).to eq('127.0.0.1')
+          expect(post.author_id).to eq(author.id)
+        end
+      end
+    end
+
+    context 'when context returns parent id for a nested belongs_to resource' do
+      let(:post) { Post.create!(title: 'A post', body: 'body', author: author) }
+
+      before do
+        add_nested_post_comment_resource(
+          before_batch_import: lambda do |importer|
+            importer.csv_lines.map! { |row| row << importer.model.post_id }
+            importer.headers.merge!(:'Post Id' => :post_id)
+          end,
+          controller_block: proc do
+            def active_admin_import_context
+              { post_id: parent.id }
+            end
+          end
+        )
+        visit "/admin/posts/#{post.id}/post_comments/import"
+        upload_file!(:post_comments)
+      end
+
+      it 'automatically assigns the parent post_id to every imported comment' do
+        expect(page).to have_content 'Successfully imported 2 post comments'
+        expect(PostComment.count).to eq(2)
+        expect(PostComment.where(post_id: post.id).count).to eq(2)
+      end
+    end
+  end
 end
