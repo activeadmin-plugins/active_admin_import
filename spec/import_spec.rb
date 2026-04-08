@@ -610,4 +610,20 @@ describe 'import', type: :feature do
       end.not_to change { Author.count }
     end
   end
+
+  context 'when importing file with invalid format and auto force_encoding' do
+    let(:options) { { template_object: ActiveAdminImport::Model.new(force_encoding: :auto) } }
+
+    before do
+      add_author_resource(options)
+      visit '/admin/authors/import'
+    end
+
+    it 'should reject invalid file format before encoding' do
+      expect do
+        upload_file!(:author_invalid_format, 'txt')
+        expect(page).to have_content I18n.t('active_admin_import.file_format_error')
+      end.not_to change { Author.count }
+    end
+  end
 end

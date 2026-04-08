@@ -37,7 +37,7 @@ module ActiveAdminImport
     validate :file_contents_present, if: ->(me) { me.file.present? }
 
     before_validation :unzip_file, if: ->(me) { me.archive? && me.allow_archive? }
-    before_validation :encode_file, if: ->(me) { me.force_encoding? && me.file.present? }
+    after_validation :encode_file, if: ->(me) { me.errors.empty? && me.force_encoding? && me.file.present? }
 
     attr_reader :attributes
 
