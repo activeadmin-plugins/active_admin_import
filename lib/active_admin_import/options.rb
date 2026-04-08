@@ -16,6 +16,7 @@ module ActiveAdminImport
       :ignore,
       :template,
       :template_object,
+      :result_class,
       :resource_class,
       :resource_label,
       :plural_resource_label,
