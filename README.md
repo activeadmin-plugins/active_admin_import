@@ -9,8 +9,6 @@
 
 The fastest and most efficient CSV import for Active Admin with support for validations, bulk inserts, and encoding handling.
 
-For more about ActiveAdminImport installation and usage, check [Documentation website](http://activeadmin-plugins.github.io/active_admin_import/) and [Wiki pages](https://github.com/activeadmin-plugins/active_admin_import/wiki) for some specific cases and caveats.
-
 
 ## Installation
 
@@ -109,9 +107,217 @@ The action block is invoked via `instance_exec` with `result` and `options` as b
 
 Note: which batch-result attributes are populated depends on the database adapter and the import options. `activerecord-import` returns ids reliably on PostgreSQL; on MySQL/SQLite the behavior depends on the adapter and options like `on_duplicate_key_update`. Putting the collection logic in your own subclass keeps these adapter quirks in your application code.
 
-#### Wiki
 
-[Check various examples](https://github.com/activeadmin-plugins/active_admin_import/wiki)
+#### Authorization
+
+The current user must be authorized to perform imports. With CanCanCan:
+
+```ruby
+class Ability
+  include CanCan::Ability
+
+  def initialize(user)
+    can :import, Post
+  end
+end
+```
+
+
+#### Per-request context
+
+Define an `active_admin_import_context` method on the controller to inject request-derived attributes into every import (current user, parent resource id, request IP, etc.). The returned hash is merged into the import model after form params, so it always wins for the keys it provides:
+
+```ruby
+ActiveAdmin.register PostComment do
+  belongs_to :post
+
+  controller do
+    def active_admin_import_context
+      { post_id: parent.id, request_ip: request.remote_ip }
+    end
+  end
+
+  active_admin_import before_batch_import: ->(importer) {
+    importer.csv_lines.map! { |row| row << importer.model.post_id }
+    importer.headers.merge!(:'Post Id' => :post_id)
+  }
+end
+```
+
+
+#### Examples
+
+##### Files without CSV headers
+
+```ruby
+ActiveAdmin.register Post do
+  active_admin_import validate: true,
+                      template_object: ActiveAdminImport::Model.new(
+                        hint: "expected header order: body, title, author",
+                        csv_headers: %w[body title author]
+                      )
+end
+```
+
+##### Auto-detect file encoding
+
+```ruby
+ActiveAdmin.register Post do
+  active_admin_import validate: true,
+                      template_object: ActiveAdminImport::Model.new(force_encoding: :auto)
+end
+```
+
+##### Force a specific (non-UTF-8) encoding
+
+```ruby
+ActiveAdmin.register Post do
+  active_admin_import validate: true,
+                      template_object: ActiveAdminImport::Model.new(
+                        hint: "file is encoded in ISO-8859-1",
+                        force_encoding: "ISO-8859-1"
+                      )
+end
+```
+
+##### Disallow ZIP upload
+
+```ruby
+ActiveAdmin.register Post do
+  active_admin_import validate: true,
+                      template_object: ActiveAdminImport::Model.new(
+                        hint: "upload a CSV file",
+                        allow_archive: false
+                      )
+end
+```
+
+##### Skip CSV columns
+
+Useful when the CSV file has columns that don't exist on the table. Available since 3.1.0.
+
+```ruby
+ActiveAdmin.register Post do
+  active_admin_import before_batch_import: ->(importer) {
+    importer.batch_slice_columns(['name', 'last_name'])
+  }
+end
+```
+
+Tip: pass `Post.column_names` to keep only the columns that exist on the table.
+
+##### Resolve associations on the fly
+
+Replace an `Author name` column in the CSV with the matching `author_id` before insert:
+
+```ruby
+ActiveAdmin.register Post do
+  active_admin_import validate: true,
+                      headers_rewrites: { 'Author name': :author_id },
+                      before_batch_import: ->(importer) {
+                        names = importer.values_at(:author_id)
+                        mapping = Author.where(name: names).pluck(:name, :id).to_h
+                        importer.batch_replace(:author_id, mapping)
+                      }
+end
+```
+
+##### Update existing records by id
+
+Delete colliding rows just before each batch insert:
+
+```ruby
+ActiveAdmin.register Post do
+  active_admin_import before_batch_import: ->(importer) {
+    Post.where(id: importer.values_at('id')).delete_all
+  }
+end
+```
+
+For databases that support upserts you can use `:on_duplicate_key_update` instead.
+
+##### Tune batch size
+
+```ruby
+ActiveAdmin.register Post do
+  active_admin_import validate: false,
+                      csv_options: { col_sep: ";" },
+                      batch_size: 1000
+end
+```
+
+##### Import into an intermediate table
+
+```ruby
+ActiveAdmin.register Post do
+  active_admin_import validate: false,
+                      csv_options: { col_sep: ";" },
+                      resource_class: ImportedPost,                # write to a staging table
+                      before_import: ->(_) { ImportedPost.delete_all },
+                      after_import: ->(_) {
+                        Post.transaction do
+                          Post.delete_all
+                          Post.connection.execute("INSERT INTO posts (SELECT * FROM imported_posts)")
+                        end
+                      },
+                      back: ->(_) { config.namespace.resource_for(Post).route_collection_path }
+end
+```
+
+##### Allow user input for CSV options (custom template)
+
+```ruby
+ActiveAdmin.register Post do
+  active_admin_import validate: false,
+                      template: 'admin/posts/import',
+                      template_object: ActiveAdminImport::Model.new(
+                        hint: "you can configure CSV options",
+                        csv_options: { col_sep: ";", row_sep: nil, quote_char: nil }
+                      )
+end
+```
+
+`app/views/admin/posts/import.html.erb`:
+
+```erb
+<p><%= raw(@active_admin_import_model.hint) %></p>
+
+<%= semantic_form_for @active_admin_import_model, url: { action: :do_import }, html: { multipart: true } do |f| %>
+  <%= f.inputs do %>
+    <%= f.input :file, as: :file %>
+  <% end %>
+
+  <%= f.inputs "CSV options", for: [:csv_options, OpenStruct.new(@active_admin_import_model.csv_options)] do |csv| %>
+    <% csv.with_options input_html: { style: 'width:40px;' } do |opts| %>
+      <%= opts.input :col_sep %>
+      <%= opts.input :row_sep %>
+      <%= opts.input :quote_char %>
+    <% end %>
+  <% end %>
+
+  <%= f.actions do %>
+    <%= f.action :submit,
+                 label: t("active_admin_import.import_btn"),
+                 button_html: { disable_with: t("active_admin_import.import_btn_disabled") } %>
+  <% end %>
+<% end %>
+```
+
+##### Inspecting the importer in batch callbacks
+
+Both `before_batch_import` and `after_batch_import` receive the `Importer` instance:
+
+```ruby
+active_admin_import before_batch_import: ->(importer) {
+  importer.file        # the uploaded file
+  importer.resource    # the ActiveRecord class being imported into
+  importer.options     # the resolved options hash
+  importer.headers     # CSV headers (mutable)
+  importer.csv_lines   # parsed CSV rows for the current batch (mutable)
+  importer.model       # the template_object instance
+}
+```
+
 
 ## Dependencies
 
