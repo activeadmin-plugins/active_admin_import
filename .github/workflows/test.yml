@@ -5,7 +5,7 @@ on:
     branches: [master]
 jobs:
   test:
-    name: Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }} / AA ${{ matrix.activeadmin }}
+    name: Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }} / AA ${{ matrix.activeadmin }} / SQLite
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -28,7 +28,7 @@ jobs:
       - name: Run tests
         run: bundle exec rspec spec
   test-mysql:
-    name: DB mysql
+    name: Ruby 3.4 / Rails 8.0.0 / AA 3.5.1 / MySQL 8.0
     runs-on: ubuntu-latest
     env:
       RAILS: '8.0.0'
@@ -60,7 +60,7 @@ jobs:
       - name: Run tests
         run: bundle exec rspec spec
   test-postgres:
-    name: DB postgres
+    name: Ruby 3.4 / Rails 8.0.0 / AA 3.5.1 / PostgreSQL 16
     runs-on: ubuntu-latest
     env:
       RAILS: '8.0.0'
