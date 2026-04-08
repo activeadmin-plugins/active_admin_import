@@ -1,5 +1,41 @@
 create_file "app/assets/config/manifest.js", skip: true
 
+db = ENV['DB'] || 'sqlite'
+case db
+when 'mysql'
+  remove_file 'config/database.yml'
+  create_file 'config/database.yml', <<~YAML
+    default: &default
+      adapter: mysql2
+      encoding: utf8mb4
+      pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+      host: <%= ENV.fetch("DB_HOST", "127.0.0.1") %>
+      port: <%= ENV.fetch("DB_PORT", 3306) %>
+      username: <%= ENV.fetch("DB_USERNAME", "root") %>
+      password: <%= ENV.fetch("DB_PASSWORD", "root") %>
+
+    test:
+      <<: *default
+      database: active_admin_import_test
+  YAML
+when 'postgres', 'postgresql'
+  remove_file 'config/database.yml'
+  create_file 'config/database.yml', <<~YAML
+    default: &default
+      adapter: postgresql
+      encoding: unicode
+      pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+      host: <%= ENV.fetch("DB_HOST", "127.0.0.1") %>
+      port: <%= ENV.fetch("DB_PORT", 5432) %>
+      username: <%= ENV.fetch("DB_USERNAME", "postgres") %>
+      password: <%= ENV.fetch("DB_PASSWORD", "postgres") %>
+
+    test:
+      <<: *default
+      database: active_admin_import_test
+  YAML
+end
+
 generate :model, 'author name:string{10}:uniq last_name:string birthday:date --force'
 generate :model, 'post title:string:uniq body:text request_ip:string author:references --force'
 generate :model, 'post_comment body:text post:references --force'
@@ -19,6 +55,6 @@ generate :'formtastic:install'
 
 run 'rm -rf test'
 route "root :to => 'admin/dashboard#index'"
-rake 'db:migrate'
+rake 'db:create db:migrate'
 
 run 'rm -f Gemfile Gemfile.lock'

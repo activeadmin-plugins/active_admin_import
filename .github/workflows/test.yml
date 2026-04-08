@@ -5,7 +5,7 @@ on:
     branches: [master]
 jobs:
   test:
-    name: Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }} / AA ${{ matrix.activeadmin }}
+    name: Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }} / AA ${{ matrix.activeadmin }} / SQLite
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -24,6 +24,71 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run tests
+        run: bundle exec rspec spec
+  test-mysql:
+    name: Ruby 3.4 / Rails 8.0.0 / AA 3.5.1 / MySQL 8.0
+    runs-on: ubuntu-latest
+    env:
+      RAILS: '8.0.0'
+      AA: '3.5.1'
+      DB: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: active_admin_import_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+      - name: Run tests
+        run: bundle exec rspec spec
+  test-postgres:
+    name: Ruby 3.4 / Rails 8.0.0 / AA 3.5.1 / PostgreSQL 16
+    runs-on: ubuntu-latest
+    env:
+      RAILS: '8.0.0'
+      AA: '3.5.1'
+      DB: postgres
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: active_admin_import_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
           bundler-cache: true
       - name: Run tests
         run: bundle exec rspec spec
