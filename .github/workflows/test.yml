@@ -43,3 +43,16 @@ jobs:
         with:
           name: coverage
           path: coverage/
+  ci-success:
+    name: CI success
+    if: always()
+    needs: [test, coverage]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check matrix job results
+        run: |
+          if [ "${{ needs.test.result }}" != "success" ] || [ "${{ needs.coverage.result }}" != "success" ]; then
+            echo "One or more required jobs failed"
+            exit 1
+          fi
+          echo "All required jobs passed"
