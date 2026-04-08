@@ -18,7 +18,8 @@ module ActiveAdminImport
       :headers_rewrites,
       :batch_size,
       :batch_transaction,
-      :csv_options
+      :csv_options,
+      :result_class
     ].freeze
 
     def initialize(resource, model, options)
@@ -29,7 +30,7 @@ module ActiveAdminImport
     end
 
     def import_result
-      @import_result ||= ImportResult.new
+      @import_result ||= (options[:result_class] || ImportResult).new
     end
 
     def file

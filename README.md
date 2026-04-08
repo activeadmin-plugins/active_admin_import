@@ -68,6 +68,7 @@ Tool                    | Description
 :timestamps             |bool, tells activerecord-import to not add timestamps (if false) even if record timestamps is disabled in ActiveRecord::Base
 :template               |custom template rendering
 :template_object        |object passing to view
+:result_class           |custom `ImportResult` subclass to collect data from each batch (e.g. inserted ids). Must respond to `add(batch_result, qty)` plus the readers used in flash messages (`failed`, `total`, `imported_qty`, `imported?`, `failed?`, `empty?`, `failed_message`).
 :resource_class         |resource class name
 :resource_label         |resource label value
 :plural_resource_label  |pluralized resource label value (default config.plural_resource_label)
@@ -76,6 +77,37 @@ Tool                    | Description
 :if                     |Controls whether the 'Import' button is displayed. It supports a proc to be evaluated into a boolean value within the activeadmin render context.
 
 
+
+#### Custom ImportResult
+
+To collect extra data from each batch (for example the ids of inserted rows so you can enqueue background jobs against them), pass a subclass of `ActiveAdminImport::ImportResult` via `:result_class`:
+
+```ruby
+class ImportResultWithIds < ActiveAdminImport::ImportResult
+  attr_reader :ids
+
+  def initialize
+    super
+    @ids = []
+  end
+
+  def add(batch_result, qty)
+    super
+    @ids.concat(Array(batch_result.ids))
+  end
+end
+
+ActiveAdmin.register Author do
+  active_admin_import result_class: ImportResultWithIds do |result, options|
+    EnqueueAuthorsJob.perform_later(result.ids) if result.imported?
+    instance_exec(result, options, &ActiveAdminImport::DSL::DEFAULT_RESULT_PROC)
+  end
+end
+```
+
+The action block is invoked via `instance_exec` with `result` and `options` as block arguments, so you can either capture them with `do |result, options|` or read them as locals when no arguments are declared.
+
+Note: which batch-result attributes are populated depends on the database adapter and the import options. `activerecord-import` returns ids reliably on PostgreSQL; on MySQL/SQLite the behavior depends on the adapter and options like `on_duplicate_key_update`. Putting the collection logic in your own subclass keeps these adapter quirks in your application code.
 
 #### Wiki
 

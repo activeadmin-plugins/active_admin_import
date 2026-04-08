@@ -104,7 +104,7 @@ module ActiveAdminImport
           result = @importer.import
 
           if block_given?
-            instance_eval(&block)
+            instance_exec result, options, &block
           else
             instance_exec result, options, &DEFAULT_RESULT_PROC
           end

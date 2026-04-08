@@ -689,4 +689,46 @@ describe 'import', type: :feature do
       end
     end
   end
+
+  # PG-only: activerecord-import populates `result.ids` reliably on PostgreSQL
+  # via RETURNING. On MySQL/SQLite the array is not populated by default, so
+  # the assertion would not be meaningful there. The :result_class option
+  # itself works on every adapter — this spec just demonstrates the canonical
+  # PR #191 use case (collecting inserted ids) on the adapter that supports it.
+  if ENV['DB'] == 'postgres'
+    context 'with custom result_class (PostgreSQL)' do
+      # Subclass that captures inserted ids alongside the standard counters.
+      # Lives in user-land so the gem itself stays free of adapter-specific
+      # quirks around RETURNING. This is the example documented in the README.
+      class ImportResultWithIds < ActiveAdminImport::ImportResult
+        attr_reader :ids
+
+        def initialize
+          super
+          @ids = []
+        end
+
+        def add(batch_result, qty)
+          super
+          @ids.concat(Array(batch_result.ids))
+        end
+      end
+
+      before do
+        add_author_resource(result_class: ImportResultWithIds) do |result, _options|
+          # Expose the captured ids on the flash so the test asserts via the
+          # rendered page rather than closure capture.
+          flash[:notice] = "Imported ids: [#{result.ids.sort.join(',')}]"
+        end
+        visit '/admin/authors/import'
+        upload_file!(:authors)
+      end
+
+      it 'collects the ids of inserted records via the custom subclass' do
+        expect(Author.count).to eq(2)
+        expected = "Imported ids: [#{Author.pluck(:id).sort.join(',')}]"
+        expect(page).to have_content(expected)
+      end
+    end
+  end
 end
