@@ -3,6 +3,12 @@ on:
   pull_request:
   push:
     branches: [master]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   test:
     name: Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }} / AA ${{ matrix.activeadmin }} / SQLite
@@ -108,3 +114,49 @@ jobs:
         with:
           name: coverage
           path: coverage/
+
+      - name: Generate badge.json
+        run: |
+          LAST_RUN="coverage/.last_run.json"
+          if [ ! -f "$LAST_RUN" ]; then
+            mkdir -p badge
+            echo '{"schemaVersion":1,"label":"coverage","message":"unknown","color":"lightgrey"}' > badge/badge.json
+            exit 0
+          fi
+          PERCENT=$(ruby -rjson -e "puts JSON.parse(File.read('$LAST_RUN')).dig('result','line').round(1)")
+          PERCENT_NUM=$(ruby -rjson -e "puts JSON.parse(File.read('$LAST_RUN')).dig('result','line')")
+          if ruby -e "exit(($PERCENT_NUM >= 90) ? 0 : 1)"; then COLOR="brightgreen"
+          elif ruby -e "exit(($PERCENT_NUM >= 75) ? 0 : 1)"; then COLOR="green"
+          elif ruby -e "exit(($PERCENT_NUM >= 60) ? 0 : 1)"; then COLOR="yellow"
+          else COLOR="red"; fi
+          mkdir -p badge
+          echo "{\"schemaVersion\":1,\"label\":\"coverage\",\"message\":\"${PERCENT}%\",\"color\":\"${COLOR}\"}" > badge/badge.json
+
+      - name: Upload badge artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-badge
+          path: badge
+
+  deploy-coverage:
+    needs: coverage
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download coverage badge
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-badge
+          path: .
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,10 +1,10 @@
 # ActiveAdminImport
 
-[![Build Status   ][build_badge]][build_link]
-[![Coverage Status][coveralls_badge]][coveralls_link]
-[![Code Climate   ][codeclimate_badge]][codeclimate_link]
-[![Gem Version    ][rubygems_badge]][rubygems_link]
-[![License        ][license_badge]][license_link]
+[![Build Status][build_badge]][build_link]
+![Coverage][coverage_badge]
+[![Code Climate][codeclimate_badge]][codeclimate_link]
+[![Gem Version][rubygems_badge]][rubygems_link]
+[![License][license_badge]][license_link]
 
 
 The fastest and most efficient CSV import for Active Admin with support for validations, bulk inserts, and encoding handling.
@@ -331,8 +331,7 @@ Tool                  | Description
 
 [build_badge]: https://github.com/activeadmin-plugins/active_admin_import/actions/workflows/test.yml/badge.svg
 [build_link]: https://github.com/activeadmin-plugins/active_admin_import/actions
-[coveralls_badge]: https://coveralls.io/repos/activeadmin-plugins/active_admin_import/badge.svg
-[coveralls_link]: https://coveralls.io/github/activeadmin-plugins/active_admin_import
+[coverage_badge]: https://img.shields.io/endpoint?url=https://activeadmin-plugins.github.io/active_admin_import/badge.json
 [codeclimate_badge]: https://codeclimate.com/github/activeadmin-plugins/active_admin_import/badges/gpa.svg
 [codeclimate_link]: https://codeclimate.com/github/activeadmin-plugins/active_admin_import
 [rubygems_badge]: https://badge.fury.io/rb/active_admin_import.svg
