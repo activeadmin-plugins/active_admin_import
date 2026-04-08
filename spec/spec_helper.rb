@@ -13,7 +13,8 @@ Bundler.setup
 ENV['RAILS_ENV'] = 'test'
 require 'rails'
 ENV['RAILS'] = Rails.version
-ENV['RAILS_ROOT'] = File.expand_path("../rails/rails-#{ENV['RAILS']}", __FILE__)
+ENV['DB'] ||= 'sqlite'
+ENV['RAILS_ROOT'] = File.expand_path("../rails/rails-#{ENV['RAILS']}-#{ENV['DB']}", __FILE__)
 system 'rake setup' unless File.exist?(ENV['RAILS_ROOT'])
 
 require 'active_model'

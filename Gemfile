@@ -12,7 +12,14 @@ gem 'sass-rails'
 group :test do
   gem 'simplecov', require: false
   gem 'rspec-rails'
-  gem 'sqlite3', '~> 2.0'
+  case ENV['DB']
+  when 'mysql'
+    gem 'mysql2'
+  when 'postgres', 'postgresql'
+    gem 'pg'
+  else
+    gem 'sqlite3', '~> 2.0'
+  end
   gem 'database_cleaner'
   gem 'capybara'
   gem 'cuprite'
