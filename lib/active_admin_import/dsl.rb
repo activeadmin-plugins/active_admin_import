@@ -27,6 +27,8 @@ module ActiveAdminImport
   module DSL
     CONTEXT_METHOD = :active_admin_import_context
 
+    ACTIVE_ADMIN_V4 = Gem::Version.new(ActiveAdmin::VERSION).segments.first >= 4
+
     def self.prepare_import_model(template_object, controller, params: nil)
       model = template_object.is_a?(Proc) ? template_object.call : template_object
       if params
@@ -45,9 +47,7 @@ module ActiveAdminImport
       model_name = options[:resource_label].downcase
       plural_model_name = options[:plural_resource_label].downcase
       if result.empty?
-        # AA 4's flash partial only renders error/alert/notice, so use :alert
-        # instead of :warning to stay cross-compatible with AA 3.
-        flash[:alert] = I18n.t('active_admin_import.file_empty_error')
+        flash[ACTIVE_ADMIN_V4 ? :alert : :warning] = I18n.t('active_admin_import.file_empty_error')
       else
         if result.failed?
           flash[:error] = I18n.t(
