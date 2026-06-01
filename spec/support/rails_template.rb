@@ -50,8 +50,19 @@ gsub_file "config/environment.rb",
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
+aa_v4 = ENV['AA']&.start_with?('4')
+
 generate :'active_admin:install --skip-users'
-generate :'formtastic:install'
+
+if aa_v4
+  # `active_admin:assets` swaps AA 3's Sprockets SCSS/JS for AA 4's Tailwind CSS
+  # stub. We don't compile it — specs assert on DOM and flash text, not styling,
+  # so the stub suffices and no Node is needed. `builds/` satisfies cssbundling-rails.
+  generate :'active_admin:assets'
+  run 'mkdir -p app/assets/builds'
+else
+  generate :'formtastic:install'
+end
 
 run 'rm -rf test'
 route "root :to => 'admin/dashboard#index'"

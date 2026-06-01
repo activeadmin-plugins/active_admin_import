@@ -41,8 +41,8 @@ describe 'import', type: :feature do
   end
 
   def upload_file!(name, ext = 'csv')
-    attach_file('active_admin_import_model_file', File.expand_path("./spec/fixtures/files/#{name}.#{ext}"))
-    find_button('Import').click
+    attach_file(ImportFormSelectors.file_input_id, File.expand_path("./spec/fixtures/files/#{name}.#{ext}"))
+    find_button(ImportFormSelectors.import_button_text).click
   end
 
   context 'posts index' do
@@ -118,7 +118,7 @@ describe 'import', type: :feature do
             # reload page
             visit '/admin/posts/import'
             # submit form without file
-            find_button('Import').click
+            find_button(ImportFormSelectors.import_button_text).click
           end
 
           it 'should render validation error' do
@@ -171,7 +171,7 @@ describe 'import', type: :feature do
       # TODO: removing this causes  undefined method `ransack' for #<ActiveRecord::Relation []>
       allow_any_instance_of(Admin::AuthorsController).to receive(:find_collection).and_return(Author.all)
       visit '/admin/authors'
-      find_link('Import Authors').click
+      find_link(ImportFormSelectors.import_link_text).click
       expect(current_path).to eq('/admin/authors/import')
     end
   end
@@ -228,14 +228,14 @@ describe 'import', type: :feature do
     end
 
     it 'has valid form' do
-      form = find('#new_active_admin_import_model')
+      form = find(ImportFormSelectors.form_css)
       expect(form['action']).to eq('/admin/authors/do_import')
       expect(form['enctype']).to eq('multipart/form-data')
-      file_input = form.find('input#active_admin_import_model_file')
+      file_input = form.find(ImportFormSelectors.file_input_css)
       expect(file_input[:type]).to eq('file')
       expect(file_input.value).to be_blank
-      submit_input = form.find('#active_admin_import_model_submit_action input')
-      expect(submit_input[:value]).to eq('Import')
+      submit_input = form.find(ImportFormSelectors.submit_css)
+      expect(submit_input[:value]).to eq(ImportFormSelectors.import_button_text)
       expect(submit_input[:type]).to eq('submit')
     end
 
@@ -261,7 +261,7 @@ describe 'import', type: :feature do
 
       context 'when no file' do
         it 'should render error' do
-          find_button('Import').click
+          find_button(ImportFormSelectors.import_button_text).click
           expect(Author.count).to eq(0)
           expect(page).to have_content I18n.t('active_admin_import.no_file_error')
         end
@@ -605,7 +605,7 @@ describe 'import', type: :feature do
 
       # Second submission without selecting a file
       expect do
-        find_button('Import').click
+        find_button(ImportFormSelectors.import_button_text).click
         expect(page).to have_content(I18n.t('active_admin_import.no_file_error'))
       end.not_to change { Author.count }
     end

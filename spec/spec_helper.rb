@@ -12,9 +12,9 @@ Bundler.setup
 
 ENV['RAILS_ENV'] = 'test'
 require 'rails'
+require 'test_app_paths'
 ENV['RAILS'] = Rails.version
-ENV['DB'] ||= 'sqlite'
-ENV['RAILS_ROOT'] = File.expand_path("../rails/rails-#{ENV['RAILS']}-#{ENV['DB']}", __FILE__)
+ENV['RAILS_ROOT'] = TestAppPaths.app_root
 system 'rake setup' unless File.exist?(ENV['RAILS_ROOT'])
 
 require 'active_model'
@@ -28,16 +28,13 @@ ActiveAdmin.application.current_user_method = false
 
 require 'rspec/rails'
 require 'support/admin'
+require 'support/import_form_selectors'
 require 'capybara/rails'
 require 'capybara/rspec'
-require 'capybara/cuprite'
 
-Capybara.server = :webrick
-Capybara.register_driver :cuprite do |app|
-  Capybara::Cuprite::Driver.new(app, headless: true, window_size: [1280, 800])
-end
-Capybara.javascript_driver = :cuprite
-Capybara.default_max_wait_time = 5
+# Specs exercise ActiveAdmin through Capybara's default rack_test driver — no
+# JavaScript or real browser is needed, so no Cuprite/Chrome or app server.
+Capybara.default_driver = :rack_test
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
