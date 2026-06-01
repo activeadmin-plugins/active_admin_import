@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-# Selectors for the import form. Formtastic 6 (AA 4) keeps the same DOM IDs
-# as Formtastic 4 (AA 3) for our form shape, so the selectors are version
-# independent today. If a future AA release shifts an ID, branch here.
+# Formtastic 6 (AA 4) keeps the same DOM IDs as Formtastic 4 (AA 3) for this
+# form, so one selector set serves both — branch here if a future AA shifts an ID.
 module ImportFormSelectors
   module_function
 

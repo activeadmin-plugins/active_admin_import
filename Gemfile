@@ -34,6 +34,4 @@ group :test do
   end
   gem 'database_cleaner'
   gem 'capybara'
-  gem 'cuprite'
-  gem 'webrick', require: false
 end

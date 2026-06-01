@@ -55,20 +55,11 @@ aa_v4 = ENV['AA']&.start_with?('4')
 generate :'active_admin:install --skip-users'
 
 if aa_v4
-  # AA 4 ships Formtastic 6 and its own Tailwind config via
-  # `active_admin:assets`; npm wiring is on the host.
+  # `active_admin:assets` swaps AA 3's Sprockets SCSS/JS for AA 4's Tailwind CSS
+  # stub. We don't compile it — specs assert on DOM and flash text, not styling,
+  # so the stub suffices and no Node is needed. `builds/` satisfies cssbundling-rails.
   generate :'active_admin:assets'
-  create_file 'package.json', <<~JSON
-    {
-      "private": true,
-      "scripts": {
-        "build:css": "tailwindcss -i ./app/assets/stylesheets/active_admin.css -o ./app/assets/builds/active_admin.css --minify"
-      }
-    }
-  JSON
   run 'mkdir -p app/assets/builds'
-  run 'npm install @activeadmin/activeadmin@4.0.0-beta22 @tailwindcss/cli'
-  run 'npm run build:css'
 else
   generate :'formtastic:install'
 end

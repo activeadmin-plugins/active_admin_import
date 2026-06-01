@@ -27,7 +27,7 @@ module ActiveAdminImport
   module DSL
     CONTEXT_METHOD = :active_admin_import_context
 
-    ACTIVE_ADMIN_V4 = Gem::Version.new(ActiveAdmin::VERSION).segments.first >= 4
+    ACTIVE_ADMIN_V4 = Gem::Version.new(ActiveAdmin::VERSION) >= Gem::Version.new('4.0.0.beta1')
 
     def self.prepare_import_model(template_object, controller, params: nil)
       model = template_object.is_a?(Proc) ? template_object.call : template_object

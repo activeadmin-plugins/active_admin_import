@@ -12,9 +12,9 @@ Bundler.setup
 
 ENV['RAILS_ENV'] = 'test'
 require 'rails'
+require 'test_app_paths'
 ENV['RAILS'] = Rails.version
-ENV['DB'] ||= 'sqlite'
-ENV['RAILS_ROOT'] = File.expand_path("../rails/rails-#{ENV['RAILS']}-#{ENV['DB']}", __FILE__)
+ENV['RAILS_ROOT'] = TestAppPaths.app_root
 system 'rake setup' unless File.exist?(ENV['RAILS_ROOT'])
 
 require 'active_model'
@@ -31,30 +31,15 @@ require 'support/admin'
 require 'support/import_form_selectors'
 require 'capybara/rails'
 require 'capybara/rspec'
-require 'capybara/cuprite'
 
-Capybara.server = :webrick
-Capybara.register_driver :cuprite do |app|
-  Capybara::Cuprite::Driver.new(app, headless: true, window_size: [1280, 800])
-end
-Capybara.javascript_driver = :cuprite
-Capybara.default_max_wait_time = 5
+# Specs exercise ActiveAdmin through Capybara's default rack_test driver — no
+# JavaScript or real browser is needed, so no Cuprite/Chrome or app server.
+Capybara.default_driver = :rack_test
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
 
   config.before(:suite) do
-    # Cuprite races the Tailwind build under AA 4 (no CSS → unstyled DOM →
-    # selector failures that look like DOM-ID drift). Rebuild before the
-    # suite and abort if nothing landed, so the failure mode is legible.
-    if Gem::Version.new(ActiveAdmin::VERSION) >= Gem::Version.new('4')
-      rails_root = ENV['RAILS_ROOT']
-      ok = system('npm run build:css', chdir: rails_root)
-      built = Dir.glob(File.join(rails_root, 'app/assets/builds/*.css'))
-                 .find { |p| File.size?(p).to_i.positive? }
-      abort "[AA4] Tailwind build produced no CSS in #{rails_root} (npm ok=#{ok})" unless built
-    end
-
     ActiveRecord::Migration.maintain_test_schema!
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)

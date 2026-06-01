@@ -38,17 +38,11 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - name: Setup Node (AA v4 only)
-        if: matrix.activeadmin == '4.0.0.beta22'
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
       - name: AA v4 environment summary
         if: matrix.activeadmin == '4.0.0.beta22'
         run: |
           bundle exec gem list activeadmin
           bundle info activeadmin
-          node --version
       - name: Run tests
         run: bundle exec rspec spec
   test-mysql:
@@ -147,14 +141,10 @@ jobs:
         with:
           ruby-version: '3.4'
           bundler-cache: true
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
       - name: AA v4 environment summary
         run: |
           bundle exec gem list activeadmin
           bundle info activeadmin
-          node --version
       - name: Run tests
         run: bundle exec rspec spec
   coverage:
