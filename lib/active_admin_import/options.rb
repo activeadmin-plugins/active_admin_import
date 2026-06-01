@@ -22,7 +22,8 @@ module ActiveAdminImport
       :plural_resource_label,
       :error_limit,
       :headers_rewrites,
-      :if
+      :if,
+      :action_item_html_options
     ].freeze
 
     def self.options_for(config, options = {})
@@ -39,7 +40,10 @@ module ActiveAdminImport
         plural_resource_label: config.plural_resource_label,
         error_limit: 5,
         headers_rewrites: {},
-        if: true
+        if: true,
+        # AA 4's built-in action_items hardcode this class for Tailwind styling
+        # (lib/active_admin/resource/action_items.rb). It's a no-op on AA 3.
+        action_item_html_options: { class: 'action-item-button' }
       }.deep_merge(options)
     end
   end

@@ -73,6 +73,7 @@ Tool                    | Description
 :error_limit            |Limit the number of errors reported (default `5`, set to `nil` for all)
 :headers_rewrites       |hash with key (csv header) - value (db column name) rows mapping
 :if                     |Controls whether the 'Import' button is displayed. It supports a proc to be evaluated into a boolean value within the activeadmin render context.
+:action_item_html_options |HTML options passed to the index-page "Import …" action_item link. Defaults to `{ class: 'action-item-button' }` so the link matches AA 4's built-in action_items; the class is a no-op on AA 3. Override to drop the class or add your own (`{ class: 'my-btn' }`, `{ class: '', data: { turbo: false } }`, etc.).
 
 
 

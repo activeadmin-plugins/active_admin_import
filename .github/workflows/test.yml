@@ -22,6 +22,13 @@ jobs:
         exclude:
           - rails: '8.0.0'
             activeadmin: '3.2.0'
+        include:
+          - ruby: '3.4'
+            rails: '7.2.0'
+            activeadmin: '4.0.0.beta22'
+          - ruby: '3.4'
+            rails: '8.0.0'
+            activeadmin: '4.0.0.beta22'
     env:
       RAILS: ${{ matrix.rails }}
       AA: ${{ matrix.activeadmin }}
@@ -31,6 +38,17 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
+      - name: Setup Node (AA v4 only)
+        if: matrix.activeadmin == '4.0.0.beta22'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: AA v4 environment summary
+        if: matrix.activeadmin == '4.0.0.beta22'
+        run: |
+          bundle exec gem list activeadmin
+          bundle info activeadmin
+          node --version
       - name: Run tests
         run: bundle exec rspec spec
   test-mysql:
@@ -96,6 +114,47 @@ jobs:
         with:
           ruby-version: '3.4'
           bundler-cache: true
+      - name: Run tests
+        run: bundle exec rspec spec
+  test-postgres-aa4:
+    name: Ruby 3.4 / Rails 8.0.0 / AA 4.0.0.beta22 / PostgreSQL 16
+    runs-on: ubuntu-latest
+    env:
+      RAILS: '8.0.0'
+      AA: '4.0.0.beta22'
+      DB: postgres
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: active_admin_import_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: AA v4 environment summary
+        run: |
+          bundle exec gem list activeadmin
+          bundle info activeadmin
+          node --version
       - name: Run tests
         run: bundle exec rspec spec
   coverage:

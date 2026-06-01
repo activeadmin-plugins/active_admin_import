@@ -45,7 +45,9 @@ module ActiveAdminImport
       model_name = options[:resource_label].downcase
       plural_model_name = options[:plural_resource_label].downcase
       if result.empty?
-        flash[:warning] = I18n.t('active_admin_import.file_empty_error')
+        # AA 4's flash partial only renders error/alert/notice, so use :alert
+        # instead of :warning to stay cross-compatible with AA 3.
+        flash[:alert] = I18n.t('active_admin_import.file_empty_error')
       else
         if result.failed?
           flash[:error] = I18n.t(
@@ -81,7 +83,8 @@ module ActiveAdminImport
         if authorized?(ActiveAdminImport::Auth::IMPORT, active_admin_config.resource_class)
           link_to(
             I18n.t('active_admin_import.import_model', plural_model: options[:plural_resource_label]),
-            action: :import
+            { action: :import },
+            options[:action_item_html_options]
           )
         end
       end

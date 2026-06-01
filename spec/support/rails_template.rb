@@ -50,8 +50,28 @@ gsub_file "config/environment.rb",
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
+aa_v4 = ENV['AA']&.start_with?('4')
+
 generate :'active_admin:install --skip-users'
-generate :'formtastic:install'
+
+if aa_v4
+  # AA 4 ships Formtastic 6 and its own Tailwind config via
+  # `active_admin:assets`; npm wiring is on the host.
+  generate :'active_admin:assets'
+  create_file 'package.json', <<~JSON
+    {
+      "private": true,
+      "scripts": {
+        "build:css": "tailwindcss -i ./app/assets/stylesheets/active_admin.css -o ./app/assets/builds/active_admin.css --minify"
+      }
+    }
+  JSON
+  run 'mkdir -p app/assets/builds'
+  run 'npm install @activeadmin/activeadmin@4.0.0-beta22 @tailwindcss/cli'
+  run 'npm run build:css'
+else
+  generate :'formtastic:install'
+end
 
 run 'rm -rf test'
 route "root :to => 'admin/dashboard#index'"
