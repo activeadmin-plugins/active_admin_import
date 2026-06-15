@@ -129,7 +129,14 @@ module ActiveAdminImport
     end
 
     def prepare_headers
-      headers = self.headers.present? ? self.headers.map(&:to_s) : yield
+      headers = self.headers.present? ? self.headers : yield
+      blank_positions = headers.each_index.select { |i| headers[i].to_s.strip.empty? }
+      unless blank_positions.empty?
+        raise ActiveAdminImport::Exception,
+              "blank column header at column #{blank_positions.map { |i| i + 1 }.join(', ')}"
+      end
+
+      headers = headers.map(&:to_s)
       @headers = Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })].with_indifferent_access
       @headers.merge!(options[:headers_rewrites].symbolize_keys.slice(*@headers.symbolize_keys.keys))
       @headers
