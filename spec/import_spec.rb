@@ -217,6 +217,51 @@ describe 'import', type: :feature do
         expect(Author.find(2).name).to eq('Jane')
       end
     end
+
+    # Issue #187: update existing records by id without a delete_all workaround.
+    # On databases that support upserts, :on_duplicate_key_update lets a single
+    # import update colliding rows and insert new ones in one pass.
+    context 'upserting authors by id via :on_duplicate_key_update' do
+      before do
+        # Existing row shares its id with the first CSV row but carries a stale
+        # birthday; the second CSV row (id 2) has no match and must be inserted.
+        Author.delete_all
+        Author.create!(id: 1, name: 'John', last_name: 'Doe', birthday: '1900-01-01')
+
+        # The option shape is adapter-specific: MySQL infers the conflicting key
+        # and only wants the column list, while PostgreSQL/SQLite need an explicit
+        # :conflict_target (see README).
+        on_duplicate_key_update =
+          if ActiveRecord::Base.connection.adapter_name.match?(/mysql/i)
+            %i[name last_name birthday]
+          else
+            { conflict_target: [:id], columns: %i[name last_name birthday] }
+          end
+
+        add_author_resource(
+          # Uniqueness validation runs against the rows the upsert is about to
+          # overwrite, so it must be off for an id-based upsert (see README).
+          validate: false,
+          on_duplicate_key_update: on_duplicate_key_update
+        )
+        visit '/admin/authors/import'
+        upload_file!(:authors_with_ids)
+      end
+
+      it 'reports every row as imported' do
+        expect(page).to have_content 'Successfully imported 2 authors'
+      end
+
+      it 'updates the existing author instead of duplicating it' do
+        expect(Author.count).to eq(2)
+        expect(Author.find(1).birthday).to eq(Date.new(1986, 5, 1))
+      end
+
+      it 'inserts the non-colliding author' do
+        expect(Author.find(2).name).to eq('Jane')
+        expect(Author.find(2).last_name).to eq('Roe')
+      end
+    end
   end
 
   context 'with valid options' do
