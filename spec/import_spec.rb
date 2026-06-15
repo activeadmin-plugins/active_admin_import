@@ -190,6 +190,22 @@ describe 'import', type: :feature do
     end
   end
 
+  # Issue #197: a CSV with an empty header cell used to crash with
+  # `undefined method 'underscore' for nil`.
+  context 'with a blank column header' do
+    before do
+      add_author_resource
+      visit '/admin/authors/import'
+      upload_file!(:authors_empty_header)
+    end
+
+    it 'reports a clear error and imports nothing' do
+      expect(page).to have_content 'blank column header at column 1'
+      expect(page).to have_no_content 'undefined method'
+      expect(Author.count).to eq(0)
+    end
+  end
+
   context 'authors already exist' do
     before do
       Author.create!(id: 1, name: 'Jane', last_name: 'Roe')
