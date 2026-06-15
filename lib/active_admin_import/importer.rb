@@ -82,23 +82,15 @@ module ActiveAdminImport
     # end
     #
     def batch_slice_columns(slice_columns)
-      # Only set @use_indexes for the first batch so that @use_indexes are in correct
-      # position for subsequent batches
-      unless defined?(@use_indexes)
-        @use_indexes = []
-        headers.values.each_with_index do |val, index|
-          @use_indexes << index if val.in?(slice_columns)
-        end
-        return csv_lines if @use_indexes.empty?
+      columns = headers.values
+      indexes = columns.each_index.select { |i| columns[i].in?(slice_columns) }
+      return csv_lines if indexes.empty?
 
-        # slice CSV headers
-        @headers = headers.to_a.values_at(*@use_indexes).to_h
-      end
-
-      # slice CSV values
-      csv_lines.map! do |line|
-        line.values_at(*@use_indexes)
-      end
+      # @headers is reset to the full set at the start of every batch (see
+      # #batch_import), so each call narrows the previous call's result and every
+      # batch slices the same way — calling this more than once now composes (#186).
+      @headers = headers.to_a.values_at(*indexes).to_h
+      csv_lines.map! { |line| line.values_at(*indexes) }
     end
 
     def values_at(header_key)
@@ -129,17 +121,18 @@ module ActiveAdminImport
     end
 
     def prepare_headers
-      headers = self.headers.present? ? self.headers : yield
-      blank_positions = headers.each_index.select { |i| headers[i].to_s.strip.empty? }
+      names = self.headers.present? ? self.headers : yield
+      blank_positions = names.each_index.select { |i| names[i].to_s.strip.empty? }
       unless blank_positions.empty?
         raise ActiveAdminImport::Exception,
               "blank column header at column #{blank_positions.map { |i| i + 1 }.join(', ')}"
       end
 
-      headers = headers.map(&:to_s)
-      @headers = Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })].with_indifferent_access
-      @headers.merge!(options[:headers_rewrites].symbolize_keys.slice(*@headers.symbolize_keys.keys))
-      @headers
+      names = names.map(&:to_s)
+      # @source_headers is the complete parsed header row; batch_import copies it
+      # into the per-batch working @headers (see #batch_import).
+      @source_headers = Hash[names.zip(names.map { |el| el.underscore.gsub(/\s+/, '_') })].with_indifferent_access
+      @source_headers.merge!(options[:headers_rewrites].symbolize_keys.slice(*@source_headers.symbolize_keys.keys))
     end
 
     def run_callback(name)
@@ -148,6 +141,9 @@ module ActiveAdminImport
 
     def batch_import
       batch_result = nil
+      # Every batch re-parses full-width rows, so restore the full header set
+      # before slicing; batch_slice_columns then narrows this working copy.
+      @headers = @source_headers.dup
       @resource.transaction do
         run_callback(:before_batch_import)
         batch_result = resource.import(headers.values, csv_lines, import_options)
