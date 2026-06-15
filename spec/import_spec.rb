@@ -191,18 +191,32 @@ describe 'import', type: :feature do
   end
 
   # Issue #197: a CSV with an empty header cell used to crash with
-  # `undefined method 'underscore' for nil`.
+  # `undefined method 'underscore' for nil`, wherever the blank sits.
   context 'with a blank column header' do
-    before do
-      add_author_resource
-      visit '/admin/authors/import'
-      upload_file!(:authors_empty_header)
+    shared_examples 'a rejected blank header' do |fixture, column|
+      before do
+        add_author_resource
+        visit '/admin/authors/import'
+        upload_file!(fixture)
+      end
+
+      it 'reports a clear error and imports nothing' do
+        expect(page).to have_content "blank column header at column #{column}"
+        expect(page).to have_no_content 'undefined method'
+        expect(Author.count).to eq(0)
+      end
     end
 
-    it 'reports a clear error and imports nothing' do
-      expect(page).to have_content 'blank column header at column 1'
-      expect(page).to have_no_content 'undefined method'
-      expect(Author.count).to eq(0)
+    context 'at the beginning' do
+      it_behaves_like 'a rejected blank header', :authors_empty_header, 1
+    end
+
+    context 'in the middle' do
+      it_behaves_like 'a rejected blank header', :authors_blank_header_middle, 2
+    end
+
+    context 'at the end' do
+      it_behaves_like 'a rejected blank header', :authors_blank_header_end, 4
     end
   end
 
