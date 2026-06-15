@@ -235,7 +235,28 @@ ActiveAdmin.register Post do
 end
 ```
 
-For databases that support upserts you can use `:on_duplicate_key_update` instead.
+On databases that support upserts (MySQL, PostgreSQL 9.5+, SQLite 3.24+) you can
+update colliding rows and insert new ones in a single pass with
+`:on_duplicate_key_update` — no `delete_all` required:
+
+```ruby
+ActiveAdmin.register Author do
+  active_admin_import validate: false,
+                      on_duplicate_key_update: {
+                        conflict_target: [:id],
+                        columns: %i[name last_name birthday]
+                      }
+end
+```
+
+Notes:
+
+* `conflict_target` names the unique column(s) used to detect a collision
+  (`[:id]` for the primary key). MySQL infers it and ignores this option.
+* Turn `validate` off for id-based upserts. `activerecord-import` runs
+  uniqueness validations against the very rows the upsert is about to overwrite,
+  so a model-level `validates_uniqueness_of` would otherwise reject the update.
+* Active Record callbacks are not fired for bulk imports.
 
 ##### Tune batch size
 
