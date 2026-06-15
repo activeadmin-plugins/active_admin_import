@@ -24,7 +24,16 @@ task :setup do
   )
   # v4 drops sprockets-rails (see Gemfile), so skip the asset pipeline to
   # avoid the auto-generated `config/initializers/assets.rb` crashing at boot.
-  rails_new_opts.unshift('--skip-asset-pipeline') if aa_v4
+  if aa_v4
+    rails_new_opts.unshift('--skip-asset-pipeline')
+  else
+    # Rails 8.1 wires importmap-rails into the generated ApplicationController
+    # (`stale_when_importmap_changes`). The AA 3 app uses Sprockets, not
+    # importmap, so that gem is absent and the controller raises NameError at
+    # boot. Skip JavaScript so the macro is never generated — the specs run on
+    # rack_test and never execute JS anyway.
+    rails_new_opts.unshift('--skip-javascript')
+  end
 
   system "bundle exec rails new spec/rails/#{TestAppPaths.app_dir_name} #{rails_new_opts.join(' ')}"
 end
