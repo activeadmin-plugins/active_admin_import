@@ -656,6 +656,56 @@ describe 'import', type: :feature do
     end
   end
 
+  # Issue #186: each call must slice the result of the previous one, not re-apply
+  # the first call's indices to an already-sliced row.
+  context "with successive batch_slice_columns calls" do
+    before do
+      # validate: false isolates the slicing behaviour from the model's
+      # uniqueness validation, which would otherwise reject a later batch's
+      # author for sharing a NULL last_name with an earlier one.
+      add_author_resource template_object: ActiveAdminImport::Model.new,
+                          validate: false,
+                          before_batch_import: lambda { |importer|
+                            importer.batch_slice_columns(%w(name last_name))
+                            importer.batch_slice_columns(%w(name))
+                          },
+                          batch_size: batch_size
+      visit "/admin/authors/import"
+      upload_file!(fixture)
+    end
+
+    context "within a single batch" do
+      let(:batch_size) { 2 } # authors.csv has 2 rows -> 1 batch
+      let(:fixture) { :authors }
+
+      it "narrows the columns progressively" do
+        expect(Author.pluck(:name, :last_name, :birthday)).to match_array(
+          [
+            ["Jane", nil, nil],
+            ["John", nil, nil]
+          ]
+        )
+      end
+    end
+
+    context "across several batches" do
+      let(:batch_size) { 2 } # authors_many.csv has 5 rows -> 3 batches
+      let(:fixture) { :authors_many }
+
+      it "narrows the columns progressively in every batch" do
+        expect(Author.pluck(:name, :last_name, :birthday)).to match_array(
+          [
+            ["John", nil, nil],
+            ["Jane", nil, nil],
+            ["Jack", nil, nil],
+            ["Jill", nil, nil],
+            ["Joe", nil, nil]
+          ]
+        )
+      end
+    end
+  end
+
   context 'with invalid options' do
     let(:options) { { invalid_option: :invalid_value } }
 
