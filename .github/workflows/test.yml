@@ -16,18 +16,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['3.2', '3.3', '3.4']
-        rails: ['7.1.0', '7.2.0', '8.0.0']
+        ruby: ['3.3', '3.4', '4.0']
+        rails: ['7.2.0', '8.0.0', '8.1.0']
         activeadmin: ['3.2.0', '3.3.0', '3.4.0', '3.5.1']
         exclude:
+          # ActiveAdmin 3.2.0 predates Rails 8 support.
           - rails: '8.0.0'
             activeadmin: '3.2.0'
+          - rails: '8.1.0'
+            activeadmin: '3.2.0'
         include:
+          # ActiveAdmin 4 requires railties >= 7.2, so cover its floor and the
+          # newest supported Rails releases.
           - ruby: '3.4'
             rails: '7.2.0'
             activeadmin: '4.0.0.beta22'
           - ruby: '3.4'
             rails: '8.0.0'
+            activeadmin: '4.0.0.beta22'
+          - ruby: '3.4'
+            rails: '8.1.0'
             activeadmin: '4.0.0.beta22'
     env:
       RAILS: ${{ matrix.rails }}

@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.summary = 'ActiveAdmin import based on activerecord-import gem.'
   gem.homepage = 'https://github.com/activeadmin-plugins/active_admin_import'
   gem.license = 'MIT'
-  gem.required_ruby_version = '>= 3.1.0'
+  gem.required_ruby_version = '>= 3.3.0'
   gem.files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
   gem.executables = gem.files.grep(%r{^bin/}).map { |f| File.basename(f) }
   gem.name = 'active_admin_import'
