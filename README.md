@@ -225,7 +225,43 @@ end
 
 ##### Update existing records by id
 
-Delete colliding rows just before each batch insert:
+Two strategies, depending on your database and whether you need validations.
+
+###### Native upsert (recommended where supported)
+
+On databases that support upserts (MySQL, PostgreSQL 9.5+, SQLite 3.24+),
+`:on_duplicate_key_update` updates colliding rows and inserts new ones in a
+single statement — no extra delete. The option is passed straight to
+`activerecord-import`, so its shape depends on the adapter:
+
+```ruby
+# PostgreSQL / SQLite
+on_duplicate_key_update: { conflict_target: [:id], columns: %i[name last_name birthday] }
+
+# MySQL (infers the key from the columns)
+on_duplicate_key_update: %i[name last_name birthday]
+```
+
+```ruby
+ActiveAdmin.register Author do
+  active_admin_import validate: false,
+                      on_duplicate_key_update: { conflict_target: [:id], columns: %i[name last_name birthday] }
+end
+```
+
+Notes:
+
+* Only the columns you list are updated; other columns on the existing row keep their values.
+* Use `validate: false` — `activerecord-import` runs uniqueness validations against the very rows the upsert is about to overwrite, so `validates_uniqueness_of` would otherwise reject the update.
+* Active Record callbacks are not fired for bulk imports.
+
+###### Delete-then-insert (any database)
+
+When you can't rely on upsert support — an older database, or you need your model
+validations to run — delete the colliding rows just before each batch insert.
+The old row is gone before the insert, so `validates_uniqueness_of` doesn't trip,
+at the cost of a second query and full-row **replacement** (columns absent from
+the CSV are reset, not preserved):
 
 ```ruby
 ActiveAdmin.register Post do
@@ -234,38 +270,6 @@ ActiveAdmin.register Post do
   }
 end
 ```
-
-On databases that support upserts (MySQL, PostgreSQL 9.5+, SQLite 3.24+) you can
-update colliding rows and insert new ones in a single pass with
-`:on_duplicate_key_update` — no `delete_all` required:
-
-```ruby
-ActiveAdmin.register Author do
-  # PostgreSQL / SQLite
-  active_admin_import validate: false,
-                      on_duplicate_key_update: {
-                        conflict_target: [:id],
-                        columns: %i[name last_name birthday]
-                      }
-end
-```
-
-Notes:
-
-* The option shape is **adapter-specific**, since it is passed straight to
-  `activerecord-import`:
-  * PostgreSQL / SQLite need an explicit `:conflict_target` — the unique
-    column(s) used to detect a collision (`[:id]` for the primary key).
-  * MySQL infers the conflicting key, so pass just the column list and omit
-    `:conflict_target` (passing it raises `Unknown column 'conflict_target'`):
-
-    ```ruby
-    on_duplicate_key_update: %i[name last_name birthday]
-    ```
-* Turn `validate` off for id-based upserts. `activerecord-import` runs
-  uniqueness validations against the very rows the upsert is about to overwrite,
-  so a model-level `validates_uniqueness_of` would otherwise reject the update.
-* Active Record callbacks are not fired for bulk imports.
 
 ##### Tune batch size
 
