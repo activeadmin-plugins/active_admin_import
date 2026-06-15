@@ -43,6 +43,14 @@ generate :model, 'post_comment body:text post:references --force'
 inject_into_file 'app/models/author.rb', "  validates_presence_of :name\n  validates_uniqueness_of :last_name\n", before: 'end'
 inject_into_file 'app/models/post.rb', "  validates_presence_of :author\n  has_many :post_comments\n", before: 'end'
 
+# Rails 8.1's generated ApplicationController calls `stale_when_importmap_changes`,
+# a macro provided by importmap-rails. The AA 3 asset setup uses Sprockets rather
+# than importmap, so the macro is undefined and the controller raises NameError at
+# boot — strip the line. No-op on Rails < 8.1 (line absent) and harmless on AA 4
+# (importmap present), where it only skips an HTTP-caching optimization in specs.
+gsub_file 'app/controllers/application_controller.rb',
+  /^\s*stale_when_importmap_changes.*\n/, ''
+
 # Add our local Active Admin to the load path (Rails 7.1+)
 gsub_file "config/environment.rb",
   'require_relative "application"',
