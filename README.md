@@ -241,6 +241,7 @@ update colliding rows and insert new ones in a single pass with
 
 ```ruby
 ActiveAdmin.register Author do
+  # PostgreSQL / SQLite
   active_admin_import validate: false,
                       on_duplicate_key_update: {
                         conflict_target: [:id],
@@ -251,8 +252,16 @@ end
 
 Notes:
 
-* `conflict_target` names the unique column(s) used to detect a collision
-  (`[:id]` for the primary key). MySQL infers it and ignores this option.
+* The option shape is **adapter-specific**, since it is passed straight to
+  `activerecord-import`:
+  * PostgreSQL / SQLite need an explicit `:conflict_target` — the unique
+    column(s) used to detect a collision (`[:id]` for the primary key).
+  * MySQL infers the conflicting key, so pass just the column list and omit
+    `:conflict_target` (passing it raises `Unknown column 'conflict_target'`):
+
+    ```ruby
+    on_duplicate_key_update: %i[name last_name birthday]
+    ```
 * Turn `validate` off for id-based upserts. `activerecord-import` runs
   uniqueness validations against the very rows the upsert is about to overwrite,
   so a model-level `validates_uniqueness_of` would otherwise reject the update.

@@ -228,14 +228,21 @@ describe 'import', type: :feature do
         Author.delete_all
         Author.create!(id: 1, name: 'John', last_name: 'Doe', birthday: '1900-01-01')
 
+        # The option shape is adapter-specific: MySQL infers the conflicting key
+        # and only wants the column list, while PostgreSQL/SQLite need an explicit
+        # :conflict_target (see README).
+        on_duplicate_key_update =
+          if ActiveRecord::Base.connection.adapter_name.match?(/mysql/i)
+            %i[name last_name birthday]
+          else
+            { conflict_target: [:id], columns: %i[name last_name birthday] }
+          end
+
         add_author_resource(
           # Uniqueness validation runs against the rows the upsert is about to
           # overwrite, so it must be off for an id-based upsert (see README).
           validate: false,
-          on_duplicate_key_update: {
-            conflict_target: [:id],
-            columns: %i[name last_name birthday]
-          }
+          on_duplicate_key_update: on_duplicate_key_update
         )
         visit '/admin/authors/import'
         upload_file!(:authors_with_ids)
