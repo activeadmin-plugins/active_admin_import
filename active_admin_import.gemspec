@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   # reach consumers until it is named here. The reject form needs a new
   # pattern every time the repo grows one, and that is how spec/ and
   # .github/ ended up published in the first place.
-  gem.files = Dir['lib/**/*', 'app/**/*', 'config/**/*', 'README.md', 'LICENSE']
+  gem.files = `git ls-files -z -- lib app config README.md LICENSE`.split("\x0")
   gem.executables = gem.files.grep(%r{^bin/}).map { |f| File.basename(f) }
   gem.name = 'active_admin_import'
   gem.require_paths = ['lib']
