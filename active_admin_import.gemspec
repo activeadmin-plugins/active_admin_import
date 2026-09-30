@@ -10,7 +10,11 @@ Gem::Specification.new do |gem|
   gem.homepage = 'https://github.com/activeadmin-plugins/active_admin_import'
   gem.license = 'MIT'
   gem.required_ruby_version = '>= 3.3.0'
-  gem.files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
+  # Whitelist, not a reject list: a new directory in the repo does not
+  # reach consumers until it is named here. The reject form needs a new
+  # pattern every time the repo grows one, and that is how spec/ and
+  # .github/ ended up published in the first place.
+  gem.files = `git ls-files -z -- lib app vendor config exe bin README.md LICENSE`.split("\x0")
   gem.executables = gem.files.grep(%r{^bin/}).map { |f| File.basename(f) }
   gem.name = 'active_admin_import'
   gem.require_paths = ['lib']
