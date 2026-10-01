@@ -44,12 +44,10 @@ jobs:
       - name: Run tests
         run: bundle exec rspec spec
   test-mysql:
-    # Kept on Rails 8.0 (supported until 2026-11-07) so one DB-backed job still
-    # covers the oldest supported Rails; the PostgreSQL jobs cover 8.1.
-    name: Ruby 3.4 / Rails 8.0.0 / AA 3.5.1 / MySQL 8.0
+    name: Ruby 3.4 / Rails 8.1.0 / AA 3.5.1 / MySQL 8.0
     runs-on: ubuntu-latest
     env:
-      RAILS: '8.0.0'
+      RAILS: '8.1.0'
       AA: '3.5.1'
       DB: mysql
       DB_HOST: 127.0.0.1
