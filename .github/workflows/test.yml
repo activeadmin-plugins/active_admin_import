@@ -17,20 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         ruby: ['3.3', '3.4', '4.0']
-        rails: ['7.2.0', '8.0.0', '8.1.0']
+        rails: ['8.0.0', '8.1.0']
         activeadmin: ['3.2.0', '3.3.0', '3.4.0', '3.5.1']
-        exclude:
-          # ActiveAdmin 3.2.0 predates Rails 8 support.
-          - rails: '8.0.0'
-            activeadmin: '3.2.0'
-          - rails: '8.1.0'
-            activeadmin: '3.2.0'
         include:
-          # ActiveAdmin 4 requires railties >= 7.2, so cover its floor and the
-          # newest supported Rails releases.
-          - ruby: '3.4'
-            rails: '7.2.0'
-            activeadmin: '4.0.0.beta22'
+          # ActiveAdmin 4 is covered on every supported Rails release.
           - ruby: '3.4'
             rails: '8.0.0'
             activeadmin: '4.0.0.beta22'
@@ -54,10 +44,10 @@ jobs:
       - name: Run tests
         run: bundle exec rspec spec
   test-mysql:
-    name: Ruby 3.4 / Rails 8.0.0 / AA 3.5.1 / MySQL 8.0
+    name: Ruby 3.4 / Rails 8.1.0 / AA 3.5.1 / MySQL 8.0
     runs-on: ubuntu-latest
     env:
-      RAILS: '8.0.0'
+      RAILS: '8.1.0'
       AA: '3.5.1'
       DB: mysql
       DB_HOST: 127.0.0.1
@@ -86,10 +76,10 @@ jobs:
       - name: Run tests
         run: bundle exec rspec spec
   test-postgres:
-    name: Ruby 3.4 / Rails 8.0.0 / AA 3.5.1 / PostgreSQL 16
+    name: Ruby 3.4 / Rails 8.1.0 / AA 3.5.1 / PostgreSQL 16
     runs-on: ubuntu-latest
     env:
-      RAILS: '8.0.0'
+      RAILS: '8.1.0'
       AA: '3.5.1'
       DB: postgres
       DB_HOST: 127.0.0.1
@@ -119,10 +109,10 @@ jobs:
       - name: Run tests
         run: bundle exec rspec spec
   test-postgres-aa4:
-    name: Ruby 3.4 / Rails 8.0.0 / AA 4.0.0.beta22 / PostgreSQL 16
+    name: Ruby 3.4 / Rails 8.1.0 / AA 4.0.0.beta22 / PostgreSQL 16
     runs-on: ubuntu-latest
     env:
-      RAILS: '8.0.0'
+      RAILS: '8.1.0'
       AA: '4.0.0.beta22'
       DB: postgres
       DB_HOST: 127.0.0.1
